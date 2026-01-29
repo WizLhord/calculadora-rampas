@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Rampas</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            transition: background-color 0.3s, border-color 0.3s, color 0.3s;
+        }
+        
+        body {
+            background-color: #f8fafc;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        body.dark-mode {
+            background-color: #0a0a0a;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(255, 87, 34, 0.1) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(255, 87, 34, 0.08) 0%, transparent 20%);
+        }
+        
+        .container {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            width: 100%;
+            max-width: 400px;
+            padding: 30px;
+            border: 1px solid #e2e8f0;
+            position: relative;
+        }
+        
+        .dark-mode .container {
+            background: #1a1a1a;
+            border-color: #333333;
+            box-shadow: 0 4px 30px rgba(255, 87, 34, 0.15);
+        }
+        
+        .theme-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #FF5722, #FF9800);
+            border: none;
+            cursor: pointer;
+            font-size: 20px;
+            color: white;
+            transition: all 0.3s;
+            box-shadow: 0 2px 8px rgba(255, 87, 34, 0.3);
+        }
+        
+        .dark-mode .theme-toggle {
+            background: linear-gradient(135deg, #333333, #555555);
+            box-shadow: 0 2px 8px rgba(255, 87, 34, 0.4);
+        }
+        
+        .theme-toggle:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 12px rgba(255, 87, 34, 0.4);
+        }
+        
+        .dark-mode .theme-toggle:hover {
+            box-shadow: 0 4px 12px rgba(255, 87, 34, 0.5);
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-right: 30px;
+        }
+        
+        .header h1 {
+            color: #1e293b;
+            font-size: 22px;
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+        
+        .dark-mode .header h1 {
+            color: #ffffff;
+            text-shadow: 0 0 10px rgba(255, 87, 34, 0.3);
+        }
+        
+        .header p {
+            color: #64748b;
+            font-size: 14px;
+        }
+        
+        .dark-mode .header p {
+            color: #aaaaaa;
+        }
+        
+        .input-section {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .input-group {
+            position: relative;
+        }
+        
+        .input-label {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+            padding: 0 4px;
+        }
+        
+        .label-text {
+            color: #475569;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        
+        .dark-mode .label-text {
+            color: #dddddd;
+        }
+        
+        .label-unit {
+            color: #94a3b8;
+            font-size: 13px;
+            font-weight: 500;
+        }
+        
+        .dark-mode .label-unit {
+            color: #aaaaaa;
+        }
+        
+        input {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 16px;
+            color: #1e293b;
+            background: #f8fafc;
+            transition: all 0.2s;
+        }
+        
+        .dark-mode input {
+            background: #222222;
+            border-color: #444444;
+            color: #ffffff;
+        }
+        
+        input:focus {
+            outline: none;
+            border-color: #FF5722;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(255, 87, 34, 0.1);
+        }
+        
+        .dark-mode input:focus {
+            background: #222222;
+            border-color: #FF5722;
+            box-shadow: 0 0 0 3px rgba(255, 87, 34, 0.2);
+        }
+        
+        input.result-field {
+            background-color: #FFF3E0;
+            color: #E65100;
+            border-color: #FFB74D;
+            font-weight: 600;
+        }
+        
+        .dark-mode input.result-field {
+            background-color: #332211;
+            color: #FF9800;
+            border-color: #FF5722;
+            box-shadow: 0 0 10px rgba(255, 87, 34, 0.2);
+        }
+        
+        .controls {
+            display: flex;
+            gap: 12px;
+            margin-top: 30px;
+        }
+        
+        button {
+            flex: 1;
+            padding: 14px;
+            border: none;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .calc-btn {
+            background: linear-gradient(135deg, #FF5722, #FF9800);
+            color: white;
+            box-shadow: 0 2px 8px rgba(255, 87, 34, 0.3);
+        }
+        
+        .calc-btn:hover {
+            background: linear-gradient(135deg, #E64A19, #F57C00);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255, 87, 34, 0.4);
+        }
+        
+        .calc-btn:active {
+            transform: scale(0.98);
+        }
+        
+        .dark-mode .calc-btn {
+            background: linear-gradient(135deg, #FF5722, #FF9800);
+            box-shadow: 0 2px 8px rgba(255, 87, 34, 0.4);
+        }
+        
+        .dark-mode .calc-btn:hover {
+            background: linear-gradient(135deg, #E64A19, #F57C00);
+            box-shadow: 0 4px 15px rgba(255, 87, 34, 0.6);
+        }
+        
+        .clear-btn {
+            background: #f1f5f9;
+            color: #64748b;
+            border: 2px solid #e2e8f0;
+        }
+        
+        .clear-btn:hover {
+            background: #e2e8f0;
+            transform: translateY(-2px);
+        }
+        
+        .clear-btn:active {
+            transform: scale(0.98);
+        }
+        
+        .dark-mode .clear-btn {
+            background: #333333;
+            color: #cccccc;
+            border-color: #555555;
+        }
+        
+        .dark-mode .clear-btn:hover {
+            background: #444444;
+            border-color: #666666;
+        }
+        
+        .status {
+            text-align: center;
+            margin-top: 20px;
+            min-height: 24px;
+            font-size: 14px;
+            color: #64748b;
+        }
+        
+        .dark-mode .status {
+            color: #aaaaaa;
+        }
+        
+        .status.error {
+            color: #dc2626;
+        }
+        
+        .dark-mode .status.error {
+            color: #ff6b6b;
+        }
+        
+        .status.success {
+            color: #059669;
+        }
+        
+        .dark-mode .status.success {
+            color: #4ade80;
+        }
+        
+        .formula-note {
+            margin-top: 25px;
+            padding: 12px;
+            background: #f8fafc;
+            border-radius: 8px;
+            border-left: 3px solid #FF5722;
+        }
+        
+        .dark-mode .formula-note {
+            background: #222222;
+            border-left-color: #FF9800;
+            box-shadow: 0 0 10px rgba(255, 87, 34, 0.1);
+        }
+        
+        .formula-note code {
+            font-family: 'Courier New', monospace;
+            color: #FF5722;
+            font-weight: 600;
+        }
+        
+        .dark-mode .formula-note code {
+            color: #FFB74D;
+            text-shadow: 0 0 5px rgba(255, 87, 34, 0.3);
+        }
+        
+        /* Efeitos especiais para modo escuro */
+        .dark-mode .header h1::after {
+            content: '📐';
+            text-shadow: 0 0 15px rgba(255, 87, 34, 0.5);
+        }
+        
+        .dark-mode input::placeholder {
+            color: #666666;
+        }
+        
+        .glow-effect {
+            animation: glow 2s infinite alternate;
+        }
+        
+        @keyframes glow {
+            from {
+                box-shadow: 0 0 5px rgba(255, 87, 34, 0.5);
+            }
+            to {
+                box-shadow: 0 0 15px rgba(255, 87, 34, 0.8);
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .container {
+                padding: 24px;
+            }
+            
+            .controls {
+                flex-direction: column;
+            }
+            
+            .theme-toggle {
+                top: 15px;
+                right: 15px;
+                width: 36px;
+                height: 36px;
+                font-size: 18px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Botão de Toggle Tema -->
+        <div class="theme-toggle" id="themeToggle">
+            🌙
+        </div>
+        
+        <div class="header">
+            <h1>📐 Calculadora de Rampas</h1>
+            <p>Preencha 3 campos e clique em Calcular</p>
+        </div>
+        
+        <div class="input-section">
+            <!-- Cota Inicial -->
+            <div class="input-group">
+                <div class="input-label">
+                    <span class="label-text">Cota Inicial</span>
+                    <span class="label-unit">ci (m)</span>
+                </div>
+                <input type="number" id="ci" step="0.001" placeholder="Ex: 0.000">
+            </div>
+            
+            <!-- Cota Final -->
+            <div class="input-group">
+                <div class="input-label">
+                    <span class="label-text">Cota Final</span>
+                    <span class="label-unit">cf (m)</span>
+                </div>
+                <input type="number" id="cf" step="0.001" placeholder="Ex: 1.000">
+            </div>
+            
+            <!-- Comprimento -->
+            <div class="input-group">
+                <div class="input-label">
+                    <span class="label-text">Comprimento</span>
+                    <span class="label-unit">c (m)</span>
+                </div>
+                <input type="number" id="c" step="0.001" placeholder="Ex: 12.000">
+            </div>
+            
+            <!-- Inclinação -->
+            <div class="input-group">
+                <div class="input-label">
+                    <span class="label-text">Inclinação</span>
+                    <span class="label-unit">i (%)</span>
+                </div>
+                <input type="number" id="i" step="0.001" placeholder="Ex: 8.333">
+            </div>
+        </div>
+        
+        <div class="status" id="status"></div>
+        
+        <div class="controls">
+            <button class="calc-btn" onclick="calculate()">Calcular</button>
+            <button class="clear-btn" onclick="clearAll()">Limpar</button>
+        </div>
+        
+        <div class="formula-note">
+            <div style="font-size: 13px; color: #64748b; margin-bottom: 4px;">Fórmula:</div>
+            <code>i = (cf - ci) / c × 100</code>
+        </div>
+    </div>
+
+    <script>
+        // Elementos
+        const ciInput = document.getElementById('ci');
+        const cfInput = document.getElementById('cf');
+        const cInput = document.getElementById('c');
+        const iInput = document.getElementById('i');
+        const statusDiv = document.getElementById('status');
+        const themeToggle = document.getElementById('themeToggle');
+        const body = document.body;
+        
+        // Verificar tema salvo ou preferência do sistema
+        const savedTheme = localStorage.getItem('theme');
+        const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        
+        if (savedTheme === 'dark' || (!savedTheme && systemPrefersDark)) {
+            enableDarkMode();
+        }
+        
+        // Função para alternar tema
+        function toggleTheme() {
+            if (body.classList.contains('dark-mode')) {
+                disableDarkMode();
+            } else {
+                enableDarkMode();
+            }
+        }
+        
+        function enableDarkMode() {
+            body.classList.add('dark-mode');
+            themeToggle.textContent = '☀️';
+            localStorage.setItem('theme', 'dark');
+            
+            // Adicionar efeito glow ao botão de tema
+            themeToggle.classList.add('glow-effect');
+        }
+        
+        function disableDarkMode() {
+            body.classList.remove('dark-mode');
+            themeToggle.textContent = '🌙';
+            localStorage.setItem('theme', 'light');
+            
+            // Remover efeito glow
+            themeToggle.classList.remove('glow-effect');
+        }
+        
+        // Event listener para o botão de tema
+        themeToggle.addEventListener('click', toggleTheme);
+        
+        // Remover qualquer classe de resultado
+        function resetResultStyles() {
+            [ciInput, cfInput, cInput, iInput].forEach(input => {
+                input.classList.remove('result-field');
+            });
+        }
+        
+        // Mostrar status
+        function showStatus(message, isError = false) {
+            statusDiv.textContent = message;
+            statusDiv.className = 'status';
+            if (isError) {
+                statusDiv.classList.add('error');
+            } else if (message) {
+                statusDiv.classList.add('success');
+            }
+        }
+        
+        // Função principal de cálculo
+        function calculate() {
+            // Obter valores
+            const ci = parseFloat(ciInput.value);
+            const cf = parseFloat(cfInput.value);
+            const c = parseFloat(cInput.value);
+            const i = parseFloat(iInput.value);
+            
+            // Contar valores preenchidos
+            const values = [ci, cf, c, i];
+            const filledValues = values.filter(v => !isNaN(v));
+            
+            // Verificar se temos 3 valores
+            if (filledValues.length !== 3) {
+                showStatus('❌ Preencha exatamente 3 campos', true);
+                resetResultStyles();
+                return;
+            }
+            
+            // Resetar estilos
+            resetResultStyles();
+            
+            let result, targetInput, missingField;
+            
+            // Caso 1: Faltando COTA FINAL (cf)
+            if (isNaN(cf)) {
+                targetInput = cfInput;
+                missingField = 'Cota Final';
+                // Temos ci, c, i
+                if (!isNaN(ci) && !isNaN(c) && !isNaN(i)) {
+                    const h = (i / 100) * c;
+                    result = ci + h;
+                }
+            }
+            
+            // Caso 2: Faltando COTA INICIAL (ci)
+            else if (isNaN(ci)) {
+                targetInput = ciInput;
+                missingField = 'Cota Inicial';
+                // Temos cf, c, i
+                if (!isNaN(cf) && !isNaN(c) && !isNaN(i)) {
+                    const h = (i / 100) * c;
+                    result = cf - h;
+                }
+            }
+            
+            // Caso 3: Faltando COMPRIMENTO (c)
+            else if (isNaN(c)) {
+                targetInput = cInput;
+                missingField = 'Comprimento';
+                // Temos ci, cf, i
+                if (!isNaN(ci) && !isNaN(cf) && !isNaN(i)) {
+                    const h = cf - ci;
+                    result = h / (i / 100);
+                }
+            }
+            
+            // Caso 4: Faltando INCLINAÇÃO (i)
+            else if (isNaN(i)) {
+                targetInput = iInput;
+                missingField = 'Inclinação';
+                // Temos ci, cf, c
+                if (!isNaN(ci) && !isNaN(cf) && !isNaN(c)) {
+                    const h = cf - ci;
+                    result = (h / c) * 100;
+                }
+            }
+            
+            // Exibir resultado
+            if (result !== undefined && targetInput) {
+                // Preencher o campo
+                targetInput.value = result.toFixed(3);
+                
+                // Destacar o campo calculado
+                targetInput.classList.add('result-field');
+                
+                // Mostrar status
+                let unit = targetInput === iInput ? '%' : ' m';
+                showStatus(`✅ ${missingField} calculada: ${result.toFixed(3)}${unit}`);
+                
+                // Foco no campo calculado (opcional)
+                setTimeout(() => {
+                    targetInput.focus();
+                    targetInput.select();
+                }, 100);
+            } else {
+                showStatus('❌ Erro no cálculo. Verifique os valores.', true);
+            }
+        }
+        
+        // Função para limpar
+        function clearAll() {
+            // Limpar valores
+            [ciInput, cfInput, cInput, iInput].forEach(input => {
+                input.value = '';
+            });
+            
+            // Resetar estilos
+            resetResultStyles();
+            
+            // Limpar status
+            showStatus('');
+            
+            // Foco no primeiro campo
+            ciInput.focus();
+        }
+        
+        // Permitir Enter para calcular
+        document.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                calculate();
+            }
+        });
+        
+        // Quando o usuário digitar em um campo, limpar o status
+        [ciInput, cfInput, cInput, iInput].forEach(input => {
+            input.addEventListener('input', function() {
+                // Se este campo tiver a classe de resultado, removê-la
+                if (this.classList.contains('result-field')) {
+                    this.classList.remove('result-field');
+                }
+                
+                // Limpar status se estiver mostrando resultado
+                if (statusDiv.textContent.includes('calculada')) {
+                    showStatus('');
+                }
+            });
+        });
+        
+        // Foco inicial
+        window.addEventListener('load', function() {
+            ciInput.focus();
+        });
+    </script>
+</body>
+</html>
