@@ -3,616 +3,597 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calculadora de Rampas</title>
+    <title>Dimensionamento de Rampas e Declividades</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --bg: #f8fafc;
+            --surface: #ffffff;
+            --surface-subtle: #f1f5f9;
+            --border: #e2e8f0;
+            --border-focus: #0f172a;
+            --text-primary: #0f172a;
+            --text-secondary: #475569;
+            --text-muted: #94a3b8;
+            --accent: #0f172a;
+            --accent-hover: #1e293b;
+            --calc-highlight-bg: #f0fdf4;
+            --calc-highlight-border: #86efac;
+            --calc-highlight-text: #166534;
+            --danger-bg: #fef2f2;
+            --danger-text: #991b1b;
+            --danger-border: #fecaca;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.07), 0 2px 4px -2px rgb(0 0 0 / 0.05);
+            --svg-line: #0f172a;
+            --svg-fill: #e2e8f0;
+            --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+        }
+
+        [data-theme="dark"] {
+            --bg: #090d16;
+            --surface: #111827;
+            --surface-subtle: #1f2937;
+            --border: #374151;
+            --border-focus: #93c5fd;
+            --text-primary: #f9fafb;
+            --text-secondary: #cbd5e1;
+            --text-muted: #64748b;
+            --accent: #f8fafc;
+            --accent-hover: #e2e8f0;
+            --calc-highlight-bg: #064e3b;
+            --calc-highlight-border: #059669;
+            --calc-highlight-text: #a7f3d0;
+            --danger-bg: #450a0a;
+            --danger-text: #fecaca;
+            --danger-border: #7f1d1d;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.5);
+            --shadow-md: 0 4px 12px 0 rgb(0 0 0 / 0.3);
+            --svg-line: #94a3b8;
+            --svg-fill: #1f2937;
+        }
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            transition: background-color 0.3s, border-color 0.3s, color 0.3s;
         }
-        
+
         body {
-            background-color: #f8fafc;
+            font-family: var(--font-sans);
+            background-color: var(--bg);
+            color: var(--text-primary);
             min-height: 100vh;
             display: flex;
-            justify-content: center;
             align-items: center;
-            padding: 20px;
+            justify-content: center;
+            padding: 24px 16px;
+            -webkit-font-smoothing: antialiased;
         }
-        
-        body.dark-mode {
-            background-color: #0a0a0a;
-            background-image: 
-                radial-gradient(circle at 10% 20%, rgba(255, 87, 34, 0.1) 0%, transparent 20%),
-                radial-gradient(circle at 90% 80%, rgba(255, 87, 34, 0.08) 0%, transparent 20%);
-        }
-        
-        .container {
-            background: white;
-            border-radius: 16px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+
+        .card {
+            background-color: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            box-shadow: var(--shadow-md);
             width: 100%;
-            max-width: 400px;
-            padding: 30px;
-            border: 1px solid #e2e8f0;
-            position: relative;
+            max-width: 520px;
+            overflow: hidden;
         }
-        
-        .dark-mode .container {
-            background: #1a1a1a;
-            border-color: #333333;
-            box-shadow: 0 4px 30px rgba(255, 87, 34, 0.15);
-        }
-        
-        .theme-toggle {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
+
+        .card-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--border);
             display: flex;
             align-items: center;
-            justify-content: center;
-            background: linear-gradient(135deg, #FF5722, #FF9800);
-            border: none;
-            cursor: pointer;
-            font-size: 20px;
-            color: white;
-            transition: all 0.3s;
-            box-shadow: 0 2px 8px rgba(255, 87, 34, 0.3);
+            justify-content: space-between;
         }
-        
-        .dark-mode .theme-toggle {
-            background: linear-gradient(135deg, #333333, #555555);
-            box-shadow: 0 2px 8px rgba(255, 87, 34, 0.4);
-        }
-        
-        .theme-toggle:hover {
-            transform: scale(1.1);
-            box-shadow: 0 4px 12px rgba(255, 87, 34, 0.4);
-        }
-        
-        .dark-mode .theme-toggle:hover {
-            box-shadow: 0 4px 12px rgba(255, 87, 34, 0.5);
-        }
-        
-        .header {
-            text-align: center;
-            margin-bottom: 30px;
-            padding-right: 30px;
-        }
-        
-        .header h1 {
-            color: #1e293b;
-            font-size: 22px;
-            font-weight: 600;
-            margin-bottom: 6px;
-        }
-        
-        .dark-mode .header h1 {
-            color: #ffffff;
-            text-shadow: 0 0 10px rgba(255, 87, 34, 0.3);
-        }
-        
-        .header p {
-            color: #64748b;
-            font-size: 14px;
-        }
-        
-        .dark-mode .header p {
-            color: #aaaaaa;
-        }
-        
-        .input-section {
+
+        .header-title {
             display: flex;
             flex-direction: column;
-            gap: 20px;
+            gap: 2px;
         }
-        
-        .input-group {
-            position: relative;
+
+        .header-title h1 {
+            font-size: 15px;
+            font-weight: 700;
+            letter-spacing: -0.01em;
+            text-transform: uppercase;
+            color: var(--text-primary);
         }
-        
-        .input-label {
+
+        .header-title span {
+            font-size: 12px;
+            color: var(--text-muted);
+            font-family: var(--font-mono);
+        }
+
+        .theme-btn {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+            padding: 6px 10px;
+            border-radius: 6px;
+            font-size: 12px;
+            cursor: pointer;
+            font-family: var(--font-sans);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.15s ease;
+        }
+
+        .theme-btn:hover {
+            background-color: var(--surface-subtle);
+            color: var(--text-primary);
+        }
+
+        /* Preview Esquemático */
+        .diagram-container {
+            padding: 16px 24px;
+            background: var(--surface-subtle);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .diagram-container svg {
+            width: 100%;
+            height: 90px;
+            overflow: visible;
+        }
+
+        .svg-text {
+            font-family: var(--font-mono);
+            font-size: 10px;
+            fill: var(--text-secondary);
+        }
+
+        .card-body {
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .grid-inputs {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 14px;
+        }
+
+        .field-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .field-label {
             display: flex;
             justify-content: space-between;
+            align-items: baseline;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+
+        .field-label .symbol {
+            font-family: var(--font-mono);
+            color: var(--text-muted);
+            font-weight: 400;
+        }
+
+        .input-wrapper {
+            position: relative;
+            display: flex;
             align-items: center;
-            margin-bottom: 8px;
-            padding: 0 4px;
         }
-        
-        .label-text {
-            color: #475569;
-            font-size: 14px;
-            font-weight: 500;
-        }
-        
-        .dark-mode .label-text {
-            color: #dddddd;
-        }
-        
-        .label-unit {
-            color: #94a3b8;
-            font-size: 13px;
-            font-weight: 500;
-        }
-        
-        .dark-mode .label-unit {
-            color: #aaaaaa;
-        }
-        
+
         input {
             width: 100%;
-            padding: 14px 16px;
-            border: 2px solid #e2e8f0;
-            border-radius: 12px;
-            font-size: 16px;
-            color: #1e293b;
-            background: #f8fafc;
-            transition: all 0.2s;
-        }
-        
-        .dark-mode input {
-            background: #222222;
-            border-color: #444444;
-            color: #ffffff;
-        }
-        
-        input:focus {
+            height: 40px;
+            padding: 0 38px 0 12px;
+            border-radius: 6px;
+            border: 1px solid var(--border);
+            background-color: var(--surface);
+            color: var(--text-primary);
+            font-family: var(--font-mono);
+            font-size: 14px;
+            font-weight: 500;
             outline: none;
-            border-color: #FF5722;
-            background: white;
-            box-shadow: 0 0 0 3px rgba(255, 87, 34, 0.1);
+            transition: border-color 0.15s, background-color 0.15s;
         }
-        
-        .dark-mode input:focus {
-            background: #222222;
-            border-color: #FF5722;
-            box-shadow: 0 0 0 3px rgba(255, 87, 34, 0.2);
+
+        input:focus {
+            border-color: var(--border-focus);
         }
-        
-        input.result-field {
-            background-color: #FFF3E0;
-            color: #E65100;
-            border-color: #FFB74D;
+
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        input[type=number] {
+            -moz-appearance: textfield;
+        }
+
+        .input-wrapper .unit {
+            position: absolute;
+            right: 12px;
+            font-family: var(--font-mono);
+            font-size: 12px;
+            color: var(--text-muted);
+            pointer-events: none;
+        }
+
+        /* Destaque para campo calculado */
+        input.is-calculated {
+            background-color: var(--calc-highlight-bg);
+            border-color: var(--calc-highlight-border);
+            color: var(--calc-highlight-text);
             font-weight: 600;
         }
-        
-        .dark-mode input.result-field {
-            background-color: #332211;
-            color: #FF9800;
-            border-color: #FF5722;
-            box-shadow: 0 0 10px rgba(255, 87, 34, 0.2);
+
+        /* Painel NBR 9050 */
+        .norma-badge {
+            display: none;
+            padding: 10px 14px;
+            border-radius: 6px;
+            font-size: 12px;
+            line-height: 1.4;
+            font-family: var(--font-mono);
+            border: 1px solid var(--border);
+            background: var(--surface-subtle);
         }
-        
-        .controls {
+
+        .norma-badge.active {
+            display: block;
+        }
+
+        .norma-badge.ok {
+            border-color: var(--calc-highlight-border);
+            background: var(--calc-highlight-bg);
+            color: var(--calc-highlight-text);
+        }
+
+        .norma-badge.warning {
+            border-color: #fed7aa;
+            background: #fff7ed;
+            color: #9a3412;
+        }
+
+        [data-theme="dark"] .norma-badge.warning {
+            border-color: #9a3412;
+            background: #431407;
+            color: #fdba74;
+        }
+
+        .status-bar {
+            min-height: 20px;
+            font-size: 12px;
+            font-family: var(--font-mono);
+            color: var(--text-muted);
             display: flex;
-            gap: 12px;
-            margin-top: 30px;
+            align-items: center;
         }
-        
-        button {
-            flex: 1;
-            padding: 14px;
-            border: none;
-            border-radius: 12px;
-            font-size: 15px;
+
+        .status-bar.error {
+            color: var(--danger-text);
+        }
+
+        .actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 4px;
+        }
+
+        .btn {
+            height: 40px;
+            border-radius: 6px;
+            font-size: 13px;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.15s ease;
+            font-family: var(--font-sans);
         }
-        
-        .calc-btn {
-            background: linear-gradient(135deg, #FF5722, #FF9800);
-            color: white;
-            box-shadow: 0 2px 8px rgba(255, 87, 34, 0.3);
+
+        .btn-primary {
+            flex: 2;
+            background-color: var(--accent);
+            color: var(--surface);
+            border: 1px solid var(--accent);
         }
-        
-        .calc-btn:hover {
-            background: linear-gradient(135deg, #E64A19, #F57C00);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(255, 87, 34, 0.4);
+
+        [data-theme="dark"] .btn-primary {
+            color: #090d16;
         }
-        
-        .calc-btn:active {
-            transform: scale(0.98);
+
+        .btn-primary:hover {
+            opacity: 0.92;
         }
-        
-        .dark-mode .calc-btn {
-            background: linear-gradient(135deg, #FF5722, #FF9800);
-            box-shadow: 0 2px 8px rgba(255, 87, 34, 0.4);
+
+        .btn-secondary {
+            flex: 1;
+            background-color: transparent;
+            color: var(--text-secondary);
+            border: 1px solid var(--border);
         }
-        
-        .dark-mode .calc-btn:hover {
-            background: linear-gradient(135deg, #E64A19, #F57C00);
-            box-shadow: 0 4px 15px rgba(255, 87, 34, 0.6);
+
+        .btn-secondary:hover {
+            background-color: var(--surface-subtle);
+            color: var(--text-primary);
         }
-        
-        .clear-btn {
-            background: #f1f5f9;
-            color: #64748b;
-            border: 2px solid #e2e8f0;
-        }
-        
-        .clear-btn:hover {
-            background: #e2e8f0;
-            transform: translateY(-2px);
-        }
-        
-        .clear-btn:active {
-            transform: scale(0.98);
-        }
-        
-        .dark-mode .clear-btn {
-            background: #333333;
-            color: #cccccc;
-            border-color: #555555;
-        }
-        
-        .dark-mode .clear-btn:hover {
-            background: #444444;
-            border-color: #666666;
-        }
-        
-        .status {
-            text-align: center;
-            margin-top: 20px;
-            min-height: 24px;
-            font-size: 14px;
-            color: #64748b;
-        }
-        
-        .dark-mode .status {
-            color: #aaaaaa;
-        }
-        
-        .status.error {
-            color: #dc2626;
-        }
-        
-        .dark-mode .status.error {
-            color: #ff6b6b;
-        }
-        
-        .status.success {
-            color: #059669;
-        }
-        
-        .dark-mode .status.success {
-            color: #4ade80;
-        }
-        
-        .formula-note {
-            margin-top: 25px;
-            padding: 12px;
-            background: #f8fafc;
-            border-radius: 8px;
-            border-left: 3px solid #FF5722;
-        }
-        
-        .dark-mode .formula-note {
-            background: #222222;
-            border-left-color: #FF9800;
-            box-shadow: 0 0 10px rgba(255, 87, 34, 0.1);
-        }
-        
-        .formula-note code {
-            font-family: 'Courier New', monospace;
-            color: #FF5722;
-            font-weight: 600;
-        }
-        
-        .dark-mode .formula-note code {
-            color: #FFB74D;
-            text-shadow: 0 0 5px rgba(255, 87, 34, 0.3);
-        }
-        
-        /* Efeitos especiais para modo escuro */
-        .dark-mode .header h1::after {
-            content: '📐';
-            text-shadow: 0 0 15px rgba(255, 87, 34, 0.5);
-        }
-        
-        .dark-mode input::placeholder {
-            color: #666666;
-        }
-        
-        .glow-effect {
-            animation: glow 2s infinite alternate;
-        }
-        
-        @keyframes glow {
-            from {
-                box-shadow: 0 0 5px rgba(255, 87, 34, 0.5);
-            }
-            to {
-                box-shadow: 0 0 15px rgba(255, 87, 34, 0.8);
-            }
-        }
-        
+
         @media (max-width: 480px) {
-            .container {
-                padding: 24px;
-            }
-            
-            .controls {
-                flex-direction: column;
-            }
-            
-            .theme-toggle {
-                top: 15px;
-                right: 15px;
-                width: 36px;
-                height: 36px;
-                font-size: 18px;
+            .grid-inputs {
+                grid-template-columns: 1fr;
             }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <!-- Botão de Toggle Tema -->
-        <div class="theme-toggle" id="themeToggle">
-            🌙
-        </div>
-        
-        <div class="header">
-            <h1>📐 Calculadora de Rampas</h1>
-            <p>Preencha 3 campos e clique em Calcular</p>
-        </div>
-        
-        <div class="input-section">
-            <!-- Cota Inicial -->
-            <div class="input-group">
-                <div class="input-label">
-                    <span class="label-text">Cota Inicial</span>
-                    <span class="label-unit">ci (m)</span>
-                </div>
-                <input type="number" id="ci" step="0.001" placeholder="Ex: 0.000">
+
+    <div class="card">
+        <header class="card-header">
+            <div class="header-title">
+                <h1>Rampas & Declividades</h1>
+                <span>i = (Δh / c) × 100</span>
             </div>
-            
-            <!-- Cota Final -->
-            <div class="input-group">
-                <div class="input-label">
-                    <span class="label-text">Cota Final</span>
-                    <span class="label-unit">cf (m)</span>
-                </div>
-                <input type="number" id="cf" step="0.001" placeholder="Ex: 1.000">
-            </div>
-            
-            <!-- Comprimento -->
-            <div class="input-group">
-                <div class="input-label">
-                    <span class="label-text">Comprimento</span>
-                    <span class="label-unit">c (m)</span>
-                </div>
-                <input type="number" id="c" step="0.001" placeholder="Ex: 12.000">
-            </div>
-            
-            <!-- Inclinação -->
-            <div class="input-group">
-                <div class="input-label">
-                    <span class="label-text">Inclinação</span>
-                    <span class="label-unit">i (%)</span>
-                </div>
-                <input type="number" id="i" step="0.001" placeholder="Ex: 8.333">
-            </div>
+            <button class="theme-btn" id="themeToggle" type="button">
+                <span id="themeIcon">◐</span>
+                <span id="themeText">Tema</span>
+            </button>
+        </header>
+
+        <!-- Visualizador Esquemático -->
+        <div class="diagram-container">
+            <svg viewBox="0 0 400 90" preserveAspectRatio="none">
+                <!-- Rampa -->
+                <polygon points="40,75 360,75 360,25" fill="var(--svg-fill)" stroke="var(--svg-line)" stroke-width="1.5" />
+                
+                <!-- Cotas / Linhas de Chamada -->
+                <line x1="40" y1="82" x2="360" y2="82" stroke="var(--text-muted)" stroke-width="1" stroke-dasharray="2 2" />
+                <line x1="368" y1="25" x2="368" y2="75" stroke="var(--text-muted)" stroke-width="1" stroke-dasharray="2 2" />
+
+                <!-- Textos Técnicos -->
+                <text x="200" y="80" text-anchor="middle" class="svg-text" id="svgLengthLabel">c: -- m</text>
+                <text x="375" y="52" text-anchor="start" class="svg-text" id="svgDeltaLabel">Δh: -- m</text>
+                <text x="190" y="45" text-anchor="middle" class="svg-text" id="svgSlopeLabel" font-weight="bold">i: -- %</text>
+            </svg>
         </div>
-        
-        <div class="status" id="status"></div>
-        
-        <div class="controls">
-            <button class="calc-btn" onclick="calculate()">Calcular</button>
-            <button class="clear-btn" onclick="clearAll()">Limpar</button>
-        </div>
-        
-        <div class="formula-note">
-            <div style="font-size: 13px; color: #64748b; margin-bottom: 4px;">Fórmula:</div>
-            <code>i = (cf - ci) / c × 100</code>
+
+        <div class="card-body">
+            <div class="grid-inputs">
+                <!-- Cota Inicial -->
+                <div class="field-group">
+                    <label class="field-label" for="ci">
+                        <span>Cota Inicial</span>
+                        <span class="symbol">ci</span>
+                    </label>
+                    <div class="input-wrapper">
+                        <input type="number" id="ci" step="any" placeholder="0.000">
+                        <span class="unit">m</span>
+                    </div>
+                </div>
+
+                <!-- Cota Final -->
+                <div class="field-group">
+                    <label class="field-label" for="cf">
+                        <span>Cota Final</span>
+                        <span class="symbol">cf</span>
+                    </label>
+                    <div class="input-wrapper">
+                        <input type="number" id="cf" step="any" placeholder="0.000">
+                        <span class="unit">m</span>
+                    </div>
+                </div>
+
+                <!-- Comprimento -->
+                <div class="field-group">
+                    <label class="field-label" for="c">
+                        <span>Comprimento</span>
+                        <span class="symbol">c</span>
+                    </label>
+                    <div class="input-wrapper">
+                        <input type="number" id="c" step="any" placeholder="0.000">
+                        <span class="unit">m</span>
+                    </div>
+                </div>
+
+                <!-- Inclinação -->
+                <div class="field-group">
+                    <label class="field-label" for="i">
+                        <span>Inclinação</span>
+                        <span class="symbol">i</span>
+                    </label>
+                    <div class="input-wrapper">
+                        <input type="number" id="i" step="any" placeholder="0.000">
+                        <span class="unit">%</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Parecer Normativo NBR 9050 -->
+            <div class="norma-badge" id="normaBadge"></div>
+
+            <div class="status-bar" id="statusMessage">Informe 3 variáveis para calcular a 4ª.</div>
+
+            <div class="actions">
+                <button class="btn btn-primary" onclick="handleCalculate()">Calcular</button>
+                <button class="btn btn-secondary" onclick="handleReset()">Limpar</button>
+            </div>
         </div>
     </div>
 
     <script>
-        // Elementos
-        const ciInput = document.getElementById('ci');
-        const cfInput = document.getElementById('cf');
-        const cInput = document.getElementById('c');
-        const iInput = document.getElementById('i');
-        const statusDiv = document.getElementById('status');
+        const inputs = {
+            ci: document.getElementById('ci'),
+            cf: document.getElementById('cf'),
+            c: document.getElementById('c'),
+            i: document.getElementById('i')
+        };
+
+        const statusMessage = document.getElementById('statusMessage');
+        const normaBadge = document.getElementById('normaBadge');
         const themeToggle = document.getElementById('themeToggle');
-        const body = document.body;
         
-        // Verificar tema salvo ou preferência do sistema
-        const savedTheme = localStorage.getItem('theme');
-        const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-        
-        if (savedTheme === 'dark' || (!savedTheme && systemPrefersDark)) {
-            enableDarkMode();
+        // SVG labels
+        const svgSlopeLabel = document.getElementById('svgSlopeLabel');
+        const svgDeltaLabel = document.getElementById('svgDeltaLabel');
+        const svgLengthLabel = document.getElementById('svgLengthLabel');
+
+        // Tema
+        const initTheme = () => {
+            const saved = localStorage.getItem('theme');
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            if (saved === 'dark' || (!saved && prefersDark)) {
+                document.documentElement.setAttribute('data-theme', 'dark');
+            }
+        };
+
+        themeToggle.addEventListener('click', () => {
+            const current = document.documentElement.getAttribute('data-theme');
+            const target = current === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', target);
+            localStorage.setItem('theme', target);
+        });
+
+        initTheme();
+
+        // Limpeza de marcações visuais
+        function resetHighlights() {
+            Object.values(inputs).forEach(input => input.classList.remove('is-calculated'));
         }
-        
-        // Função para alternar tema
-        function toggleTheme() {
-            if (body.classList.contains('dark-mode')) {
-                disableDarkMode();
+
+        // Validação da NBR 9050 (Acessibilidade)
+        function checkAccessibility(slope, deltaH) {
+            const absSlope = Math.abs(slope);
+            normaBadge.className = 'norma-badge active';
+
+            if (absSlope <= 5.00) {
+                normaBadge.className += ' ok';
+                normaBadge.innerHTML = `<strong>NBR 9050:</strong> i = ${absSlope.toFixed(2)}% (Sem limite de desnível por segmento).`;
+            } else if (absSlope <= 6.25) {
+                const maxH = 1.00;
+                normaBadge.className += ' ok';
+                normaBadge.innerHTML = `<strong>NBR 9050:</strong> i = ${absSlope.toFixed(2)}% (Permitido desnível máx. de ${maxH}m por segmento).`;
+            } else if (absSlope <= 8.333) {
+                const maxH = 0.80;
+                normaBadge.className += ' ok';
+                normaBadge.innerHTML = `<strong>NBR 9050:</strong> i = ${absSlope.toFixed(2)}% (Permitido desnível máx. de ${maxH}m por segmento).`;
+            } else if (absSlope <= 12.5) {
+                normaBadge.className += ' warning';
+                normaBadge.innerHTML = `<strong>Atenção:</strong> Declividade elevada (${absSlope.toFixed(2)}%). Permitida apenas em reformas onde 8.33% seja inviável.`;
             } else {
-                enableDarkMode();
+                normaBadge.className += ' warning';
+                normaBadge.innerHTML = `<strong>Declividade Crítica:</strong> ${absSlope.toFixed(2)}% excede o limite normativo para pedestres (NBR 9050).`;
             }
         }
-        
-        function enableDarkMode() {
-            body.classList.add('dark-mode');
-            themeToggle.textContent = '☀️';
-            localStorage.setItem('theme', 'dark');
+
+        // Atualização do esquema SVG
+        function updateDiagram(ci, cf, c, i) {
+            const deltaH = (!isNaN(cf) && !isNaN(ci)) ? (cf - ci) : null;
             
-            // Adicionar efeito glow ao botão de tema
-            themeToggle.classList.add('glow-effect');
-        }
-        
-        function disableDarkMode() {
-            body.classList.remove('dark-mode');
-            themeToggle.textContent = '🌙';
-            localStorage.setItem('theme', 'light');
-            
-            // Remover efeito glow
-            themeToggle.classList.remove('glow-effect');
-        }
-        
-        // Event listener para o botão de tema
-        themeToggle.addEventListener('click', toggleTheme);
-        
-        // Remover qualquer classe de resultado
-        function resetResultStyles() {
-            [ciInput, cfInput, cInput, iInput].forEach(input => {
-                input.classList.remove('result-field');
-            });
-        }
-        
-        // Mostrar status
-        function showStatus(message, isError = false) {
-            statusDiv.textContent = message;
-            statusDiv.className = 'status';
-            if (isError) {
-                statusDiv.classList.add('error');
-            } else if (message) {
-                statusDiv.classList.add('success');
+            svgSlopeLabel.textContent = !isNaN(i) ? `i: ${i.toFixed(2)}%` : 'i: -- %';
+            svgLengthLabel.textContent = !isNaN(c) ? `c: ${c.toFixed(2)} m` : 'c: -- m';
+            svgDeltaLabel.textContent = deltaH !== null ? `Δh: ${deltaH.toFixed(2)} m` : 'Δh: -- m';
+
+            if (!isNaN(i) && deltaH !== null) {
+                checkAccessibility(i, deltaH);
+            } else {
+                normaBadge.className = 'norma-badge';
             }
         }
-        
-        // Função principal de cálculo
-        function calculate() {
-            // Obter valores
-            const ci = parseFloat(ciInput.value);
-            const cf = parseFloat(cfInput.value);
-            const c = parseFloat(cInput.value);
-            const i = parseFloat(iInput.value);
+
+        function handleCalculate() {
+            resetHighlights();
             
-            // Contar valores preenchidos
-            const values = [ci, cf, c, i];
-            const filledValues = values.filter(v => !isNaN(v));
-            
-            // Verificar se temos 3 valores
-            if (filledValues.length !== 3) {
-                showStatus('❌ Preencha exatamente 3 campos', true);
-                resetResultStyles();
+            const vals = {
+                ci: inputs.ci.value !== '' ? parseFloat(inputs.ci.value) : NaN,
+                cf: inputs.cf.value !== '' ? parseFloat(inputs.cf.value) : NaN,
+                c: inputs.c.value !== '' ? parseFloat(inputs.c.value) : NaN,
+                i: inputs.i.value !== '' ? parseFloat(inputs.i.value) : NaN
+            };
+
+            const filled = Object.entries(vals).filter(([_, v]) => !isNaN(v));
+
+            if (filled.length !== 3) {
+                statusMessage.className = 'status-bar error';
+                statusMessage.textContent = 'Erro: Preencha exatamente 3 campos para calcular.';
                 return;
             }
-            
-            // Resetar estilos
-            resetResultStyles();
-            
-            let result, targetInput, missingField;
-            
-            // Caso 1: Faltando COTA FINAL (cf)
-            if (isNaN(cf)) {
-                targetInput = cfInput;
-                missingField = 'Cota Final';
-                // Temos ci, c, i
-                if (!isNaN(ci) && !isNaN(c) && !isNaN(i)) {
-                    const h = (i / 100) * c;
-                    result = ci + h;
+
+            let resultKey = '';
+            let calculatedVal = 0;
+
+            if (isNaN(vals.cf)) {
+                // cf = ci + (i/100 * c)
+                calculatedVal = vals.ci + ((vals.i / 100) * vals.c);
+                resultKey = 'cf';
+            } else if (isNaN(vals.ci)) {
+                // ci = cf - (i/100 * c)
+                calculatedVal = vals.cf - ((vals.i / 100) * vals.c);
+                resultKey = 'ci';
+            } else if (isNaN(vals.c)) {
+                // c = (cf - ci) / (i / 100)
+                if (vals.i === 0) {
+                    statusMessage.className = 'status-bar error';
+                    statusMessage.textContent = 'Erro: Inclinação zero inviabiliza cálculo de comprimento.';
+                    return;
                 }
-            }
-            
-            // Caso 2: Faltando COTA INICIAL (ci)
-            else if (isNaN(ci)) {
-                targetInput = ciInput;
-                missingField = 'Cota Inicial';
-                // Temos cf, c, i
-                if (!isNaN(cf) && !isNaN(c) && !isNaN(i)) {
-                    const h = (i / 100) * c;
-                    result = cf - h;
+                calculatedVal = (vals.cf - vals.ci) / (vals.i / 100);
+                resultKey = 'c';
+            } else if (isNaN(vals.i)) {
+                // i = ((cf - ci) / c) * 100
+                if (vals.c === 0) {
+                    statusMessage.className = 'status-bar error';
+                    statusMessage.textContent = 'Erro: Comprimento não pode ser zero.';
+                    return;
                 }
+                calculatedVal = ((vals.cf - vals.ci) / vals.c) * 100;
+                resultKey = 'i';
             }
-            
-            // Caso 3: Faltando COMPRIMENTO (c)
-            else if (isNaN(c)) {
-                targetInput = cInput;
-                missingField = 'Comprimento';
-                // Temos ci, cf, i
-                if (!isNaN(ci) && !isNaN(cf) && !isNaN(i)) {
-                    const h = cf - ci;
-                    result = h / (i / 100);
-                }
-            }
-            
-            // Caso 4: Faltando INCLINAÇÃO (i)
-            else if (isNaN(i)) {
-                targetInput = iInput;
-                missingField = 'Inclinação';
-                // Temos ci, cf, c
-                if (!isNaN(ci) && !isNaN(cf) && !isNaN(c)) {
-                    const h = cf - ci;
-                    result = (h / c) * 100;
-                }
-            }
-            
-            // Exibir resultado
-            if (result !== undefined && targetInput) {
-                // Preencher o campo
-                targetInput.value = result.toFixed(3);
-                
-                // Destacar o campo calculado
-                targetInput.classList.add('result-field');
-                
-                // Mostrar status
-                let unit = targetInput === iInput ? '%' : ' m';
-                showStatus(`✅ ${missingField} calculada: ${result.toFixed(3)}${unit}`);
-                
-                // Foco no campo calculado (opcional)
-                setTimeout(() => {
-                    targetInput.focus();
-                    targetInput.select();
-                }, 100);
-            } else {
-                showStatus('❌ Erro no cálculo. Verifique os valores.', true);
-            }
+
+            vals[resultKey] = calculatedVal;
+            inputs[resultKey].value = calculatedVal.toFixed(3);
+            inputs[resultKey].classList.add('is-calculated');
+
+            statusMessage.className = 'status-bar';
+            statusMessage.textContent = `Cálculo concluído com sucesso.`;
+
+            updateDiagram(vals.ci, vals.cf, vals.c, vals.i);
         }
-        
-        // Função para limpar
-        function clearAll() {
-            // Limpar valores
-            [ciInput, cfInput, cInput, iInput].forEach(input => {
-                input.value = '';
-            });
-            
-            // Resetar estilos
-            resetResultStyles();
-            
-            // Limpar status
-            showStatus('');
-            
-            // Foco no primeiro campo
-            ciInput.focus();
+
+        function handleReset() {
+            Object.values(inputs).forEach(input => input.value = '');
+            resetHighlights();
+            statusMessage.className = 'status-bar';
+            statusMessage.textContent = 'Informe 3 variáveis para calcular a 4ª.';
+            normaBadge.className = 'norma-badge';
+            updateDiagram(NaN, NaN, NaN, NaN);
+            inputs.ci.focus();
         }
-        
-        // Permitir Enter para calcular
-        document.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                calculate();
-            }
+
+        // Suporte ao Enter
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') handleCalculate();
         });
-        
-        // Quando o usuário digitar em um campo, limpar o status
-        [ciInput, cfInput, cInput, iInput].forEach(input => {
-            input.addEventListener('input', function() {
-                // Se este campo tiver a classe de resultado, removê-la
-                if (this.classList.contains('result-field')) {
-                    this.classList.remove('result-field');
-                }
-                
-                // Limpar status se estiver mostrando resultado
-                if (statusDiv.textContent.includes('calculada')) {
-                    showStatus('');
-                }
+
+        // Limpa destaque ao editar
+        Object.values(inputs).forEach(input => {
+            input.addEventListener('input', () => {
+                resetHighlights();
+                statusMessage.className = 'status-bar';
+                statusMessage.textContent = 'Aguardando comando de cálculo...';
             });
-        });
-        
-        // Foco inicial
-        window.addEventListener('load', function() {
-            ciInput.focus();
         });
     </script>
 </body>
