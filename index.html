@@ -3,57 +3,81 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dimensionamento de Rampas e Declividades</title>
+    <title>EngTools — Suite de Cálculos Técnicos de Engenharia</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg: #f8fafc;
+            --bg: #0b0f17;
+            --surface: #111827;
+            --surface-subtle: #172033;
+            --surface-hover: #1f2d47;
+            --border: #1f293d;
+            --border-focus: #38bdf8;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            --accent: #38bdf8;
+            --accent-glow: rgba(56, 189, 248, 0.15);
+            
+            --success-bg: #064e3b;
+            --success-border: #059669;
+            --success-text: #a7f3d0;
+            
+            --warning-bg: #431407;
+            --warning-border: #9a3412;
+            --warning-text: #fdba74;
+            
+            --danger-bg: #450a0a;
+            --danger-border: #7f1d1d;
+            --danger-text: #fecaca;
+
+            --calc-highlight-bg: #0f2922;
+            --calc-highlight-border: #10b981;
+            --calc-highlight-text: #6ee7b7;
+
+            --svg-line: #94a3b8;
+            --svg-fill: #1e293b;
+            --svg-accent: #38bdf8;
+
+            --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+            --sidebar-width: 280px;
+        }
+
+        [data-theme="light"] {
+            --bg: #f1f5f9;
             --surface: #ffffff;
-            --surface-subtle: #f1f5f9;
-            --border: #e2e8f0;
-            --border-focus: #0f172a;
+            --surface-subtle: #f8fafc;
+            --surface-hover: #e2e8f0;
+            --border: #cbd5e1;
+            --border-focus: #0284c7;
             --text-primary: #0f172a;
             --text-secondary: #475569;
             --text-muted: #94a3b8;
-            --accent: #0f172a;
-            --accent-hover: #1e293b;
-            --calc-highlight-bg: #f0fdf4;
-            --calc-highlight-border: #86efac;
-            --calc-highlight-text: #166534;
-            --danger-bg: #fef2f2;
-            --danger-text: #991b1b;
-            --danger-border: #fecaca;
-            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.07), 0 2px 4px -2px rgb(0 0 0 / 0.05);
-            --svg-line: #0f172a;
-            --svg-fill: #e2e8f0;
-            --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
-            --font-mono: 'JetBrains Mono', monospace;
-        }
+            --accent: #0284c7;
+            --accent-glow: rgba(2, 132, 199, 0.12);
 
-        [data-theme="dark"] {
-            --bg: #090d16;
-            --surface: #111827;
-            --surface-subtle: #1f2937;
-            --border: #374151;
-            --border-focus: #93c5fd;
-            --text-primary: #f9fafb;
-            --text-secondary: #cbd5e1;
-            --text-muted: #64748b;
-            --accent: #f8fafc;
-            --accent-hover: #e2e8f0;
-            --calc-highlight-bg: #064e3b;
-            --calc-highlight-border: #059669;
-            --calc-highlight-text: #a7f3d0;
-            --danger-bg: #450a0a;
-            --danger-text: #fecaca;
-            --danger-border: #7f1d1d;
-            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.5);
-            --shadow-md: 0 4px 12px 0 rgb(0 0 0 / 0.3);
-            --svg-line: #94a3b8;
-            --svg-fill: #1f2937;
+            --success-bg: #f0fdf4;
+            --success-border: #86efac;
+            --success-text: #166534;
+
+            --warning-bg: #fff7ed;
+            --warning-border: #fed7aa;
+            --warning-text: #9a3412;
+
+            --danger-bg: #fef2f2;
+            --danger-border: #fecaca;
+            --danger-text: #991b1b;
+
+            --calc-highlight-bg: #ecfdf5;
+            --calc-highlight-border: #34d399;
+            --calc-highlight-text: #065f46;
+
+            --svg-line: #475569;
+            --svg-fill: #e2e8f0;
+            --svg-accent: #0284c7;
         }
 
         * {
@@ -68,94 +92,290 @@
             color: var(--text-primary);
             min-height: 100vh;
             display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 24px 16px;
+            overflow-x: hidden;
             -webkit-font-smoothing: antialiased;
         }
 
-        .card {
-            background-color: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            box-shadow: var(--shadow-md);
-            width: 100%;
-            max-width: 520px;
-            overflow: hidden;
+        /* Layout Base: App Shell */
+        .app-container {
+            display: flex;
+            width: 100vw;
+            min-height: 100vh;
         }
 
-        .card-header {
-            padding: 20px 24px;
+        /* Sidebar Navigation */
+        .sidebar {
+            width: var(--sidebar-width);
+            background-color: var(--surface);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+            transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 50;
+        }
+
+        .sidebar-header {
+            padding: 20px 18px;
             border-bottom: 1px solid var(--border);
             display: flex;
             align-items: center;
             justify-content: space-between;
         }
 
-        .header-title {
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .brand-logo {
+            width: 32px;
+            height: 32px;
+            background: var(--surface-subtle);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--font-mono);
+            font-weight: 700;
+            font-size: 14px;
+            color: var(--accent);
+        }
+
+        .brand-text h2 {
+            font-size: 14px;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            text-transform: uppercase;
+        }
+
+        .brand-text span {
+            font-size: 11px;
+            color: var(--text-muted);
+            font-family: var(--font-mono);
+        }
+
+        .nav-sections {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .nav-group-title {
+            font-size: 10.5px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+            padding: 0 8px 4px 8px;
+            font-family: var(--font-mono);
+        }
+
+        .nav-group-list {
+            list-style: none;
             display: flex;
             flex-direction: column;
             gap: 2px;
         }
 
-        .header-title h1 {
-            font-size: 15px;
-            font-weight: 700;
-            letter-spacing: -0.01em;
-            text-transform: uppercase;
-            color: var(--text-primary);
-        }
-
-        .header-title span {
-            font-size: 12px;
-            color: var(--text-muted);
-            font-family: var(--font-mono);
-        }
-
-        .theme-btn {
-            background: transparent;
-            border: 1px solid var(--border);
-            color: var(--text-secondary);
-            padding: 6px 10px;
-            border-radius: 6px;
-            font-size: 12px;
-            cursor: pointer;
-            font-family: var(--font-sans);
+        .nav-item {
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 10px;
+            padding: 9px 12px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            cursor: pointer;
+            border: 1px solid transparent;
             transition: all 0.15s ease;
+            user-select: none;
         }
 
-        .theme-btn:hover {
+        .nav-item:hover {
             background-color: var(--surface-subtle);
             color: var(--text-primary);
         }
 
-        /* Preview Esquemático */
-        .diagram-container {
-            padding: 16px 24px;
-            background: var(--surface-subtle);
-            border-bottom: 1px solid var(--border);
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
+        .nav-item.active {
+            background-color: var(--surface-subtle);
+            color: var(--accent);
+            border-color: var(--border);
+            font-weight: 600;
         }
 
-        .diagram-container svg {
+        .nav-item .code-tag {
+            font-family: var(--font-mono);
+            font-size: 10px;
+            background: var(--surface-hover);
+            padding: 2px 5px;
+            border-radius: 4px;
+            color: var(--text-muted);
+            margin-left: auto;
+        }
+
+        .sidebar-footer {
+            padding: 14px 18px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .theme-toggle-btn {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-family: var(--font-mono);
+            transition: all 0.15s;
+        }
+
+        .theme-toggle-btn:hover {
+            background-color: var(--surface-subtle);
+            color: var(--text-primary);
+        }
+
+        /* Mobile Hamburger & Overlay */
+        .mobile-bar {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 54px;
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+            padding: 0 16px;
+            align-items: center;
+            justify-content: space-between;
+            z-index: 40;
+        }
+
+        .hamburger-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-primary);
+            font-size: 20px;
+            cursor: pointer;
+            padding: 6px;
+        }
+
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 45;
+            backdrop-filter: blur(2px);
+        }
+
+        /* Main Workspace Content Area */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            padding: 40px 24px;
+            overflow-y: auto;
+            max-height: 100vh;
+        }
+
+        /* Calculators Cards Container */
+        .calc-panel {
+            display: none;
             width: 100%;
-            height: 90px;
-            overflow: visible;
+            max-width: 640px;
+            animation: fadeIn 0.18s ease-in-out;
+        }
+
+        .calc-panel.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(4px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Card Component */
+        .card {
+            background-color: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+            overflow: hidden;
+        }
+
+        .card-header {
+            padding: 18px 22px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        .header-meta h1 {
+            font-size: 15px;
+            font-weight: 700;
+            letter-spacing: -0.01em;
+            text-transform: uppercase;
+        }
+
+        .header-meta .formula-tag {
+            font-size: 11.5px;
+            color: var(--text-muted);
+            font-family: var(--font-mono);
+            margin-top: 3px;
+        }
+
+        .badge-category {
+            font-size: 11px;
+            font-family: var(--font-mono);
+            color: var(--accent);
+            background: var(--accent-glow);
+            padding: 4px 8px;
+            border-radius: 4px;
+            border: 1px solid var(--accent);
+            white-space: nowrap;
+        }
+
+        /* CAD / Technical Diagram Stage */
+        .diagram-stage {
+            padding: 14px 20px;
+            background: var(--surface-subtle);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .diagram-stage svg {
+            width: 100%;
+            height: 120px;
+            display: block;
         }
 
         .svg-text {
             font-family: var(--font-mono);
-            font-size: 10px;
+            font-size: 11px;
             fill: var(--text-secondary);
+            user-select: none;
         }
 
         .card-body {
-            padding: 24px;
+            padding: 22px;
             display: flex;
             flex-direction: column;
             gap: 16px;
@@ -165,6 +385,14 @@
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 14px;
+        }
+
+        .grid-inputs.col-3 {
+            grid-template-columns: repeat(3, 1fr);
+        }
+
+        .grid-inputs.col-1 {
+            grid-template-columns: 1fr;
         }
 
         .field-group {
@@ -194,7 +422,7 @@
             align-items: center;
         }
 
-        input {
+        input, select {
             width: 100%;
             height: 40px;
             padding: 0 38px 0 12px;
@@ -203,13 +431,17 @@
             background-color: var(--surface);
             color: var(--text-primary);
             font-family: var(--font-mono);
-            font-size: 14px;
-            font-weight: 500;
+            font-size: 13.5px;
             outline: none;
             transition: border-color 0.15s, background-color 0.15s;
         }
 
-        input:focus {
+        select {
+            padding-right: 28px;
+            cursor: pointer;
+        }
+
+        input:focus, select:focus {
             border-color: var(--border-focus);
         }
 
@@ -226,60 +458,57 @@
             position: absolute;
             right: 12px;
             font-family: var(--font-mono);
-            font-size: 12px;
+            font-size: 11.5px;
             color: var(--text-muted);
             pointer-events: none;
         }
 
-        /* Destaque para campo calculado */
         input.is-calculated {
-            background-color: var(--calc-highlight-bg);
-            border-color: var(--calc-highlight-border);
-            color: var(--calc-highlight-text);
+            background-color: var(--calc-highlight-bg) !important;
+            border-color: var(--calc-highlight-border) !important;
+            color: var(--calc-highlight-text) !important;
             font-weight: 600;
         }
 
-        /* Painel NBR 9050 */
-        .norma-badge {
+        /* Results / Compliance Banner */
+        .info-badge {
             display: none;
             padding: 10px 14px;
             border-radius: 6px;
             font-size: 12px;
-            line-height: 1.4;
+            line-height: 1.45;
             font-family: var(--font-mono);
             border: 1px solid var(--border);
             background: var(--surface-subtle);
         }
 
-        .norma-badge.active {
+        .info-badge.active {
             display: block;
         }
 
-        .norma-badge.ok {
-            border-color: var(--calc-highlight-border);
-            background: var(--calc-highlight-bg);
-            color: var(--calc-highlight-text);
+        .info-badge.ok {
+            border-color: var(--success-border);
+            background: var(--success-bg);
+            color: var(--success-text);
         }
 
-        .norma-badge.warning {
-            border-color: #fed7aa;
-            background: #fff7ed;
-            color: #9a3412;
+        .info-badge.warning {
+            border-color: var(--warning-border);
+            background: var(--warning-bg);
+            color: var(--warning-text);
         }
 
-        [data-theme="dark"] .norma-badge.warning {
-            border-color: #9a3412;
-            background: #431407;
-            color: #fdba74;
+        .info-badge.danger {
+            border-color: var(--danger-border);
+            background: var(--danger-bg);
+            color: var(--danger-text);
         }
 
         .status-bar {
-            min-height: 20px;
-            font-size: 12px;
+            min-height: 18px;
+            font-size: 11.5px;
             font-family: var(--font-mono);
             color: var(--text-muted);
-            display: flex;
-            align-items: center;
         }
 
         .status-bar.error {
@@ -288,7 +517,7 @@
 
         .actions {
             display: flex;
-            gap: 8px;
+            gap: 10px;
             margin-top: 4px;
         }
 
@@ -301,19 +530,19 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: all 0.15s ease;
             font-family: var(--font-sans);
+            transition: all 0.15s ease;
         }
 
         .btn-primary {
             flex: 2;
             background-color: var(--accent);
-            color: var(--surface);
+            color: #0b0f17;
             border: 1px solid var(--accent);
         }
 
-        [data-theme="dark"] .btn-primary {
-            color: #090d16;
+        [data-theme="light"] .btn-primary {
+            color: #ffffff;
         }
 
         .btn-primary:hover {
@@ -332,8 +561,33 @@
             color: var(--text-primary);
         }
 
-        @media (max-width: 480px) {
-            .grid-inputs {
+        /* Responsive Breakpoints */
+        @media (max-width: 860px) {
+            .mobile-bar {
+                display: flex;
+            }
+
+            .sidebar {
+                position: fixed;
+                top: 0;
+                bottom: 0;
+                left: 0;
+                transform: translateX(-100%);
+            }
+
+            .sidebar.open {
+                transform: translateX(0);
+            }
+
+            .sidebar-overlay.open {
+                display: block;
+            }
+
+            .main-content {
+                padding: 74px 16px 30px 16px;
+            }
+
+            .grid-inputs, .grid-inputs.col-3 {
                 grid-template-columns: 1fr;
             }
         }
@@ -341,260 +595,1092 @@
 </head>
 <body>
 
-    <div class="card">
-        <header class="card-header">
-            <div class="header-title">
-                <h1>Rampas & Declividades</h1>
-                <span>i = (Δh / c) × 100</span>
+    <div class="app-container">
+        <!-- Top Bar Mobile -->
+        <div class="mobile-bar">
+            <div class="brand">
+                <div class="brand-logo">📐</div>
+                <div class="brand-text">
+                    <h2>EngTools</h2>
+                </div>
             </div>
-            <button class="theme-btn" id="themeToggle" type="button">
-                <span id="themeIcon">◐</span>
-                <span id="themeText">Tema</span>
-            </button>
-        </header>
-
-        <!-- Visualizador Esquemático -->
-        <div class="diagram-container">
-            <svg viewBox="0 0 400 90" preserveAspectRatio="none">
-                <!-- Rampa -->
-                <polygon points="40,75 360,75 360,25" fill="var(--svg-fill)" stroke="var(--svg-line)" stroke-width="1.5" />
-                
-                <!-- Cotas / Linhas de Chamada -->
-                <line x1="40" y1="82" x2="360" y2="82" stroke="var(--text-muted)" stroke-width="1" stroke-dasharray="2 2" />
-                <line x1="368" y1="25" x2="368" y2="75" stroke="var(--text-muted)" stroke-width="1" stroke-dasharray="2 2" />
-
-                <!-- Textos Técnicos -->
-                <text x="200" y="80" text-anchor="middle" class="svg-text" id="svgLengthLabel">c: -- m</text>
-                <text x="375" y="52" text-anchor="start" class="svg-text" id="svgDeltaLabel">Δh: -- m</text>
-                <text x="190" y="45" text-anchor="middle" class="svg-text" id="svgSlopeLabel" font-weight="bold">i: -- %</text>
-            </svg>
+            <button class="hamburger-btn" id="mobileMenuBtn" aria-label="Abrir Menu">☰</button>
         </div>
 
-        <div class="card-body">
-            <div class="grid-inputs">
-                <!-- Cota Inicial -->
-                <div class="field-group">
-                    <label class="field-label" for="ci">
-                        <span>Cota Inicial</span>
-                        <span class="symbol">ci</span>
-                    </label>
-                    <div class="input-wrapper">
-                        <input type="number" id="ci" step="any" placeholder="0.000">
-                        <span class="unit">m</span>
-                    </div>
-                </div>
+        <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
-                <!-- Cota Final -->
-                <div class="field-group">
-                    <label class="field-label" for="cf">
-                        <span>Cota Final</span>
-                        <span class="symbol">cf</span>
-                    </label>
-                    <div class="input-wrapper">
-                        <input type="number" id="cf" step="any" placeholder="0.000">
-                        <span class="unit">m</span>
-                    </div>
-                </div>
-
-                <!-- Comprimento -->
-                <div class="field-group">
-                    <label class="field-label" for="c">
-                        <span>Comprimento</span>
-                        <span class="symbol">c</span>
-                    </label>
-                    <div class="input-wrapper">
-                        <input type="number" id="c" step="any" placeholder="0.000">
-                        <span class="unit">m</span>
-                    </div>
-                </div>
-
-                <!-- Inclinação -->
-                <div class="field-group">
-                    <label class="field-label" for="i">
-                        <span>Inclinação</span>
-                        <span class="symbol">i</span>
-                    </label>
-                    <div class="input-wrapper">
-                        <input type="number" id="i" step="any" placeholder="0.000">
-                        <span class="unit">%</span>
+        <!-- Lateral Navigation -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="brand">
+                    <div class="brand-logo">ET</div>
+                    <div class="brand-text">
+                        <h2>EngTools</h2>
+                        <span>Suite de Engenharia</span>
                     </div>
                 </div>
             </div>
 
-            <!-- Parecer Normativo NBR 9050 -->
-            <div class="norma-badge" id="normaBadge"></div>
+            <nav class="nav-sections">
+                <div>
+                    <div class="nav-group-title">Geometria & Topografia</div>
+                    <ul class="nav-group-list">
+                        <li class="nav-item active" data-target="calc-rampas">
+                            <span>Rampas & Declividades</span>
+                            <span class="code-tag">NBR 9050</span>
+                        </li>
+                        <li class="nav-item" data-target="calc-estacas">
+                            <span>Interpolação de Estacas</span>
+                            <span class="code-tag">Greide</span>
+                        </li>
+                        <li class="nav-item" data-target="calc-taludes">
+                            <span>Taludes (V:H e %)</span>
+                            <span class="code-tag">Terrapl.</span>
+                        </li>
+                        <li class="nav-item" data-target="calc-superlargura">
+                            <span>Superlargura em Curvas</span>
+                            <span class="code-tag">DNIT</span>
+                        </li>
+                        <li class="nav-item" data-target="calc-blondel">
+                            <span>Escadas (Blondel)</span>
+                            <span class="code-tag">Conforto</span>
+                        </li>
+                    </ul>
+                </div>
 
-            <div class="status-bar" id="statusMessage">Informe 3 variáveis para calcular a 4ª.</div>
+                <div>
+                    <div class="nav-group-title">Hidráulica & Drenagem</div>
+                    <ul class="nav-group-list">
+                        <li class="nav-item" data-target="calc-manning">
+                            <span>Sarjetas & Canais</span>
+                            <span class="code-tag">Manning</span>
+                        </li>
+                    </ul>
+                </div>
 
-            <div class="actions">
-                <button class="btn btn-primary" onclick="handleCalculate()">Calcular</button>
-                <button class="btn btn-secondary" onclick="handleReset()">Limpar</button>
+                <div>
+                    <div class="nav-group-title">Pavimentação & Solos</div>
+                    <ul class="nav-group-list">
+                        <li class="nav-item" data-target="calc-empolamento">
+                            <span>Empolamento & Caçambas</span>
+                            <span class="code-tag">Corte/Aterro</span>
+                        </li>
+                        <li class="nav-item" data-target="calc-ligante">
+                            <span>Taxa de Ligante Asfáltico</span>
+                            <span class="code-tag">Espargidor</span>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+
+            <div class="sidebar-footer">
+                <button class="theme-toggle-btn" id="themeToggle" type="button">
+                    <span>◐</span>
+                    <span id="themeLabel">Tema Escuro</span>
+                </button>
             </div>
-        </div>
+        </aside>
+
+        <!-- Main Workspace View -->
+        <main class="main-content">
+
+            <!-- 1. CALCULADORA DE RAMPAS E DECLIVIDADES -->
+            <section class="calc-panel active" id="calc-rampas">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="header-meta">
+                            <h1>Rampas & Declividades</h1>
+                            <div class="formula-tag">Fórmula: i = (Δh / c) × 100</div>
+                        </div>
+                        <span class="badge-category">Topografia & Acessibilidade</span>
+                    </div>
+
+                    <div class="diagram-stage">
+                        <svg viewBox="0 0 420 110">
+                            <polygon points="50,75 330,75 330,25" fill="var(--svg-fill)" stroke="var(--svg-line)" stroke-width="1.5" stroke-linejoin="round" />
+                            <line x1="50" y1="92" x2="330" y2="92" stroke="var(--text-muted)" stroke-width="1" />
+                            <line x1="50" y1="87" x2="50" y2="97" stroke="var(--text-muted)" stroke-width="1" />
+                            <line x1="330" y1="87" x2="330" y2="97" stroke="var(--text-muted)" stroke-width="1" />
+                            <text x="190" y="105" text-anchor="middle" class="svg-text" id="r_svg_c">c: -- m</text>
+
+                            <line x1="345" y1="25" x2="345" y2="75" stroke="var(--text-muted)" stroke-width="1" />
+                            <line x1="340" y1="25" x2="350" y2="25" stroke="var(--text-muted)" stroke-width="1" />
+                            <line x1="340" y1="75" x2="350" y2="75" stroke="var(--text-muted)" stroke-width="1" />
+                            <text x="358" y="54" text-anchor="start" class="svg-text" id="r_svg_dh">Δh: -- m</text>
+
+                            <text x="45" y="70" text-anchor="end" class="svg-text" id="r_svg_ci" style="font-size: 9.5px;">ci</text>
+                            <text x="330" y="18" text-anchor="middle" class="svg-text" id="r_svg_cf" style="font-size: 9.5px;">cf</text>
+
+                            <rect x="155" y="32" width="75" height="18" rx="3" fill="var(--surface)" stroke="var(--border)" stroke-width="1"/>
+                            <text x="192" y="45" text-anchor="middle" class="svg-text" id="r_svg_i" font-weight="600">i: -- %</text>
+                        </svg>
+                    </div>
+
+                    <div class="card-body">
+                        <div class="grid-inputs">
+                            <div class="field-group">
+                                <label class="field-label" for="r_ci"><span>Cota Inicial</span><span class="symbol">ci</span></label>
+                                <div class="input-wrapper">
+                                    <input type="number" id="r_ci" step="any" placeholder="0.000">
+                                    <span class="unit">m</span>
+                                </div>
+                            </div>
+                            <div class="field-group">
+                                <label class="field-label" for="r_cf"><span>Cota Final</span><span class="symbol">cf</span></label>
+                                <div class="input-wrapper">
+                                    <input type="number" id="r_cf" step="any" placeholder="0.000">
+                                    <span class="unit">m</span>
+                                </div>
+                            </div>
+                            <div class="field-group">
+                                <label class="field-label" for="r_c"><span>Comprimento</span><span class="symbol">c</span></label>
+                                <div class="input-wrapper">
+                                    <input type="number" id="r_c" step="any" placeholder="0.000">
+                                    <span class="unit">m</span>
+                                </div>
+                            </div>
+                            <div class="field-group">
+                                <label class="field-label" for="r_i"><span>Inclinação</span><span class="symbol">i</span></label>
+                                <div class="input-wrapper">
+                                    <input type="number" id="r_i" step="any" placeholder="0.000">
+                                    <span class="unit">%</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="info-badge" id="r_badge"></div>
+                        <div class="status-bar" id="r_status">Preencha 3 campos para calcular o 4º.</div>
+
+                        <div class="actions">
+                            <button class="btn btn-primary" onclick="calcRampas()">Calcular</button>
+                            <button class="btn btn-secondary" onclick="clearRampas()">Limpar</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 2. INTERPOLAÇÃO LINEAR DE ESTACAS -->
+            <section class="calc-panel" id="calc-estacas">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="header-meta">
+                            <h1>Interpolação de Estacas & Greide</h1>
+                            <div class="formula-tag">Cota(X) = Cota₁ + [(Cota₂ - Cota₁) / ΔDist] × Dist₁-X</div>
+                        </div>
+                        <span class="badge-category">Topografia Viária</span>
+                    </div>
+
+                    <div class="diagram-stage">
+                        <svg viewBox="0 0 420 110">
+                            <line x1="50" y1="80" x2="370" y2="30" stroke="var(--svg-accent)" stroke-width="2" />
+                            <circle cx="50" cy="80" r="4" fill="var(--svg-accent)" />
+                            <circle cx="210" cy="55" r="4" fill="var(--calc-highlight-border)" />
+                            <circle cx="370" cy="30" r="4" fill="var(--svg-accent)" />
+                            
+                            <text x="50" y="98" text-anchor="middle" class="svg-text" id="est_svg_p1">Est. 1</text>
+                            <text x="210" y="75" text-anchor="middle" class="svg-text" id="est_svg_px" font-weight="600">Est. X (Alvo)</text>
+                            <text x="370" y="48" text-anchor="middle" class="svg-text" id="est_svg_p2">Est. 2</text>
+                        </svg>
+                    </div>
+
+                    <div class="card-body">
+                        <div class="grid-inputs">
+                            <div class="field-group">
+                                <label class="field-label" for="est_e1"><span>Estaca Inicial (N + m)</span><span class="symbol">Ex: 10+5.00</span></label>
+                                <div class="input-wrapper"><input type="text" id="est_e1" placeholder="10+0.00"></div>
+                            </div>
+                            <div class="field-group">
+                                <label class="field-label" for="est_c1"><span>Cota Inicial</span><span class="symbol">Z₁</span></label>
+                                <div class="input-wrapper"><input type="number" id="est_c1" step="any" placeholder="100.000"><span class="unit">m</span></div>
+                            </div>
+                            <div class="field-group">
+                                <label class="field-label" for="est_e2"><span>Estaca Final (N + m)</span><span class="symbol">Ex: 20+0.00</span></label>
+                                <div class="input-wrapper"><input type="text" id="est_e2" placeholder="20+0.00"></div>
+                            </div>
+                            <div class="field-group">
+                                <label class="field-label" for="est_c2"><span>Cota Final</span><span class="symbol">Z₂</span></label>
+                                <div class="input-wrapper"><input type="number" id="est_c2" step="any" placeholder="105.000"><span class="unit">m</span></div>
+                            </div>
+                            <div class="field-group" style="grid-column: span 2;">
+                                <label class="field-label" for="est_ex"><span>Estaca Intermediária a Interpolar</span><span class="symbol">Ex</span></label>
+                                <div class="input-wrapper"><input type="text" id="est_ex" placeholder="14+10.00"></div>
+                            </div>
+                        </div>
+
+                        <div class="info-badge" id="est_badge"></div>
+                        <div class="status-bar" id="est_status">Informe as duas estacas extremas e a estaca desejada.</div>
+
+                        <div class="actions">
+                            <button class="btn btn-primary" onclick="calcEstacas()">Interpolar Cota</button>
+                            <button class="btn btn-secondary" onclick="clearEstacas()">Limpar</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 3. TALUDES (V:H, % E ÂNGULO) -->
+            <section class="calc-panel" id="calc-taludes">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="header-meta">
+                            <h1>Geometria de Taludes</h1>
+                            <div class="formula-tag">Proporção 1:m (V:H) ⇄ i(%) = (1/m) × 100 ⇄ Ângulo θ</div>
+                        </div>
+                        <span class="badge-category">Geotecnia & Terraplenagem</span>
+                    </div>
+
+                    <div class="diagram-stage">
+                        <svg viewBox="0 0 420 110">
+                            <polygon points="60,85 360,85 240,25" fill="var(--svg-fill)" stroke="var(--svg-line)" stroke-width="1.5" />
+                            <line x1="240" y1="25" x2="240" y2="85" stroke="var(--text-muted)" stroke-dasharray="2 2" />
+                            <text x="248" y="55" class="svg-text" id="tal_svg_h">H: -- m</text>
+                            <text x="140" y="50" class="svg-text" id="tal_svg_prop" font-weight="600">1 : m</text>
+                            <text x="150" y="98" text-anchor="middle" class="svg-text" id="tal_svg_b">B: -- m</text>
+                        </svg>
+                    </div>
+
+                    <div class="card-body">
+                        <div class="grid-inputs">
+                            <div class="field-group">
+                                <label class="field-label" for="tal_h"><span>Altura do Talude</span><span class="symbol">H</span></label>
+                                <div class="input-wrapper"><input type="number" id="tal_h" step="any" placeholder="3.00"><span class="unit">m</span></div>
+                            </div>
+                            <div class="field-group">
+                                <label class="field-label" for="tal_m"><span>Proporção Horizontal (1:m)</span><span class="symbol">m</span></label>
+                                <div class="input-wrapper"><input type="number" id="tal_m" step="any" placeholder="1.50"><span class="unit">H/V</span></div>
+                            </div>
+                            <div class="field-group">
+                                <label class="field-label" for="tal_b"><span>Projeção da Saia</span><span class="symbol">B = H × m</span></label>
+                                <div class="input-wrapper"><input type="number" id="tal_b" step="any" placeholder="4.50"><span class="unit">m</span></div>
+                            </div>
+                            <div class="field-group">
+                                <label class="field-label" for="tal_i"><span>Declividade</span><span class="symbol">i (%)</span></label>
+                                <div class="input-wrapper"><input type="number" id="tal_i" step="any" placeholder="66.67"><span class="unit">%</span></div>
+                            </div>
+                        </div>
+
+                        <div class="info-badge" id="tal_badge"></div>
+                        <div class="status-bar" id="tal_status">Informe Altura (H) e um parâmetro de inclinação (m, B ou i%).</div>
+
+                        <div class="actions">
+                            <button class="btn btn-primary" onclick="calcTaludes()">Dimensionar Talude</button>
+                            <button class="btn btn-secondary" onclick="clearTaludes()">Limpar</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 4. DRENAGEM & MANNING (SARJETAS / CANAIS) -->
+            <section class="calc-panel" id="calc-manning">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="header-meta">
+                            <h1>Drenagem & Sarjetas (Manning)</h1>
+                            <div class="formula-tag">Q = (1/n) × A × R_h^(2/3) × I_o^(1/2)</div>
+                        </div>
+                        <span class="badge-category">Hidráulica</span>
+                    </div>
+
+                    <div class="diagram-stage">
+                        <svg viewBox="0 0 420 110">
+                            <!-- Canal Triangular / Trapezoidal -->
+                            <polygon points="80,30 180,85 340,30" fill="var(--svg-fill)" stroke="var(--svg-line)" stroke-width="1.5" />
+                            <polygon points="105,45 180,85 315,45" fill="rgba(56, 189, 248, 0.25)" stroke="var(--accent)" stroke-width="1" />
+                            <text x="210" y="65" text-anchor="middle" class="svg-text" id="man_svg_q" font-weight="600">Q = -- L/s</text>
+                            <text x="350" y="48" class="svg-text" id="man_svg_v">v = -- m/s</text>
+                        </svg>
+                    </div>
+
+                    <div class="card-body">
+                        <div class="grid-inputs">
+                            <div class="field-group">
+                                <label class="field-label" for="man_n"><span>Rugosidade Manning</span><span class="symbol">n</span></label>
+                                <div class="input-wrapper">
+                                    <select id="man_n">
+                                        <option value="0.015">0.015 (Concreto liso / Sarjeta moldada)</option>
+                                        <option value="0.018">0.018 (Concreto rugoso / Asfalto)</option>
+                                        <option value="0.013">0.013 (PVC / PEAD liso)</option>
+                                        <option value="0.025">0.025 (Valeta em terra limpa)</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="field-group">
+                                <label class="field-label" for="man_io"><span>Declividade Longitudinal</span><span class="symbol">I_o</span></label>
+                                <div class="input-wrapper"><input type="number" id="man_io" step="any" placeholder="0.020"><span class="unit">m/m</span></div>
+                            </div>
+                            <div class="field-group">
+                                <label class="field-label" for="man_z"><span>Inclinação Transversal (1:Z)</span><span class="symbol">Z</span></label>
+                                <div class="input-wrapper"><input type="number" id="man_z" step="any" placeholder="20.0" value="20.0"><span class="unit">H/V</span></div>
+                            </div>
+                            <div class="field-group">
+                                <label class="field-label" for="man_y"><span>Lâmina d'água</span><span class="symbol">y_0</span></label>
+                                <div class="input-wrapper"><input type="number" id="man_y" step="any" placeholder="0.080"><span class="unit">m</span></div>
+                            </div>
+                        </div>
+
+                        <div class="info-badge" id="man_badge"></div>
+                        <div class="status-bar" id="man_status">Insira os parâmetros geométricos e hidráulicos da calha.</div>
+
+                        <div class="actions">
+                            <button class="btn btn-primary" onclick="calcManning()">Calcular Capacidade</button>
+                            <button class="btn btn-secondary" onclick="clearManning()">Limpar</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 5. EMPOLAMENTO & HOMOGENEIZAÇÃO DE SOLOS -->
+            <section class="calc-panel" id="calc-empolamento">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="header-meta">
+                            <h1>Empolamento & Transporte de Solos</h1>
+                            <div class="formula-tag">V_solto = V_corte × (1 + E%) ⇄ Nº Viagens = V_solto / Cap_caçamba</div>
+                        </div>
+                        <span class="badge-category">Terraplenagem & Frotas</span>
+                    </div>
+
+                    <div class="card-body">
+                        <div class="grid-inputs">
+                            <div class="field-group">
+                                <label class="field-label" for="emp_vc"><span>Volume Geométrico (Corte)</span><span class="symbol">V_c</span></label>
+                                <div class="input-wrapper"><input type="number" id="emp_vc" step="any" placeholder="1200.00"><span class="unit">m³</span></div>
+                            </div>
+                            <div class="field-group">
+                                <label class="field-label" for="emp_taxa"><span>Fator de Empolamento / Solo</span><span class="symbol">E%</span></label>
+                                <div class="input-wrapper">
+                                    <select id="emp_taxa">
+                                        <option value="25">25% — Areia / Solo arenoso</option>
+                                        <option value="30" selected>30% — Terra comum / Argila média</option>
+                                        <option value="40">40% — Argila pesada / Saibro</option>
+                                        <option value="50">50% — Rocha detonada / Enrocamento</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="field-group">
+                                <label class="field-label" for="emp_cap"><span>Capacidade da Caçamba</span><span class="symbol">V_truck</span></label>
+                                <div class="input-wrapper"><input type="number" id="emp_cap" step="any" value="14.00" placeholder="14.00"><span class="unit">m³</span></div>
+                            </div>
+                            <div class="field-group">
+                                <label class="field-label" for="emp_fhom"><span>Fator de Homogeneização</span><span class="symbol">F_h</span></label>
+                                <div class="input-wrapper"><input type="number" id="emp_fhom" step="any" value="1.20" placeholder="1.20"><span class="unit">adim</span></div>
+                            </div>
+                        </div>
+
+                        <div class="info-badge" id="emp_badge"></div>
+                        <div class="status-bar" id="emp_status">Preencha o volume medido no corte e o tipo de solo.</div>
+
+                        <div class="actions">
+                            <button class="btn btn-primary" onclick="calcEmpolamento()">Dimensionar Frota</button>
+                            <button class="btn btn-secondary" onclick="clearEmpolamento()">Limpar</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 6. TAXA DE LIGANTE ASFÁLTICO (ESPARGIDOR) -->
+            <section class="calc-panel" id="calc-ligante">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="header-meta">
+                            <h1>Taxa de Ligante Asfáltico</h1>
+                            <div class="formula-tag">Vol_total = Área × Taxa_projeto ⇄ Qnt_cargas = Vol / Cap_tanque</div>
+                        </div>
+                        <span class="badge-category">Pavimentação Asfáltica</span>
+                    </div>
+
+                    <div class="card-body">
+                        <div class="grid-inputs">
+                            <div class="field-group">
+                                <label class="field-label" for="lig_comp"><span>Extensão do Trecho</span><span class="symbol">L</span></label>
+                                <div class="input-wrapper"><input type="number" id="lig_comp" step="any" placeholder="1500.00"><span class="unit">m</span></div>
+                            </div>
+                            <div class="field-group">
+                                <label class="field-label" for="lig_larg"><span>Largura de Aplicação</span><span class="symbol">W</span></label>
+                                <div class="input-wrapper"><input type="number" id="lig_larg" step="any" placeholder="7.00"><span class="unit">m</span></div>
+                            </div>
+                            <div class="field-group">
+                                <label class="field-label" for="lig_servico"><span>Tipo de Pintura / Serviço</span><span class="symbol">Taxa</span></label>
+                                <div class="input-wrapper">
+                                    <select id="lig_servico" onchange="updateTaxaLigante()">
+                                        <option value="1.2">Imprimação Betuminosa (CM-30: 1.20 L/m²)</option>
+                                        <option value="0.5">Pintura de Ligação (RR-1C: 0.50 L/m²)</option>
+                                        <option value="1.4">Tratamento Superficial (1.40 L/m²)</option>
+                                        <option value="custom">Personalizado (Digitar abaixo)</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="field-group">
+                                <label class="field-label" for="lig_taxa"><span>Taxa de Aplicação</span><span class="symbol">T</span></label>
+                                <div class="input-wrapper"><input type="number" id="lig_taxa" step="any" value="1.20" placeholder="1.20"><span class="unit">L/m²</span></div>
+                            </div>
+                        </div>
+
+                        <div class="info-badge" id="lig_badge"></div>
+                        <div class="status-bar" id="lig_status">Informe as dimensões da pista e a taxa de projeto.</div>
+
+                        <div class="actions">
+                            <button class="btn btn-primary" onclick="calcLigante()">Calcular Volume de Emulsão</button>
+                            <button class="btn btn-secondary" onclick="clearLigante()">Limpar</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 7. SUPERLARGURA EM CURVAS (DNIT) -->
+            <section class="calc-panel" id="calc-superlargura">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="header-meta">
+                            <h1>Superlargura em Curvas</h1>
+                            <div class="formula-tag">S = n·(R - √(R² - L²)) + V / (10·√R)</div>
+                        </div>
+                        <span class="badge-category">Projeto Geométrico de Vias</span>
+                    </div>
+
+                    <div class="card-body">
+                        <div class="grid-inputs">
+                            <div class="field-group">
+                                <label class="field-label" for="sup_r"><span>Raio da Curva</span><span class="symbol">R</span></label>
+                                <div class="input-wrapper"><input type="number" id="sup_r" step="any" placeholder="150.00"><span class="unit">m</span></div>
+                            </div>
+                            <div class="field-group">
+                                <label class="field-label" for="sup_v"><span>Velocidade de Diretriz</span><span class="symbol">V</span></label>
+                                <div class="input-wrapper"><input type="number" id="sup_v" step="any" placeholder="60.0"><span class="unit">km/h</span></div>
+                            </div>
+                            <div class="field-group">
+                                <label class="field-label" for="sup_n"><span>Número de Faixas</span><span class="symbol">n</span></label>
+                                <div class="input-wrapper"><input type="number" id="sup_n" step="1" value="2" placeholder="2"><span class="unit">faixas</span></div>
+                            </div>
+                            <div class="field-group">
+                                <label class="field-label" for="sup_l"><span>Comprimento do Veículo (Entre-eixos)</span><span class="symbol">L</span></label>
+                                <div class="input-wrapper">
+                                    <select id="sup_l">
+                                        <option value="6.10">6.10 m — Veículo de Passeio (VP)</option>
+                                        <option value="7.30">7.30 m — Caminhão Comercial Médio (CO)</option>
+                                        <option value="12.00">12.00 m — Ônibus Urbano / Rodoviário (O)</option>
+                                        <option value="15.24" selected>15.24 m — Semirreboque / Carreta (SR)</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="info-badge" id="sup_badge"></div>
+                        <div class="status-bar" id="sup_status">Norma DNIT: Cálculo de alargamento para acomodação de veículos pesados.</div>
+
+                        <div class="actions">
+                            <button class="btn btn-primary" onclick="calcSuperlargura()">Calcular Alargamento (S)</button>
+                            <button class="btn btn-secondary" onclick="clearSuperlargura()">Limpar</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 8. ESCADAS (FÓRMULA DE BLONDEL) -->
+            <section class="calc-panel" id="calc-blondel">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="header-meta">
+                            <h1>Dimensionamento de Escadas</h1>
+                            <div class="formula-tag">Fórmula de Blondel: 63 cm ≤ 2e + p ≤ 64 cm</div>
+                        </div>
+                        <span class="badge-category">Arquitetura & Conforto</span>
+                    </div>
+
+                    <div class="diagram-stage">
+                        <svg viewBox="0 0 420 110">
+                            <!-- Degraus da Escada -->
+                            <path d="M 60,90 L 120,90 L 120,70 L 180,70 L 180,50 L 240,50 L 240,30 L 300,30" fill="none" stroke="var(--svg-line)" stroke-width="2" />
+                            <line x1="300" y1="30" x2="300" y2="90" stroke="var(--text-muted)" stroke-dasharray="2 2" />
+                            <text x="315" y="65" class="svg-text" id="esc_svg_h">H: -- cm</text>
+                            <text x="210" y="44" text-anchor="middle" class="svg-text" id="esc_svg_p">p: -- cm</text>
+                            <text x="170" y="62" text-anchor="end" class="svg-text" id="esc_svg_e">e: -- cm</text>
+                        </svg>
+                    </div>
+
+                    <div class="card-body">
+                        <div class="grid-inputs">
+                            <div class="field-group">
+                                <label class="field-label" for="esc_h"><span>Desnível Total (Piso a Piso)</span><span class="symbol">H</span></label>
+                                <div class="input-wrapper"><input type="number" id="esc_h" step="any" placeholder="2.80"><span class="unit">m</span></div>
+                            </div>
+                            <div class="field-group">
+                                <label class="field-label" for="esc_emax"><span>Espelho Desejado (Ideal ~17.5)</span><span class="symbol">e</span></label>
+                                <div class="input-wrapper"><input type="number" id="esc_emax" step="any" value="17.5" placeholder="17.5"><span class="unit">cm</span></div>
+                            </div>
+                        </div>
+
+                        <div class="info-badge" id="esc_badge"></div>
+                        <div class="status-bar" id="esc_status">Insira o desnível vertical para calcular o número de degraus e o piso ideal.</div>
+
+                        <div class="actions">
+                            <button class="btn btn-primary" onclick="calcBlondel()">Calcular Escada</button>
+                            <button class="btn btn-secondary" onclick="clearBlondel()">Limpar</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </main>
     </div>
 
     <script>
-        const inputs = {
-            ci: document.getElementById('ci'),
-            cf: document.getElementById('cf'),
-            c: document.getElementById('c'),
-            i: document.getElementById('i')
+        // ==========================================
+        // 1. ROUTING & UI STATE MANAGEMENT
+        // ==========================================
+        const navItems = document.querySelectorAll('.nav-item');
+        const calcPanels = document.querySelectorAll('.calc-panel');
+        const sidebar = document.getElementById('sidebar');
+        const sidebarOverlay = document.getElementById('sidebarOverlay');
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const themeToggle = document.getElementById('themeToggle');
+        const themeLabel = document.getElementById('themeLabel');
+
+        // Navigation Switcher
+        navItems.forEach(item => {
+            item.addEventListener('click', () => {
+                const targetId = item.getAttribute('data-target');
+                
+                navItems.forEach(n => n.classList.remove('active'));
+                calcPanels.forEach(p => p.classList.remove('active'));
+
+                item.classList.add('active');
+                const activePanel = document.getElementById(targetId);
+                if (activePanel) activePanel.classList.add('active');
+
+                // Close Mobile Drawer if open
+                sidebar.classList.remove('open');
+                sidebarOverlay.classList.remove('open');
+            });
+        });
+
+        // Mobile drawer handlers
+        mobileMenuBtn.addEventListener('click', () => {
+            sidebar.classList.toggle('open');
+            sidebarOverlay.classList.toggle('open');
+        });
+
+        sidebarOverlay.addEventListener('click', () => {
+            sidebar.classList.remove('open');
+            sidebarOverlay.classList.remove('open');
+        });
+
+        // Theme Switcher (Dark Default)
+        const initTheme = () => {
+            const savedTheme = localStorage.getItem('engtools_theme') || 'dark';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            updateThemeLabel(savedTheme);
         };
 
-        const statusMessage = document.getElementById('statusMessage');
-        const normaBadge = document.getElementById('normaBadge');
-        const themeToggle = document.getElementById('themeToggle');
-        
-        // SVG labels
-        const svgSlopeLabel = document.getElementById('svgSlopeLabel');
-        const svgDeltaLabel = document.getElementById('svgDeltaLabel');
-        const svgLengthLabel = document.getElementById('svgLengthLabel');
-
-        // Tema
-        const initTheme = () => {
-            const saved = localStorage.getItem('theme');
-            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-            if (saved === 'dark' || (!saved && prefersDark)) {
-                document.documentElement.setAttribute('data-theme', 'dark');
+        const updateThemeLabel = (theme) => {
+            if (themeLabel) {
+                themeLabel.textContent = theme === 'dark' ? 'Tema Escuro' : 'Tema Claro';
             }
         };
 
         themeToggle.addEventListener('click', () => {
-            const current = document.documentElement.getAttribute('data-theme');
+            const current = document.documentElement.getAttribute('data-theme') || 'dark';
             const target = current === 'dark' ? 'light' : 'dark';
             document.documentElement.setAttribute('data-theme', target);
-            localStorage.setItem('theme', target);
+            localStorage.setItem('engtools_theme', target);
+            updateThemeLabel(target);
         });
 
         initTheme();
 
-        // Limpeza de marcações visuais
-        function resetHighlights() {
-            Object.values(inputs).forEach(input => input.classList.remove('is-calculated'));
-        }
-
-        // Validação da NBR 9050 (Acessibilidade)
-        function checkAccessibility(slope, deltaH) {
-            const absSlope = Math.abs(slope);
-            normaBadge.className = 'norma-badge active';
-
-            if (absSlope <= 5.00) {
-                normaBadge.className += ' ok';
-                normaBadge.innerHTML = `<strong>NBR 9050:</strong> i = ${absSlope.toFixed(2)}% (Sem limite de desnível por segmento).`;
-            } else if (absSlope <= 6.25) {
-                const maxH = 1.00;
-                normaBadge.className += ' ok';
-                normaBadge.innerHTML = `<strong>NBR 9050:</strong> i = ${absSlope.toFixed(2)}% (Permitido desnível máx. de ${maxH}m por segmento).`;
-            } else if (absSlope <= 8.333) {
-                const maxH = 0.80;
-                normaBadge.className += ' ok';
-                normaBadge.innerHTML = `<strong>NBR 9050:</strong> i = ${absSlope.toFixed(2)}% (Permitido desnível máx. de ${maxH}m por segmento).`;
-            } else if (absSlope <= 12.5) {
-                normaBadge.className += ' warning';
-                normaBadge.innerHTML = `<strong>Atenção:</strong> Declividade elevada (${absSlope.toFixed(2)}%). Permitida apenas em reformas onde 8.33% seja inviável.`;
-            } else {
-                normaBadge.className += ' warning';
-                normaBadge.innerHTML = `<strong>Declividade Crítica:</strong> ${absSlope.toFixed(2)}% excede o limite normativo para pedestres (NBR 9050).`;
+        // Keyboard Shortcut: Enter triggers the active calculator
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                const activePanel = document.querySelector('.calc-panel.active');
+                if (!activePanel) return;
+                const calcBtn = activePanel.querySelector('.btn-primary');
+                if (calcBtn) calcBtn.click();
             }
-        }
+        });
 
-        // Atualização do esquema SVG
-        function updateDiagram(ci, cf, c, i) {
-            const deltaH = (!isNaN(cf) && !isNaN(ci)) ? (cf - ci) : null;
-            
-            svgSlopeLabel.textContent = !isNaN(i) ? `i: ${i.toFixed(2)}%` : 'i: -- %';
-            svgLengthLabel.textContent = !isNaN(c) ? `c: ${c.toFixed(2)} m` : 'c: -- m';
-            svgDeltaLabel.textContent = deltaH !== null ? `Δh: ${deltaH.toFixed(2)} m` : 'Δh: -- m';
+        // Helper to reset calculated marks on edit
+        document.querySelectorAll('input').forEach(inp => {
+            inp.addEventListener('input', () => {
+                inp.classList.remove('is-calculated');
+            });
+        });
 
-            if (!isNaN(i) && deltaH !== null) {
-                checkAccessibility(i, deltaH);
-            } else {
-                normaBadge.className = 'norma-badge';
-            }
-        }
+        // ==========================================
+        // 2. CALC: RAMPAS & DECLIVIDADES
+        // ==========================================
+        const r_ci = document.getElementById('r_ci');
+        const r_cf = document.getElementById('r_cf');
+        const r_c = document.getElementById('r_c');
+        const r_i = document.getElementById('r_i');
+        const r_badge = document.getElementById('r_badge');
+        const r_status = document.getElementById('r_status');
+        const r_svg_c = document.getElementById('r_svg_c');
+        const r_svg_dh = document.getElementById('r_svg_dh');
+        const r_svg_i = document.getElementById('r_svg_i');
+        const r_svg_ci = document.getElementById('r_svg_ci');
+        const r_svg_cf = document.getElementById('r_svg_cf');
 
-        function handleCalculate() {
-            resetHighlights();
-            
-            const vals = {
-                ci: inputs.ci.value !== '' ? parseFloat(inputs.ci.value) : NaN,
-                cf: inputs.cf.value !== '' ? parseFloat(inputs.cf.value) : NaN,
-                c: inputs.c.value !== '' ? parseFloat(inputs.c.value) : NaN,
-                i: inputs.i.value !== '' ? parseFloat(inputs.i.value) : NaN
-            };
+        function calcRampas() {
+            [r_ci, r_cf, r_c, r_i].forEach(el => el.classList.remove('is-calculated'));
 
+            const ci = r_ci.value !== '' ? parseFloat(r_ci.value) : NaN;
+            const cf = r_cf.value !== '' ? parseFloat(r_cf.value) : NaN;
+            const c = r_c.value !== '' ? parseFloat(r_c.value) : NaN;
+            const i = r_i.value !== '' ? parseFloat(r_i.value) : NaN;
+
+            const vals = { ci, cf, c, i };
             const filled = Object.entries(vals).filter(([_, v]) => !isNaN(v));
 
             if (filled.length !== 3) {
-                statusMessage.className = 'status-bar error';
-                statusMessage.textContent = 'Erro: Preencha exatamente 3 campos para calcular.';
+                r_status.className = 'status-bar error';
+                r_status.textContent = 'Erro: Preencha exatamente 3 campos para calcular o 4º.';
                 return;
             }
 
             let resultKey = '';
-            let calculatedVal = 0;
+            let calcVal = 0;
 
-            if (isNaN(vals.cf)) {
-                // cf = ci + (i/100 * c)
-                calculatedVal = vals.ci + ((vals.i / 100) * vals.c);
+            if (isNaN(cf)) {
+                calcVal = ci + ((i / 100) * c);
                 resultKey = 'cf';
-            } else if (isNaN(vals.ci)) {
-                // ci = cf - (i/100 * c)
-                calculatedVal = vals.cf - ((vals.i / 100) * vals.c);
+                r_cf.value = calcVal.toFixed(3);
+                r_cf.classList.add('is-calculated');
+                vals.cf = calcVal;
+            } else if (isNaN(ci)) {
+                calcVal = cf - ((i / 100) * c);
                 resultKey = 'ci';
-            } else if (isNaN(vals.c)) {
-                // c = (cf - ci) / (i / 100)
-                if (vals.i === 0) {
-                    statusMessage.className = 'status-bar error';
-                    statusMessage.textContent = 'Erro: Inclinação zero inviabiliza cálculo de comprimento.';
+                r_ci.value = calcVal.toFixed(3);
+                r_ci.classList.add('is-calculated');
+                vals.ci = calcVal;
+            } else if (isNaN(c)) {
+                if (i === 0) {
+                    r_status.className = 'status-bar error';
+                    r_status.textContent = 'Erro: Inclinação zero inviabiliza o cálculo de comprimento.';
                     return;
                 }
-                calculatedVal = (vals.cf - vals.ci) / (vals.i / 100);
+                calcVal = (cf - ci) / (i / 100);
                 resultKey = 'c';
-            } else if (isNaN(vals.i)) {
-                // i = ((cf - ci) / c) * 100
-                if (vals.c === 0) {
-                    statusMessage.className = 'status-bar error';
-                    statusMessage.textContent = 'Erro: Comprimento não pode ser zero.';
+                r_c.value = calcVal.toFixed(3);
+                r_c.classList.add('is-calculated');
+                vals.c = calcVal;
+            } else if (isNaN(i)) {
+                if (c === 0) {
+                    r_status.className = 'status-bar error';
+                    r_status.textContent = 'Erro: Comprimento não pode ser zero.';
                     return;
                 }
-                calculatedVal = ((vals.cf - vals.ci) / vals.c) * 100;
+                calcVal = ((cf - ci) / c) * 100;
                 resultKey = 'i';
+                r_i.value = calcVal.toFixed(3);
+                r_i.classList.add('is-calculated');
+                vals.i = calcVal;
             }
 
-            vals[resultKey] = calculatedVal;
-            inputs[resultKey].value = calculatedVal.toFixed(3);
-            inputs[resultKey].classList.add('is-calculated');
+            const deltaH = vals.cf - vals.ci;
+            r_svg_c.textContent = `c: ${vals.c.toFixed(2)} m`;
+            r_svg_dh.textContent = `Δh: ${deltaH.toFixed(2)} m`;
+            r_svg_i.textContent = `i: ${vals.i.toFixed(2)} %`;
+            r_svg_ci.textContent = `${vals.ci.toFixed(2)}m`;
+            r_svg_cf.textContent = `${vals.cf.toFixed(2)}m`;
 
-            statusMessage.className = 'status-bar';
-            statusMessage.textContent = `Cálculo concluído com sucesso.`;
+            // NBR 9050 Compliance
+            const absI = Math.abs(vals.i);
+            r_badge.className = 'info-badge active';
+            if (absI <= 5.00) {
+                r_badge.className += ' ok';
+                r_badge.innerHTML = `<strong>NBR 9050:</strong> i = ${absI.toFixed(2)}% (Acessível sem restrição de desnível por lance).`;
+            } else if (absI <= 6.25) {
+                r_badge.className += ' ok';
+                r_badge.innerHTML = `<strong>NBR 9050:</strong> i = ${absI.toFixed(2)}% (Permitido desnível máximo de 1,00 m por lance).`;
+            } else if (absI <= 8.333) {
+                r_badge.className += ' ok';
+                r_badge.innerHTML = `<strong>NBR 9050:</strong> i = ${absI.toFixed(2)}% (Permitido desnível máximo de 0,80 m por lance).`;
+            } else if (absI <= 12.5) {
+                r_badge.className += ' warning';
+                r_badge.innerHTML = `<strong>Atenção:</strong> Declividade elevada (${absI.toFixed(2)}%). Admitida apenas em reformas onde 8,33% for impraticável.`;
+            } else {
+                r_badge.className += ' danger';
+                r_badge.innerHTML = `<strong>Inacessível:</strong> i = ${absI.toFixed(2)}% ultrapassa os limites da NBR 9050 para pedestres.`;
+            }
 
-            updateDiagram(vals.ci, vals.cf, vals.c, vals.i);
+            r_status.className = 'status-bar';
+            r_status.textContent = 'Cálculo executado com sucesso.';
         }
 
-        function handleReset() {
-            Object.values(inputs).forEach(input => input.value = '');
-            resetHighlights();
-            statusMessage.className = 'status-bar';
-            statusMessage.textContent = 'Informe 3 variáveis para calcular a 4ª.';
-            normaBadge.className = 'norma-badge';
-            updateDiagram(NaN, NaN, NaN, NaN);
-            inputs.ci.focus();
-        }
-
-        // Suporte ao Enter
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') handleCalculate();
-        });
-
-        // Limpa destaque ao editar
-        Object.values(inputs).forEach(input => {
-            input.addEventListener('input', () => {
-                resetHighlights();
-                statusMessage.className = 'status-bar';
-                statusMessage.textContent = 'Aguardando comando de cálculo...';
+        function clearRampas() {
+            [r_ci, r_cf, r_c, r_i].forEach(el => {
+                el.value = '';
+                el.classList.remove('is-calculated');
             });
-        });
+            r_badge.className = 'info-badge';
+            r_status.className = 'status-bar';
+            r_status.textContent = 'Preencha 3 campos para calcular o 4º.';
+            r_svg_c.textContent = 'c: -- m';
+            r_svg_dh.textContent = 'Δh: -- m';
+            r_svg_i.textContent = 'i: -- %';
+            r_svg_ci.textContent = 'ci';
+            r_svg_cf.textContent = 'cf';
+        }
+
+        // ==========================================
+        // 3. CALC: INTERPOLAÇÃO DE ESTACAS
+        // ==========================================
+        function parseEstaca(str) {
+            if (!str) return NaN;
+            const cleaned = str.replace(/\s+/g, '');
+            if (cleaned.includes('+')) {
+                const parts = cleaned.split('+');
+                const n = parseFloat(parts[0]);
+                const m = parseFloat(parts[1] || '0');
+                if (isNaN(n) || isNaN(m)) return NaN;
+                return (n * 20) + m;
+            }
+            const val = parseFloat(cleaned);
+            return isNaN(val) ? NaN : val;
+        }
+
+        function formatEstaca(distMetros) {
+            const n = Math.floor(distMetros / 20);
+            const m = (distMetros % 20).toFixed(2);
+            return `Est. ${n} + ${m}m`;
+        }
+
+        function calcEstacas() {
+            const e1 = parseEstaca(document.getElementById('est_e1').value);
+            const c1 = parseFloat(document.getElementById('est_c1').value);
+            const e2 = parseEstaca(document.getElementById('est_e2').value);
+            const c2 = parseFloat(document.getElementById('est_c2').value);
+            const ex = parseEstaca(document.getElementById('est_ex').value);
+
+            const badge = document.getElementById('est_badge');
+            const status = document.getElementById('est_status');
+
+            if (isNaN(e1) || isNaN(c1) || isNaN(e2) || isNaN(c2) || isNaN(ex)) {
+                status.className = 'status-bar error';
+                status.textContent = 'Erro: Preencha todas as estacas e cotas corretamente.';
+                return;
+            }
+
+            if (e1 === e2) {
+                status.className = 'status-bar error';
+                status.textContent = 'Erro: As estacas 1 e 2 devem ser diferentes.';
+                return;
+            }
+
+            const deltaDist = e2 - e1;
+            const deltaCota = c2 - c1;
+            const declividadeTrecho = (deltaCota / deltaDist) * 100;
+            const cotaX = c1 + ((ex - e1) / deltaDist) * deltaCota;
+
+            badge.className = 'info-badge active ok';
+            badge.innerHTML = `<strong>Cota Calculada na ${formatEstaca(ex)}:</strong> ${cotaX.toFixed(3)} m<br>
+                               <span style="font-size: 11px; opacity: 0.9;">Declividade do trecho: ${declividadeTrecho.toFixed(3)}% | Distância parcial: ${(ex - e1).toFixed(2)} m</span>`;
+
+            document.getElementById('est_svg_p1').textContent = `${formatEstaca(e1)} (${c1.toFixed(2)}m)`;
+            document.getElementById('est_svg_p2').textContent = `${formatEstaca(e2)} (${c2.toFixed(2)}m)`;
+            document.getElementById('est_svg_px').textContent = `Alvo: ${cotaX.toFixed(3)} m`;
+
+            status.className = 'status-bar';
+            status.textContent = 'Interpolação linear de greide concluída.';
+        }
+
+        function clearEstacas() {
+            ['est_e1', 'est_c1', 'est_e2', 'est_c2', 'est_ex'].forEach(id => document.getElementById(id).value = '');
+            document.getElementById('est_badge').className = 'info-badge';
+            document.getElementById('est_status').className = 'status-bar';
+            document.getElementById('est_status').textContent = 'Informe as duas estacas extremas e a estaca desejada.';
+            document.getElementById('est_svg_p1').textContent = 'Est. 1';
+            document.getElementById('est_svg_px').textContent = 'Est. X (Alvo)';
+            document.getElementById('est_svg_p2').textContent = 'Est. 2';
+        }
+
+        // ==========================================
+        // 4. CALC: TALUDES
+        // ==========================================
+        function calcTaludes() {
+            const h = parseFloat(document.getElementById('tal_h').value);
+            let m = parseFloat(document.getElementById('tal_m').value);
+            let b = parseFloat(document.getElementById('tal_b').value);
+            let i = parseFloat(document.getElementById('tal_i').value);
+
+            const badge = document.getElementById('tal_badge');
+            const status = document.getElementById('tal_status');
+
+            if (isNaN(h) || h <= 0) {
+                status.className = 'status-bar error';
+                status.textContent = 'Erro: A altura do talude (H) deve ser maior que zero.';
+                return;
+            }
+
+            if (!isNaN(m) && m > 0) {
+                b = h * m;
+                i = (1 / m) * 100;
+            } else if (!isNaN(b) && b > 0) {
+                m = b / h;
+                i = (1 / m) * 100;
+            } else if (!isNaN(i) && i > 0) {
+                m = 100 / i;
+                b = h * m;
+            } else {
+                status.className = 'status-bar error';
+                status.textContent = 'Erro: Informe ao menos um parâmetro (m, B ou i%).';
+                return;
+            }
+
+            document.getElementById('tal_m').value = m.toFixed(2);
+            document.getElementById('tal_b').value = b.toFixed(2);
+            document.getElementById('tal_i').value = i.toFixed(2);
+
+            const angulo = Math.atan(1 / m) * (180 / Math.PI);
+            const compRampa = Math.sqrt((h * h) + (b * b));
+
+            badge.className = 'info-badge active ok';
+            badge.innerHTML = `<strong>Talude 1:${m.toFixed(2)} (V:H)</strong> | Inclinação: <strong>${i.toFixed(1)}%</strong> (${angulo.toFixed(1)}°)<br>
+                               <span style="font-size: 11px; opacity: 0.9;">Comprimento da rampa do talude: ${compRampa.toFixed(2)} m | Projeção horizontal: ${b.toFixed(2)} m</span>`;
+
+            document.getElementById('tal_svg_h').textContent = `H: ${h.toFixed(2)}m`;
+            document.getElementById('tal_svg_b').textContent = `B: ${b.toFixed(2)}m`;
+            document.getElementById('tal_svg_prop').textContent = `1 : ${m.toFixed(2)}`;
+
+            status.className = 'status-bar';
+            status.textContent = 'Geometria do talude dimensionada.';
+        }
+
+        function clearTaludes() {
+            ['tal_h', 'tal_m', 'tal_b', 'tal_i'].forEach(id => document.getElementById(id).value = '');
+            document.getElementById('tal_badge').className = 'info-badge';
+            document.getElementById('tal_status').className = 'status-bar';
+            document.getElementById('tal_status').textContent = 'Informe Altura (H) e um parâmetro de inclinação (m, B ou i%).';
+        }
+
+        // ==========================================
+        // 5. CALC: DRENAGEM (MANNING)
+        // ==========================================
+        function calcManning() {
+            const n = parseFloat(document.getElementById('man_n').value);
+            const io = parseFloat(document.getElementById('man_io').value);
+            const z = parseFloat(document.getElementById('man_z').value);
+            const y0 = parseFloat(document.getElementById('man_y').value);
+
+            const badge = document.getElementById('man_badge');
+            const status = document.getElementById('man_status');
+
+            if (isNaN(io) || io <= 0 || isNaN(z) || z <= 0 || isNaN(y0) || y0 <= 0) {
+                status.className = 'status-bar error';
+                status.textContent = 'Erro: Informe valores positivos para declividade, inclinação transversal e lâmina d’água.';
+                return;
+            }
+
+            // Calha triangular assimétrica de sarjeta urbana / rodoviária
+            const area = 0.5 * (z * y0) * y0; 
+            const perimetro = y0 + Math.sqrt(y0 * y0 + Math.pow(z * y0, 2));
+            const rh = area / perimetro;
+
+            // Manning: v = (1/n) * Rh^(2/3) * Io^(1/2)
+            const veloc = (1 / n) * Math.pow(rh, 2/3) * Math.sqrt(io);
+            const vazaoM3s = veloc * area;
+            const vazaoLs = vazaoM3s * 1000;
+            const larguraEspelho = z * y0;
+
+            badge.className = 'info-badge active ok';
+            badge.innerHTML = `<strong>Vazão Máxima (Q):</strong> ${vazaoLs.toFixed(2)} L/s (${vazaoM3s.toFixed(4)} m³/s)<br>
+                               <strong>Velocidade de Escoamento (v):</strong> ${veloc.toFixed(2)} m/s<br>
+                               <span style="font-size: 11px; opacity: 0.9;">Largura do espelho d'água (T): ${larguraEspelho.toFixed(2)} m | Raio Hidráulico: ${(rh * 100).toFixed(2)} cm</span>`;
+
+            document.getElementById('man_svg_q').textContent = `Q = ${vazaoLs.toFixed(1)} L/s`;
+            document.getElementById('man_svg_v').textContent = `v = ${veloc.toFixed(2)} m/s`;
+
+            status.className = 'status-bar';
+            status.textContent = 'Capacidade de drenagem calculada.';
+        }
+
+        function clearManning() {
+            ['man_io', 'man_y'].forEach(id => document.getElementById(id).value = '');
+            document.getElementById('man_badge').className = 'info-badge';
+            document.getElementById('man_status').className = 'status-bar';
+            document.getElementById('man_status').textContent = 'Insira os parâmetros geométricos e hidráulicos da calha.';
+            document.getElementById('man_svg_q').textContent = 'Q = -- L/s';
+            document.getElementById('man_svg_v').textContent = 'v = -- m/s';
+        }
+
+        // ==========================================
+        // 6. CALC: EMPOLAMENTO & CAÇAMBAS
+        // ==========================================
+        function calcEmpolamento() {
+            const vc = parseFloat(document.getElementById('emp_vc').value);
+            const taxa = parseFloat(document.getElementById('emp_taxa').value);
+            const cap = parseFloat(document.getElementById('emp_cap').value);
+            const fhom = parseFloat(document.getElementById('emp_fhom').value) || 1.20;
+
+            const badge = document.getElementById('emp_badge');
+            const status = document.getElementById('emp_status');
+
+            if (isNaN(vc) || vc <= 0 || isNaN(cap) || cap <= 0) {
+                status.className = 'status-bar error';
+                status.textContent = 'Erro: Informe o volume de corte e a capacidade do caminhão.';
+                return;
+            }
+
+            const volumeSolto = vc * (1 + (taxa / 100));
+            const numViagens = Math.ceil(volumeSolto / cap);
+            const volumeAterroCompactado = vc / fhom;
+
+            badge.className = 'info-badge active ok';
+            badge.innerHTML = `<strong>Volume de Transporte (Solto):</strong> ${volumeSolto.toFixed(2)} m³<br>
+                               <strong>Total de Viagens (Caçamba ${cap.toFixed(0)}m³):</strong> ${numViagens} viagens<br>
+                               <span style="font-size: 11px; opacity: 0.9;">Rendimento em Aterro Compactado (Fh=${fhom.toFixed(2)}): ≈ ${volumeAterroCompactado.toFixed(2)} m³</span>`;
+
+            status.className = 'status-bar';
+            status.textContent = 'Dimensionamento de terraplenagem concluído.';
+        }
+
+        function clearEmpolamento() {
+            document.getElementById('emp_vc').value = '';
+            document.getElementById('emp_badge').className = 'info-badge';
+            document.getElementById('emp_status').className = 'status-bar';
+            document.getElementById('emp_status').textContent = 'Preencha o volume medido no corte e o tipo de solo.';
+        }
+
+        // ==========================================
+        // 7. CALC: TAXA DE LIGANTE ASFÁLTICO
+        // ==========================================
+        function updateTaxaLigante() {
+            const serv = document.getElementById('lig_servico').value;
+            const taxaInput = document.getElementById('lig_taxa');
+            if (serv !== 'custom') {
+                taxaInput.value = serv;
+            }
+        }
+
+        function calcLigante() {
+            const comp = parseFloat(document.getElementById('lig_comp').value);
+            const larg = parseFloat(document.getElementById('lig_larg').value);
+            const taxa = parseFloat(document.getElementById('lig_taxa').value);
+
+            const badge = document.getElementById('lig_badge');
+            const status = document.getElementById('lig_status');
+
+            if (isNaN(comp) || comp <= 0 || isNaN(larg) || larg <= 0 || isNaN(taxa) || taxa <= 0) {
+                status.className = 'status-bar error';
+                status.textContent = 'Erro: Informe dimensões e taxa válidas.';
+                return;
+            }
+
+            const areaM2 = comp * larg;
+            const volumeLitros = areaM2 * taxa;
+            const volumeM3 = volumeLitros / 1000;
+            const caminhoes6000L = (volumeLitros / 6000).toFixed(1);
+
+            badge.className = 'info-badge active ok';
+            badge.innerHTML = `<strong>Área Total de Aplicação:</strong> ${areaM2.toLocaleString('pt-BR')} m²<br>
+                               <strong>Volume de Ligante Necessário:</strong> ${volumeLitros.toLocaleString('pt-BR', {minimumFractionDigits: 1})} L (${volumeM3.toFixed(2)} m³)<br>
+                               <span style="font-size: 11px; opacity: 0.9;">Equivalente a ≈ ${caminhoes6000L} tanques de caminhão espargidor (6.000 L)</span>`;
+
+            status.className = 'status-bar';
+            status.textContent = 'Volume de emulsão asfáltica dimensionado.';
+        }
+
+        function clearLigante() {
+            ['lig_comp', 'lig_larg'].forEach(id => document.getElementById(id).value = '');
+            document.getElementById('lig_badge').className = 'info-badge';
+            document.getElementById('lig_status').className = 'status-bar';
+            document.getElementById('lig_status').textContent = 'Informe as dimensões da pista e a taxa de projeto.';
+        }
+
+        // ==========================================
+        // 8. CALC: SUPERLARGURA (DNIT)
+        // ==========================================
+        function calcSuperlargura() {
+            const r = parseFloat(document.getElementById('sup_r').value);
+            const v = parseFloat(document.getElementById('sup_v').value);
+            const n = parseFloat(document.getElementById('sup_n').value) || 2;
+            const l = parseFloat(document.getElementById('sup_l').value);
+
+            const badge = document.getElementById('sup_badge');
+            const status = document.getElementById('sup_status');
+
+            if (isNaN(r) || r <= 0 || isNaN(v) || v <= 0 || isNaN(l) || l <= 0) {
+                status.className = 'status-bar error';
+                status.textContent = 'Erro: Preencha raio, velocidade e veículo de projeto.';
+                return;
+            }
+
+            if (r <= l) {
+                status.className = 'status-bar error';
+                status.textContent = 'Erro: O raio da curva deve ser estritamente maior que o entre-eixos do veículo.';
+                return;
+            }
+
+            // DNIT: S = n * [R - sqrt(R² - L²)] + V / (10 * sqrt(R))
+            const parcelaMecanica = n * (r - Math.sqrt((r * r) - (l * l)));
+            const parcelaPsicologica = v / (10 * Math.sqrt(r));
+            const superlargura = parcelaMecanica + parcelaPsicologica;
+
+            badge.className = 'info-badge active ok';
+            badge.innerHTML = `<strong>Superlargura Total Recomendada (S):</strong> ${superlargura.toFixed(2)} m<br>
+                               <span style="font-size: 11px; opacity: 0.9;">Parcela mecânica: ${parcelaMecanica.toFixed(2)} m | Parcela dinâmica (velocidade): ${parcelaPsicologica.toFixed(2)} m</span>`;
+
+            status.className = 'status-bar';
+            status.textContent = 'Alargamento de curva calculado de acordo com as normas viárias.';
+        }
+
+        function clearSuperlargura() {
+            ['sup_r', 'sup_v'].forEach(id => document.getElementById(id).value = '');
+            document.getElementById('sup_badge').className = 'info-badge';
+            document.getElementById('sup_status').className = 'status-bar';
+            document.getElementById('sup_status').textContent = 'Norma DNIT: Cálculo de alargamento para acomodação de veículos pesados.';
+        }
+
+        // ==========================================
+        // 9. CALC: ESCADAS (BLONDEL)
+        // ==========================================
+        function calcBlondel() {
+            const h = parseFloat(document.getElementById('esc_h').value);
+            const eIdeal = parseFloat(document.getElementById('esc_emax').value) || 17.5;
+
+            const badge = document.getElementById('esc_badge');
+            const status = document.getElementById('esc_status');
+
+            if (isNaN(h) || h <= 0) {
+                status.className = 'status-bar error';
+                status.textContent = 'Erro: Informe o desnível vertical em metros.';
+                return;
+            }
+
+            const hCm = h * 100;
+            const numEspelhos = Math.round(hCm / eIdeal);
+            const espelhoReal = hCm / numEspelhos;
+            const numPisos = numEspelhos - 1;
+
+            // Blondel: 2e + p = 63.5 cm -> p = 63.5 - 2e
+            const pisoIdeal = 63.5 - (2 * espelhoReal);
+            const blondelCheck = (2 * espelhoReal) + pisoIdeal;
+            const compTotalEscada = (numPisos * pisoIdeal) / 100;
+
+            const isOk = espelhoReal >= 16 && espelhoReal <= 18.5 && pisoIdeal >= 27;
+
+            badge.className = `info-badge active ${isOk ? 'ok' : 'warning'}`;
+            badge.innerHTML = `<strong>${numEspelhos} Espelhos de ${espelhoReal.toFixed(2)} cm</strong> e <strong>${numPisos} Pisos de ${pisoIdeal.toFixed(2)} cm</strong><br>
+                               Fórmula de Blondel: 2(${espelhoReal.toFixed(1)}) + ${pisoIdeal.toFixed(1)} = <strong>${blondelCheck.toFixed(1)} cm</strong> (Ideal: 63 a 64 cm)<br>
+                               <span style="font-size: 11px; opacity: 0.9;">Comprimento horizontal em planta: ${compTotalEscada.toFixed(2)} m</span>`;
+
+            document.getElementById('esc_svg_h').textContent = `H: ${h.toFixed(2)}m`;
+            document.getElementById('esc_svg_p').textContent = `p: ${pisoIdeal.toFixed(1)}cm`;
+            document.getElementById('esc_svg_e').textContent = `e: ${espelhoReal.toFixed(1)}cm`;
+
+            status.className = 'status-bar';
+            status.textContent = 'Escada dimensionada com base no conforto ergonômico.';
+        }
+
+        function clearBlondel() {
+            document.getElementById('esc_h').value = '';
+            document.getElementById('esc_badge').className = 'info-badge';
+            document.getElementById('esc_status').className = 'status-bar';
+            document.getElementById('esc_status').textContent = 'Insira o desnível vertical para calcular o número de degraus e o piso ideal.';
+            document.getElementById('esc_svg_h').textContent = 'H: -- cm';
+            document.getElementById('esc_svg_p').textContent = 'p: -- cm';
+            document.getElementById('esc_svg_e').textContent = 'e: -- cm';
+        }
     </script>
 </body>
 </html>
