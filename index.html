@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EngTools — Suite de Cálculos Técnicos de Engenharia</title>
+    <title>EngTools — Cálculos, Parâmetros e Normas para Engenharia Civil</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
         :root {
             --bg: #0b0f17;
@@ -20,15 +20,15 @@
             --text-muted: #64748b;
             --accent: #38bdf8;
             --accent-glow: rgba(56, 189, 248, 0.15);
-            
+
             --success-bg: #064e3b;
             --success-border: #059669;
             --success-text: #a7f3d0;
-            
+
             --warning-bg: #431407;
             --warning-border: #9a3412;
             --warning-text: #fdba74;
-            
+
             --danger-bg: #450a0a;
             --danger-border: #7f1d1d;
             --danger-text: #fecaca;
@@ -40,10 +40,13 @@
             --svg-line: #94a3b8;
             --svg-fill: #1e293b;
             --svg-accent: #38bdf8;
+            --grid-line: rgba(148, 163, 184, 0.07);
+            --hatch-line: rgba(148, 163, 184, 0.35);
 
             --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
             --font-mono: 'JetBrains Mono', monospace;
             --sidebar-width: 280px;
+            --topbar-h: 56px;
         }
 
         [data-theme="light"] {
@@ -78,55 +81,42 @@
             --svg-line: #475569;
             --svg-fill: #e2e8f0;
             --svg-accent: #0284c7;
+            --grid-line: rgba(71, 85, 105, 0.08);
+            --hatch-line: rgba(71, 85, 105, 0.35);
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html { scroll-behavior: auto; }
 
         body {
             font-family: var(--font-sans);
             background-color: var(--bg);
             color: var(--text-primary);
             min-height: 100vh;
-            display: flex;
-            overflow-x: hidden;
             -webkit-font-smoothing: antialiased;
         }
 
-        /* Layout Base: App Shell */
-        .app-container {
-            display: flex;
-            width: 100vw;
-            min-height: 100vh;
-        }
+        /* ==========================================
+           TOP-LEVEL VIEW SWITCHING
+           ========================================== */
+        .top-view { display: none; }
+        .top-view.active { display: block; }
 
-        /* Sidebar Navigation */
-        .sidebar {
-            width: var(--sidebar-width);
-            background-color: var(--surface);
-            border-right: 1px solid var(--border);
-            display: flex;
-            flex-direction: column;
-            flex-shrink: 0;
-            transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-            z-index: 50;
-        }
-
-        .sidebar-header {
-            padding: 20px 18px;
-            border-bottom: 1px solid var(--border);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .brand {
+        /* ==========================================
+           SHARED: TOPBAR (present on every view except the home/launcher)
+           ========================================== */
+        .topbar {
+            position: sticky;
+            top: 0;
+            z-index: 30;
+            height: var(--topbar-h);
             display: flex;
             align-items: center;
             gap: 10px;
+            padding: 0 16px;
+            background-color: var(--surface);
+            border-bottom: 1px solid var(--border);
         }
 
         .brand-logo {
@@ -142,91 +132,33 @@
             font-weight: 700;
             font-size: 14px;
             color: var(--accent);
+            flex-shrink: 0;
         }
 
-        .brand-text h2 {
-            font-size: 14px;
-            font-weight: 700;
-            letter-spacing: -0.02em;
-            text-transform: uppercase;
-        }
-
-        .brand-text span {
-            font-size: 11px;
-            color: var(--text-muted);
-            font-family: var(--font-mono);
-        }
-
-        .nav-sections {
-            flex: 1;
-            overflow-y: auto;
-            padding: 16px 12px;
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-        }
-
-        .nav-group-title {
-            font-size: 10.5px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            color: var(--text-muted);
-            padding: 0 8px 4px 8px;
-            font-family: var(--font-mono);
-        }
-
-        .nav-group-list {
-            list-style: none;
-            display: flex;
-            flex-direction: column;
-            gap: 2px;
-        }
-
-        .nav-item {
+        .topbar-home {
+            all: unset;
             display: flex;
             align-items: center;
-            gap: 10px;
-            padding: 9px 12px;
-            border-radius: 6px;
-            font-size: 13px;
-            font-weight: 500;
-            color: var(--text-secondary);
+            gap: 9px;
             cursor: pointer;
-            border: 1px solid transparent;
-            transition: all 0.15s ease;
-            user-select: none;
+            padding: 5px 8px 5px 5px;
+            border-radius: 7px;
+            transition: background-color 0.15s ease;
         }
 
-        .nav-item:hover {
-            background-color: var(--surface-subtle);
-            color: var(--text-primary);
-        }
+        .topbar-home:hover, .topbar-home:focus-visible { background-color: var(--surface-subtle); }
+        .topbar-home .brand-logo { width: 27px; height: 27px; font-size: 11.5px; }
 
-        .nav-item.active {
-            background-color: var(--surface-subtle);
-            color: var(--accent);
-            border-color: var(--border);
-            font-weight: 600;
-        }
+        .topbar-home-stack { display: flex; flex-direction: column; line-height: 1.15; }
+        .topbar-home-name { font-size: 12.5px; font-weight: 700; letter-spacing: -0.01em; text-transform: uppercase; color: var(--text-primary); }
+        .topbar-home-hint { font-family: var(--font-mono); font-size: 9px; color: var(--text-muted); }
 
-        .nav-item .code-tag {
-            font-family: var(--font-mono);
-            font-size: 10px;
-            background: var(--surface-hover);
-            padding: 2px 5px;
-            border-radius: 4px;
-            color: var(--text-muted);
-            margin-left: auto;
-        }
+        .topbar-sep { color: var(--border); font-size: 15px; user-select: none; }
+        .topbar-title { font-size: 12.5px; font-weight: 600; color: var(--text-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-        .sidebar-footer {
-            padding: 14px 18px;
-            border-top: 1px solid var(--border);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
+        .topbar-actions { margin-left: auto; display: flex; align-items: center; gap: 8px; }
+
+        .topbar-hamburger { display: none; }
 
         .theme-toggle-btn {
             background: transparent;
@@ -242,35 +174,16 @@
             font-family: var(--font-mono);
             transition: all 0.15s;
         }
-
-        .theme-toggle-btn:hover {
-            background-color: var(--surface-subtle);
-            color: var(--text-primary);
-        }
-
-        /* Mobile Hamburger & Overlay */
-        .mobile-bar {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 54px;
-            background: var(--surface);
-            border-bottom: 1px solid var(--border);
-            padding: 0 16px;
-            align-items: center;
-            justify-content: space-between;
-            z-index: 40;
-        }
+        .theme-toggle-btn:hover { background-color: var(--surface-subtle); color: var(--text-primary); }
 
         .hamburger-btn {
             background: transparent;
-            border: none;
+            border: 1px solid var(--border);
+            border-radius: 6px;
             color: var(--text-primary);
-            font-size: 20px;
+            font-size: 16px;
             cursor: pointer;
-            padding: 6px;
+            padding: 6px 10px;
         }
 
         .sidebar-overlay {
@@ -278,919 +191,1145 @@
             position: fixed;
             inset: 0;
             background: rgba(0, 0, 0, 0.6);
-            z-index: 45;
+            z-index: 25;
             backdrop-filter: blur(2px);
         }
+        .sidebar-overlay.open { display: block; }
 
-        /* Main Workspace Content Area */
-        .main-content {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: flex-start;
-            padding: 40px 24px;
-            overflow-y: auto;
-            max-height: 100vh;
-        }
+        /* ==========================================
+           1. HOME / LAUNCHER — scroll-reveal landing
+           ========================================== */
+        #view-launcher.active { display: block; }
 
-        /* Calculators Cards Container */
-        .calc-panel {
-            display: none;
-            width: 100%;
-            max-width: 640px;
-            animation: fadeIn 0.18s ease-in-out;
-        }
-
-        .calc-panel.active {
-            display: block;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(4px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* Card Component */
-        .card {
-            background-color: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            box-shadow: 0 4px 16px rgba(0,0,0,0.15);
-            overflow: hidden;
-        }
-
-        .card-header {
-            padding: 18px 22px;
-            border-bottom: 1px solid var(--border);
-            display: flex;
-            align-items: flex-start;
-            justify-content: space-between;
-            gap: 12px;
-        }
-
-        .header-meta h1 {
-            font-size: 15px;
-            font-weight: 700;
-            letter-spacing: -0.01em;
-            text-transform: uppercase;
-        }
-
-        .header-meta .formula-tag {
-            font-size: 11.5px;
-            color: var(--text-muted);
-            font-family: var(--font-mono);
-            margin-top: 3px;
-        }
-
-        .badge-category {
-            font-size: 11px;
-            font-family: var(--font-mono);
-            color: var(--accent);
-            background: var(--accent-glow);
-            padding: 4px 8px;
-            border-radius: 4px;
-            border: 1px solid var(--accent);
-            white-space: nowrap;
-        }
-
-        /* CAD / Technical Diagram Stage */
-        .diagram-stage {
-            padding: 14px 20px;
-            background: var(--surface-subtle);
-            border-bottom: 1px solid var(--border);
-        }
-
-        .diagram-stage svg {
-            width: 100%;
-            height: 120px;
-            display: block;
-        }
-
-        .svg-text {
-            font-family: var(--font-mono);
-            font-size: 11px;
-            fill: var(--text-secondary);
-            user-select: none;
-        }
-
-        .card-body {
-            padding: 22px;
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-        }
-
-        .grid-inputs {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 14px;
-        }
-
-        .grid-inputs.col-3 {
-            grid-template-columns: repeat(3, 1fr);
-        }
-
-        .grid-inputs.col-1 {
-            grid-template-columns: 1fr;
-        }
-
-        .field-group {
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-        }
-
-        .field-label {
-            display: flex;
-            justify-content: space-between;
-            align-items: baseline;
-            font-size: 12px;
-            font-weight: 600;
-            color: var(--text-secondary);
-        }
-
-        .field-label .symbol {
-            font-family: var(--font-mono);
-            color: var(--text-muted);
-            font-weight: 400;
-        }
-
-        .input-wrapper {
-            position: relative;
-            display: flex;
-            align-items: center;
-        }
-
-        input, select {
-            width: 100%;
-            height: 40px;
-            padding: 0 38px 0 12px;
-            border-radius: 6px;
-            border: 1px solid var(--border);
-            background-color: var(--surface);
-            color: var(--text-primary);
-            font-family: var(--font-mono);
-            font-size: 13.5px;
-            outline: none;
-            transition: border-color 0.15s, background-color 0.15s;
-        }
-
-        select {
-            padding-right: 28px;
-            cursor: pointer;
-        }
-
-        input:focus, select:focus {
-            border-color: var(--border-focus);
-        }
-
-        input::-webkit-outer-spin-button,
-        input::-webkit-inner-spin-button {
-            -webkit-appearance: none;
-            margin: 0;
-        }
-        input[type=number] {
-            -moz-appearance: textfield;
-        }
-
-        .input-wrapper .unit {
-            position: absolute;
-            right: 12px;
-            font-family: var(--font-mono);
-            font-size: 11.5px;
-            color: var(--text-muted);
-            pointer-events: none;
-        }
-
-        input.is-calculated {
-            background-color: var(--calc-highlight-bg) !important;
-            border-color: var(--calc-highlight-border) !important;
-            color: var(--calc-highlight-text) !important;
-            font-weight: 600;
-        }
-
-        /* Results / Compliance Banner */
-        .info-badge {
-            display: none;
-            padding: 10px 14px;
-            border-radius: 6px;
-            font-size: 12px;
-            line-height: 1.45;
-            font-family: var(--font-mono);
-            border: 1px solid var(--border);
-            background: var(--surface-subtle);
-        }
-
-        .info-badge.active {
-            display: block;
-        }
-
-        .info-badge.ok {
-            border-color: var(--success-border);
-            background: var(--success-bg);
-            color: var(--success-text);
-        }
-
-        .info-badge.warning {
-            border-color: var(--warning-border);
-            background: var(--warning-bg);
-            color: var(--warning-text);
-        }
-
-        .info-badge.danger {
-            border-color: var(--danger-border);
-            background: var(--danger-bg);
-            color: var(--danger-text);
-        }
-
-        .status-bar {
-            min-height: 18px;
-            font-size: 11.5px;
-            font-family: var(--font-mono);
-            color: var(--text-muted);
-        }
-
-        .status-bar.error {
-            color: var(--danger-text);
-        }
-
-        .actions {
-            display: flex;
-            gap: 10px;
-            margin-top: 4px;
-        }
-
-        .btn {
-            height: 40px;
-            border-radius: 6px;
-            font-size: 13px;
-            font-weight: 600;
-            cursor: pointer;
+        .hero-stage {
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            z-index: 1;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-family: var(--font-sans);
-            transition: all 0.15s ease;
+            overflow: hidden;
+            background-color: var(--bg);
+            background-image:
+                linear-gradient(var(--grid-line) 1px, transparent 1px),
+                linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+            background-size: 42px 42px;
         }
 
-        .btn-primary {
-            flex: 2;
-            background-color: var(--accent);
-            color: #0b0f17;
-            border: 1px solid var(--accent);
+        .hero-mark {
+            text-align: center;
+            padding: 0 24px;
+            will-change: opacity, transform;
         }
 
-        [data-theme="light"] .btn-primary {
-            color: #ffffff;
-        }
-
-        .btn-primary:hover {
-            opacity: 0.92;
-        }
-
-        .btn-secondary {
-            flex: 1;
-            background-color: transparent;
-            color: var(--text-secondary);
+        .hero-mark-logo {
+            width: 60px;
+            height: 60px;
+            margin: 0 auto 22px;
+            background: var(--surface);
             border: 1px solid var(--border);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--font-mono);
+            font-weight: 700;
+            font-size: 21px;
+            color: var(--accent);
+            box-shadow: 0 0 0 6px var(--accent-glow);
         }
 
-        .btn-secondary:hover {
-            background-color: var(--surface-subtle);
-            color: var(--text-primary);
+        .hero-mark h1 {
+            font-family: var(--font-mono);
+            font-weight: 700;
+            font-size: clamp(40px, 9vw, 92px);
+            letter-spacing: -0.03em;
+            line-height: 1;
         }
 
-        /* Responsive Breakpoints */
+        .hero-mark h1 span { color: var(--accent); }
+
+        .hero-mark p {
+            margin-top: 18px;
+            color: var(--text-secondary);
+            font-size: clamp(13px, 1.6vw, 15.5px);
+            max-width: 42ch;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.55;
+        }
+
+        .hero-scroll-cue {
+            position: absolute;
+            bottom: 34px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            font-family: var(--font-mono);
+            font-size: 10.5px;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+        }
+
+        .hero-scroll-cue .chevron {
+            width: 9px;
+            height: 9px;
+            border-right: 1.5px solid var(--text-muted);
+            border-bottom: 1.5px solid var(--text-muted);
+            transform: rotate(45deg);
+            animation: cueBounce 1.8s ease-in-out infinite;
+        }
+
+        @keyframes cueBounce {
+            0%, 100% { transform: rotate(45deg) translate(0, 0); opacity: 0.4; }
+            50% { transform: rotate(45deg) translate(4px, 4px); opacity: 1; }
+        }
+
+        .hero-theme-float { position: absolute; top: 20px; right: 20px; z-index: 2; }
+
+        .modules-section {
+            position: relative;
+            z-index: 2;
+            background-color: var(--bg);
+            border-top: 1px solid var(--border);
+            padding: 64px 24px 90px;
+            box-shadow: 0 -40px 60px -20px rgba(0,0,0,0.35);
+        }
+
+        .modules-inner { max-width: 900px; margin: 0 auto; }
+
+        .modules-heading { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-muted); font-family: var(--font-mono); margin-bottom: 6px; }
+        .modules-subheading { color: var(--text-secondary); font-size: 14px; max-width: 52ch; }
+
+        .module-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 18px;
+            margin-top: 32px;
+        }
+
+        .module-card {
+            all: unset;
+            box-sizing: border-box;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            cursor: pointer;
+            overflow: hidden;
+            transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
+        }
+
+        .module-card:hover { transform: translateY(-4px); border-color: var(--accent); box-shadow: 0 14px 32px rgba(0, 0, 0, 0.22); }
+        .module-card:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+        .module-card-stage { position: relative; display: block; height: 118px; background: var(--surface-subtle); border-bottom: 1px solid var(--border); }
+        .module-card-stage svg { width: 100%; height: 100%; display: block; }
+
+        .module-card-body { padding: 16px 18px 18px; display: flex; flex-direction: column; gap: 6px; text-align: left; flex: 1; }
+        .module-card-body h2 { font-size: 13.5px; font-weight: 700; letter-spacing: -0.01em; text-transform: uppercase; color: var(--text-primary); }
+        .module-card-body p { font-size: 12px; color: var(--text-secondary); line-height: 1.45; flex: 1; }
+
+        .module-card-footer { margin-top: 10px; display: flex; align-items: center; justify-content: space-between; }
+        .module-card-tag { font-family: var(--font-mono); font-size: 10px; padding: 3px 7px; border-radius: 4px; border: 1px solid var(--border); background: var(--surface-hover); color: var(--text-muted); }
+        .module-card-arrow { font-family: var(--font-mono); color: var(--accent); font-size: 13px; transition: transform 0.18s ease; }
+        .module-card:hover .module-card-arrow { transform: translateX(3px); }
+
+        .svg-text { font-family: var(--font-mono); font-size: 11px; fill: var(--text-secondary); user-select: none; }
+
         @media (max-width: 860px) {
-            .mobile-bar {
-                display: flex;
-            }
+            .module-grid { grid-template-columns: 1fr; }
+        }
 
-            .sidebar {
-                position: fixed;
-                top: 0;
-                bottom: 0;
-                left: 0;
-                transform: translateX(-100%);
-            }
+        /* ==========================================
+           2. RECEPTION PAGE (Módulo 1 — Calculadora)
+           ========================================== */
+        .welcome-main { max-width: 780px; margin: 0 auto; padding: 56px 24px 90px; }
+        .welcome-eyebrow { font-family: var(--font-mono); font-size: 11px; color: var(--accent); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 10px; }
+        .welcome-main h1 { font-size: clamp(24px, 4vw, 32px); font-weight: 700; letter-spacing: -0.015em; }
+        .welcome-main > p.lead { margin-top: 14px; color: var(--text-secondary); font-size: 14.5px; max-width: 58ch; line-height: 1.6; }
 
-            .sidebar.open {
-                transform: translateX(0);
-            }
+        .welcome-stats { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 26px; }
+        .welcome-stat { font-family: var(--font-mono); font-size: 11px; color: var(--text-secondary); background: var(--surface); border: 1px solid var(--border); padding: 7px 12px; border-radius: 20px; }
+        .welcome-stat strong { color: var(--accent); }
 
-            .sidebar-overlay.open {
-                display: block;
-            }
+        .welcome-shortcuts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-top: 38px; }
+        .shortcut-card {
+            all: unset; box-sizing: border-box; cursor: pointer;
+            background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
+            padding: 16px; display: flex; flex-direction: column; gap: 8px;
+            transition: border-color 0.15s ease, transform 0.15s ease;
+        }
+        .shortcut-card:hover { border-color: var(--accent); transform: translateY(-2px); }
+        .shortcut-card .shortcut-icon { font-family: var(--font-mono); font-size: 18px; color: var(--accent); }
+        .shortcut-card h3 { font-size: 12.5px; font-weight: 700; text-transform: uppercase; }
+        .shortcut-card p { font-size: 11.5px; color: var(--text-secondary); line-height: 1.4; }
 
-            .main-content {
-                padding: 74px 16px 30px 16px;
-            }
+        .welcome-cta-row { margin-top: 40px; display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+        .btn { height: 42px; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; font-family: var(--font-sans); transition: all 0.15s ease; border: none; padding: 0 18px; }
+        .btn-primary { background-color: var(--accent); color: #0b0f17; border: 1px solid var(--accent); }
+        [data-theme="light"] .btn-primary { color: #ffffff; }
+        .btn-primary:hover { opacity: 0.92; }
+        .btn-secondary { background-color: transparent; color: var(--text-secondary); border: 1px solid var(--border); }
+        .btn-secondary:hover { background-color: var(--surface-subtle); color: var(--text-primary); }
+        .welcome-cta-hint { font-family: var(--font-mono); font-size: 11px; color: var(--text-muted); }
 
-            .grid-inputs, .grid-inputs.col-3 {
-                grid-template-columns: 1fr;
-            }
+        @media (max-width: 700px) { .welcome-shortcuts { grid-template-columns: 1fr; } }
+
+        /* ==========================================
+           3. CALCULATOR APP (Módulo 1 — dashboard)
+           ========================================== */
+        .app-shell { display: flex; height: calc(100vh - var(--topbar-h)); }
+
+        .sidebar {
+            width: var(--sidebar-width);
+            background-color: var(--surface);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+            transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .nav-sections { flex: 1; overflow-y: auto; padding: 16px 12px; display: flex; flex-direction: column; gap: 16px; }
+        .nav-group-title { font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); padding: 0 8px 4px; font-family: var(--font-mono); }
+        .nav-group-list { list-style: none; display: flex; flex-direction: column; gap: 2px; }
+        .nav-item { display: flex; align-items: center; gap: 10px; padding: 9px 12px; border-radius: 6px; font-size: 13px; font-weight: 500; color: var(--text-secondary); cursor: pointer; border: 1px solid transparent; transition: all 0.15s ease; user-select: none; }
+        .nav-item:hover { background-color: var(--surface-subtle); color: var(--text-primary); }
+        .nav-item.active { background-color: var(--surface-subtle); color: var(--accent); border-color: var(--border); font-weight: 600; }
+        .nav-item .code-tag { font-family: var(--font-mono); font-size: 10px; background: var(--surface-hover); padding: 2px 5px; border-radius: 4px; color: var(--text-muted); margin-left: auto; }
+
+        .main-content { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; padding: 40px 24px; overflow-y: auto; }
+
+        .calc-panel { display: none; width: 100%; max-width: 640px; animation: fadeIn 0.18s ease-in-out; }
+        .calc-panel.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+
+        .card { background-color: var(--surface); border: 1px solid var(--border); border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.15); overflow: hidden; }
+        .card-header { padding: 18px 22px; border-bottom: 1px solid var(--border); display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+        .header-meta h1 { font-size: 15px; font-weight: 700; letter-spacing: -0.01em; text-transform: uppercase; }
+        .header-meta .formula-tag { font-size: 11.5px; color: var(--text-muted); font-family: var(--font-mono); margin-top: 3px; }
+        .badge-category { font-size: 11px; font-family: var(--font-mono); color: var(--accent); background: var(--accent-glow); padding: 4px 8px; border-radius: 4px; border: 1px solid var(--accent); white-space: nowrap; }
+
+        .diagram-stage { padding: 14px 20px; background: var(--surface-subtle); border-bottom: 1px solid var(--border); }
+        .diagram-stage svg { width: 100%; height: 120px; display: block; }
+
+        .card-body { padding: 22px; display: flex; flex-direction: column; gap: 16px; }
+        .grid-inputs { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
+        .grid-inputs.col-3 { grid-template-columns: repeat(3, 1fr); }
+        .grid-inputs.col-1 { grid-template-columns: 1fr; }
+
+        .field-group { display: flex; flex-direction: column; gap: 6px; }
+        .field-label { display: flex; justify-content: space-between; align-items: baseline; font-size: 12px; font-weight: 600; color: var(--text-secondary); }
+        .field-label .symbol { font-family: var(--font-mono); color: var(--text-muted); font-weight: 400; }
+
+        .input-wrapper { position: relative; display: flex; align-items: center; }
+        input, select {
+            width: 100%; height: 40px; padding: 0 38px 0 12px; border-radius: 6px; border: 1px solid var(--border);
+            background-color: var(--surface); color: var(--text-primary); font-family: var(--font-mono); font-size: 13.5px;
+            outline: none; transition: border-color 0.15s, background-color 0.15s;
+        }
+        select { padding-right: 28px; cursor: pointer; }
+        input:focus, select:focus { border-color: var(--border-focus); }
+        input::-webkit-outer-spin-button, input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+        input[type=number] { -moz-appearance: textfield; }
+        .input-wrapper .unit { position: absolute; right: 12px; font-family: var(--font-mono); font-size: 11.5px; color: var(--text-muted); pointer-events: none; }
+        input.is-calculated { background-color: var(--calc-highlight-bg) !important; border-color: var(--calc-highlight-border) !important; color: var(--calc-highlight-text) !important; font-weight: 600; }
+
+        .info-badge { display: none; padding: 10px 14px; border-radius: 6px; font-size: 12px; line-height: 1.45; font-family: var(--font-mono); border: 1px solid var(--border); background: var(--surface-subtle); }
+        .info-badge.active { display: block; }
+        .info-badge.ok { border-color: var(--success-border); background: var(--success-bg); color: var(--success-text); }
+        .info-badge.warning { border-color: var(--warning-border); background: var(--warning-bg); color: var(--warning-text); }
+        .info-badge.danger { border-color: var(--danger-border); background: var(--danger-bg); color: var(--danger-text); }
+
+        .status-bar { min-height: 18px; font-size: 11.5px; font-family: var(--font-mono); color: var(--text-muted); }
+        .status-bar.error { color: var(--danger-text); }
+
+        .actions { display: flex; gap: 10px; margin-top: 4px; }
+        .actions .btn { flex: 2; }
+        .actions .btn-secondary { flex: 1; }
+
+        @media (max-width: 860px) {
+            .topbar-hamburger { display: flex; }
+            .sidebar { position: fixed; top: var(--topbar-h); bottom: 0; left: 0; transform: translateX(-100%); z-index: 26; }
+            .sidebar.open { transform: translateX(0); }
+            .main-content { padding: 24px 16px 30px; }
+            .grid-inputs, .grid-inputs.col-3 { grid-template-columns: 1fr; }
+        }
+
+        /* ==========================================
+           4. REFERENCE PAGES (Módulo 2 — Parâmetros, Módulo 3 — Normas)
+           ========================================== */
+        .ref-page-main { max-width: 900px; margin: 0 auto; padding: 40px 24px 100px; }
+        .ref-intro h1 { font-size: clamp(20px, 3vw, 26px); font-weight: 700; letter-spacing: -0.015em; }
+        .ref-intro p { color: var(--text-secondary); font-size: 13.5px; margin-top: 8px; max-width: 62ch; line-height: 1.55; }
+
+        .ref-search-wrap { margin-top: 24px; position: relative; }
+        .ref-search-wrap input { height: 44px; padding-left: 40px; font-family: var(--font-sans); font-size: 13.5px; }
+        .ref-search-icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--text-muted); font-size: 14px; pointer-events: none; }
+        .ref-search-clear { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: transparent; border: none; color: var(--text-muted); font-family: var(--font-mono); font-size: 11px; cursor: pointer; padding: 4px 8px; display: none; }
+        .ref-search-clear.show { display: block; }
+
+        .ref-section { margin-top: 38px; }
+        .ref-section-head { display: flex; align-items: baseline; gap: 10px; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+        .ref-section-head h2 { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.02em; }
+        .ref-section-cat { font-family: var(--font-mono); font-size: 10px; color: var(--accent); background: var(--accent-glow); padding: 2px 7px; border-radius: 4px; border: 1px solid var(--accent); white-space: nowrap; }
+
+        .ref-list { display: flex; flex-direction: column; gap: 6px; }
+        .ref-item { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 11px 14px; background: var(--surface); border: 1px solid var(--border); border-radius: 6px; font-size: 12.5px; }
+        .ref-item-main { display: flex; flex-direction: column; gap: 2px; }
+        .ref-item-name { font-weight: 600; color: var(--text-primary); }
+        .ref-item-tag { font-family: var(--font-mono); font-size: 10px; color: var(--text-muted); }
+        .ref-item-value { font-family: var(--font-mono); font-weight: 600; color: var(--accent); white-space: nowrap; flex-shrink: 0; }
+
+        .ref-note { font-size: 11.5px; color: var(--text-muted); margin-top: 12px; line-height: 1.5; }
+
+        .ref-table-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: 6px; }
+        .ref-table { width: 100%; border-collapse: collapse; font-size: 12px; background: var(--surface); min-width: 480px; }
+        .ref-table th, .ref-table td { padding: 9px 10px; text-align: center; border-bottom: 1px solid var(--border); font-family: var(--font-mono); }
+        .ref-table tr:last-child td { border-bottom: none; }
+        .ref-table th { background: var(--surface-subtle); color: var(--text-secondary); font-size: 10.5px; text-transform: uppercase; letter-spacing: .03em; }
+        .ref-table td:first-child, .ref-table th:first-child { text-align: left; font-family: var(--font-sans); font-weight: 600; }
+
+        .ref-mini-calc { margin-top: 14px; padding: 16px; background: var(--surface-subtle); border: 1px solid var(--border); border-radius: 6px; }
+        .ref-mini-calc-title { font-size: 11.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.02em; color: var(--text-secondary); margin-bottom: 12px; }
+        .ref-mini-calc-row { display: grid; grid-template-columns: 1.2fr 1fr auto; gap: 12px; align-items: end; }
+        .ref-mini-calc-out { font-family: var(--font-mono); font-weight: 700; color: var(--accent); font-size: 13px; padding: 0 4px; white-space: nowrap; }
+
+        .ref-empty-state { display: none; margin-top: 50px; text-align: center; color: var(--text-muted); font-size: 13px; font-family: var(--font-mono); }
+
+        .norm-item { align-items: flex-start; flex-direction: column; gap: 6px; }
+        .norm-item .ref-item-top { display: flex; width: 100%; justify-content: space-between; align-items: center; gap: 10px; }
+        .norm-item .ref-item-desc { color: var(--text-secondary); font-size: 12px; line-height: 1.45; font-family: var(--font-sans); }
+
+        @media (max-width: 600px) {
+            .ref-mini-calc-row { grid-template-columns: 1fr; }
         }
     </style>
 </head>
 <body>
 
-    <div class="app-container">
-        <!-- Top Bar Mobile -->
-        <div class="mobile-bar">
-            <div class="brand">
-                <div class="brand-logo">📐</div>
-                <div class="brand-text">
-                    <h2>EngTools</h2>
+    <!-- ============================================================
+         VIEW: HOME / LAUNCHER
+         ============================================================ -->
+    <div class="top-view active" id="view-launcher">
+        <div class="hero-stage" id="heroStage">
+            <div class="hero-theme-float">
+                <button class="theme-toggle-btn" type="button"><span>◐</span><span class="theme-label">Tema Escuro</span></button>
+            </div>
+            <div class="hero-mark" id="heroMark">
+                <div class="hero-mark-logo">ET</div>
+                <h1>ENG<span>TOOLS</span></h1>
+                <p>Cálculos técnicos, parâmetros normativos e referências rápidas para o dia a dia da engenharia civil.</p>
+            </div>
+            <div class="hero-scroll-cue"><span>role para explorar</span><span class="chevron"></span></div>
+        </div>
+
+        <div class="modules-section">
+            <div class="modules-inner">
+                <div class="modules-heading">Ferramentas disponíveis</div>
+                <p class="modules-subheading">Escolha um módulo para abrir nesta sessão.</p>
+
+                <div class="module-grid">
+                    <button type="button" class="module-card" data-view="view-calc-welcome" aria-label="Abrir módulo Calculadora">
+                        <span class="module-card-stage">
+                            <svg viewBox="0 0 300 118" preserveAspectRatio="xMidYMid meet">
+                                <line x1="20" y1="18" x2="20" y2="98" stroke="var(--svg-line)" stroke-width="1"/>
+                                <line x1="20" y1="98" x2="280" y2="98" stroke="var(--svg-line)" stroke-width="1"/>
+                                <path d="M 20,98 L 200,98 L 200,36" fill="none" stroke="var(--svg-line)" stroke-width="1.5" stroke-dasharray="3 3"/>
+                                <path d="M 20,98 L 200,36" fill="none" stroke="var(--svg-accent)" stroke-width="2.5"/>
+                                <rect x="128" y="52" width="76" height="20" rx="3" fill="var(--surface)" stroke="var(--border)"/>
+                                <text x="166" y="66" text-anchor="middle" class="svg-text" font-size="10.5">i = Δh/c × 100</text>
+                            </svg>
+                        </span>
+                        <span class="module-card-body">
+                            <h2>Calculadora de Engenharia</h2>
+                            <p>Rampas, taludes, estacas, drenagem, pavimentação e mais — cálculos técnicos com apoio normativo.</p>
+                            <span class="module-card-footer">
+                                <span class="module-card-tag">8 instrumentos</span>
+                                <span class="module-card-arrow">abrir →</span>
+                            </span>
+                        </span>
+                    </button>
+
+                    <button type="button" class="module-card" data-view="view-params" aria-label="Abrir módulo Parâmetros e Referências">
+                        <span class="module-card-stage">
+                            <svg viewBox="0 0 300 118" preserveAspectRatio="xMidYMid meet">
+                                <rect x="30" y="24" width="240" height="20" rx="2" fill="var(--surface-hover)" stroke="var(--border)"/>
+                                <rect x="30" y="48" width="240" height="16" rx="2" fill="var(--svg-fill)" stroke="var(--border)"/>
+                                <rect x="30" y="68" width="240" height="16" rx="2" fill="var(--svg-fill)" stroke="var(--border)"/>
+                                <rect x="30" y="88" width="240" height="16" rx="2" fill="var(--svg-fill)" stroke="var(--border)"/>
+                                <text x="42" y="38" class="svg-text" font-size="10">n · E% · cobrimento · taxa</text>
+                            </svg>
+                        </span>
+                        <span class="module-card-body">
+                            <h2>Parâmetros & Referências</h2>
+                            <p>Tabelas normativas de rugosidade, cobrimento, taludes, ligantes e mais — consulta rápida em obra.</p>
+                            <span class="module-card-footer">
+                                <span class="module-card-tag">Busca rápida</span>
+                                <span class="module-card-arrow">abrir →</span>
+                            </span>
+                        </span>
+                    </button>
+
+                    <button type="button" class="module-card" data-view="view-norms" aria-label="Abrir módulo Normas Técnicas">
+                        <span class="module-card-stage">
+                            <svg viewBox="0 0 300 118" preserveAspectRatio="xMidYMid meet">
+                                <rect x="70" y="20" width="90" height="78" rx="2" fill="var(--svg-fill)" stroke="var(--svg-line)" stroke-width="1.2"/>
+                                <rect x="90" y="20" width="90" height="78" rx="2" fill="var(--surface)" stroke="var(--svg-accent)" stroke-width="1.4"/>
+                                <line x1="102" y1="38" x2="162" y2="38" stroke="var(--text-muted)" stroke-width="1"/>
+                                <line x1="102" y1="50" x2="162" y2="50" stroke="var(--text-muted)" stroke-width="1"/>
+                                <line x1="102" y1="62" x2="150" y2="62" stroke="var(--text-muted)" stroke-width="1"/>
+                                <text x="132" y="86" text-anchor="middle" class="svg-text" font-size="9.5">NBR · NR · DNIT</text>
+                            </svg>
+                        </span>
+                        <span class="module-card-body">
+                            <h2>Normas Técnicas</h2>
+                            <p>Índice de normas ABNT e regulamentações da construção civil, com busca por assunto ou código.</p>
+                            <span class="module-card-footer">
+                                <span class="module-card-tag">Consulta rápida</span>
+                                <span class="module-card-arrow">abrir →</span>
+                            </span>
+                        </span>
+                    </button>
                 </div>
             </div>
-            <button class="hamburger-btn" id="mobileMenuBtn" aria-label="Abrir Menu">☰</button>
+        </div>
+    </div>
+
+    <!-- ============================================================
+         VIEW: MÓDULO 1 — Recepção da Calculadora
+         ============================================================ -->
+    <div class="top-view" id="view-calc-welcome">
+        <div class="topbar">
+            <button class="topbar-home" type="button" data-view="view-launcher">
+                <span class="brand-logo">ET</span>
+                <span class="topbar-home-stack"><span class="topbar-home-name">EngTools</span><span class="topbar-home-hint">← início</span></span>
+            </button>
+            <span class="topbar-sep">/</span>
+            <span class="topbar-title">Calculadora de Engenharia</span>
+            <div class="topbar-actions">
+                <button class="theme-toggle-btn" type="button"><span>◐</span><span class="theme-label">Tema Escuro</span></button>
+            </div>
+        </div>
+
+        <main class="welcome-main">
+            <div class="welcome-eyebrow">Módulo 01</div>
+            <h1>Instrumentos de cálculo para o dia a dia da obra</h1>
+            <p class="lead">Oito calculadoras técnicas cobrindo geometria e topografia, hidráulica de drenagem e pavimentação — todas com referência normativa direta no resultado, para você conferir o cálculo sem sair da tela.</p>
+
+            <div class="welcome-stats">
+                <span class="welcome-stat"><strong>8</strong> calculadoras</span>
+                <span class="welcome-stat"><strong>3</strong> frentes técnicas</span>
+                <span class="welcome-stat">Verificação normativa automática</span>
+            </div>
+
+            <div class="welcome-shortcuts">
+                <button type="button" class="shortcut-card" data-open-calc="calc-rampas">
+                    <span class="shortcut-icon">△</span>
+                    <h3>Geometria & Topografia</h3>
+                    <p>Rampas, taludes, estacas e superlargura em curvas.</p>
+                </button>
+                <button type="button" class="shortcut-card" data-open-calc="calc-manning">
+                    <span class="shortcut-icon">≈</span>
+                    <h3>Hidráulica & Drenagem</h3>
+                    <p>Capacidade de sarjetas e canais pelo método de Manning.</p>
+                </button>
+                <button type="button" class="shortcut-card" data-open-calc="calc-empolamento">
+                    <span class="shortcut-icon">▤</span>
+                    <h3>Pavimentação & Solos</h3>
+                    <p>Empolamento, frota de transporte e taxa de ligante asfáltico.</p>
+                </button>
+            </div>
+
+            <div class="welcome-cta-row">
+                <button class="btn btn-primary" type="button" id="welcomeOpenApp">Abrir todas as calculadoras →</button>
+                <span class="welcome-cta-hint">ou escolha uma frente acima</span>
+            </div>
+        </main>
+    </div>
+
+    <!-- ============================================================
+         VIEW: MÓDULO 1 — Dashboard de calculadoras
+         ============================================================ -->
+    <div class="top-view" id="view-calc-app">
+        <div class="topbar">
+            <button class="topbar-home" type="button" data-view="view-launcher">
+                <span class="brand-logo">ET</span>
+                <span class="topbar-home-stack"><span class="topbar-home-name">EngTools</span><span class="topbar-home-hint">← início</span></span>
+            </button>
+            <span class="topbar-sep">/</span>
+            <span class="topbar-title">Calculadora de Engenharia</span>
+            <div class="topbar-actions">
+                <button class="hamburger-btn topbar-hamburger" id="mobileMenuBtn" type="button" aria-label="Abrir menu">☰</button>
+                <button class="theme-toggle-btn" type="button"><span>◐</span><span class="theme-label">Tema Escuro</span></button>
+            </div>
         </div>
 
         <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
-        <!-- Lateral Navigation -->
-        <aside class="sidebar" id="sidebar">
-            <div class="sidebar-header">
-                <div class="brand">
-                    <div class="brand-logo">ET</div>
-                    <div class="brand-text">
-                        <h2>EngTools</h2>
-                        <span>Suite de Engenharia</span>
+        <div class="app-shell">
+            <aside class="sidebar" id="sidebar">
+                <nav class="nav-sections">
+                    <div>
+                        <div class="nav-group-title">Geometria & Topografia</div>
+                        <ul class="nav-group-list">
+                            <li class="nav-item active" data-target="calc-rampas"><span>Rampas & Declividades</span><span class="code-tag">NBR 9050</span></li>
+                            <li class="nav-item" data-target="calc-estacas"><span>Interpolação de Estacas</span><span class="code-tag">Greide</span></li>
+                            <li class="nav-item" data-target="calc-taludes"><span>Taludes (V:H e %)</span><span class="code-tag">Terrapl.</span></li>
+                            <li class="nav-item" data-target="calc-superlargura"><span>Superlargura em Curvas</span><span class="code-tag">DNIT</span></li>
+                            <li class="nav-item" data-target="calc-blondel"><span>Escadas (Blondel)</span><span class="code-tag">Conforto</span></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <div class="nav-group-title">Hidráulica & Drenagem</div>
+                        <ul class="nav-group-list">
+                            <li class="nav-item" data-target="calc-manning"><span>Sarjetas & Canais</span><span class="code-tag">Manning</span></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <div class="nav-group-title">Pavimentação & Solos</div>
+                        <ul class="nav-group-list">
+                            <li class="nav-item" data-target="calc-empolamento"><span>Empolamento & Caçambas</span><span class="code-tag">Corte/Aterro</span></li>
+                            <li class="nav-item" data-target="calc-ligante"><span>Taxa de Ligante Asfáltico</span><span class="code-tag">Espargidor</span></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <div class="nav-group-title">Estruturas</div>
+                        <ul class="nav-group-list">
+                            <li class="nav-item" data-target="calc-vergalhao"><span>Peso de Vergalhões</span><span class="code-tag">NBR 7480</span></li>
+                        </ul>
+                    </div>
+                </nav>
+            </aside>
+
+            <main class="main-content">
+
+                <!-- 1. RAMPAS -->
+                <section class="calc-panel active" id="calc-rampas">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="header-meta"><h1>Rampas & Declividades</h1><div class="formula-tag">Fórmula: i = (Δh / c) × 100</div></div>
+                            <span class="badge-category">Topografia & Acessibilidade</span>
+                        </div>
+                        <div class="diagram-stage">
+                            <svg viewBox="0 0 420 110">
+                                <polygon points="50,75 330,75 330,25" fill="var(--svg-fill)" stroke="var(--svg-line)" stroke-width="1.5" stroke-linejoin="round" />
+                                <line x1="50" y1="92" x2="330" y2="92" stroke="var(--text-muted)" stroke-width="1" />
+                                <line x1="50" y1="87" x2="50" y2="97" stroke="var(--text-muted)" stroke-width="1" />
+                                <line x1="330" y1="87" x2="330" y2="97" stroke="var(--text-muted)" stroke-width="1" />
+                                <text x="190" y="105" text-anchor="middle" class="svg-text" id="r_svg_c">c: -- m</text>
+                                <line x1="345" y1="25" x2="345" y2="75" stroke="var(--text-muted)" stroke-width="1" />
+                                <line x1="340" y1="25" x2="350" y2="25" stroke="var(--text-muted)" stroke-width="1" />
+                                <line x1="340" y1="75" x2="350" y2="75" stroke="var(--text-muted)" stroke-width="1" />
+                                <text x="358" y="54" text-anchor="start" class="svg-text" id="r_svg_dh">Δh: -- m</text>
+                                <text x="45" y="70" text-anchor="end" class="svg-text" id="r_svg_ci" style="font-size: 9.5px;">ci</text>
+                                <text x="330" y="18" text-anchor="middle" class="svg-text" id="r_svg_cf" style="font-size: 9.5px;">cf</text>
+                                <rect x="155" y="32" width="75" height="18" rx="3" fill="var(--surface)" stroke="var(--border)" stroke-width="1"/>
+                                <text x="192" y="45" text-anchor="middle" class="svg-text" id="r_svg_i" font-weight="600">i: -- %</text>
+                            </svg>
+                        </div>
+                        <div class="card-body">
+                            <div class="grid-inputs">
+                                <div class="field-group"><label class="field-label" for="r_ci"><span>Cota Inicial</span><span class="symbol">ci</span></label><div class="input-wrapper"><input type="number" id="r_ci" step="any" placeholder="0.000"><span class="unit">m</span></div></div>
+                                <div class="field-group"><label class="field-label" for="r_cf"><span>Cota Final</span><span class="symbol">cf</span></label><div class="input-wrapper"><input type="number" id="r_cf" step="any" placeholder="0.000"><span class="unit">m</span></div></div>
+                                <div class="field-group"><label class="field-label" for="r_c"><span>Comprimento</span><span class="symbol">c</span></label><div class="input-wrapper"><input type="number" id="r_c" step="any" placeholder="0.000"><span class="unit">m</span></div></div>
+                                <div class="field-group"><label class="field-label" for="r_i"><span>Inclinação</span><span class="symbol">i</span></label><div class="input-wrapper"><input type="number" id="r_i" step="any" placeholder="0.000"><span class="unit">%</span></div></div>
+                            </div>
+                            <div class="info-badge" id="r_badge"></div>
+                            <div class="status-bar" id="r_status">Preencha 3 campos para calcular o 4º.</div>
+                            <div class="actions"><button class="btn btn-primary" onclick="calcRampas()">Calcular</button><button class="btn btn-secondary" onclick="clearRampas()">Limpar</button></div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 2. ESTACAS -->
+                <section class="calc-panel" id="calc-estacas">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="header-meta"><h1>Interpolação de Estacas & Greide</h1><div class="formula-tag">Cota(X) = Cota₁ + [(Cota₂ - Cota₁) / ΔDist] × Dist₁-X</div></div>
+                            <span class="badge-category">Topografia Viária</span>
+                        </div>
+                        <div class="diagram-stage">
+                            <svg viewBox="0 0 420 110">
+                                <line x1="50" y1="80" x2="370" y2="30" stroke="var(--svg-accent)" stroke-width="2" />
+                                <circle cx="50" cy="80" r="4" fill="var(--svg-accent)" />
+                                <circle cx="210" cy="55" r="4" fill="var(--calc-highlight-border)" />
+                                <circle cx="370" cy="30" r="4" fill="var(--svg-accent)" />
+                                <text x="50" y="98" text-anchor="middle" class="svg-text" id="est_svg_p1">Est. 1</text>
+                                <text x="210" y="75" text-anchor="middle" class="svg-text" id="est_svg_px" font-weight="600">Est. X (Alvo)</text>
+                                <text x="370" y="48" text-anchor="middle" class="svg-text" id="est_svg_p2">Est. 2</text>
+                            </svg>
+                        </div>
+                        <div class="card-body">
+                            <div class="grid-inputs">
+                                <div class="field-group"><label class="field-label" for="est_e1"><span>Estaca Inicial (N + m)</span><span class="symbol">Ex: 10+5.00</span></label><div class="input-wrapper"><input type="text" id="est_e1" placeholder="10+0.00"></div></div>
+                                <div class="field-group"><label class="field-label" for="est_c1"><span>Cota Inicial</span><span class="symbol">Z₁</span></label><div class="input-wrapper"><input type="number" id="est_c1" step="any" placeholder="100.000"><span class="unit">m</span></div></div>
+                                <div class="field-group"><label class="field-label" for="est_e2"><span>Estaca Final (N + m)</span><span class="symbol">Ex: 20+0.00</span></label><div class="input-wrapper"><input type="text" id="est_e2" placeholder="20+0.00"></div></div>
+                                <div class="field-group"><label class="field-label" for="est_c2"><span>Cota Final</span><span class="symbol">Z₂</span></label><div class="input-wrapper"><input type="number" id="est_c2" step="any" placeholder="105.000"><span class="unit">m</span></div></div>
+                                <div class="field-group" style="grid-column: span 2;"><label class="field-label" for="est_ex"><span>Estaca Intermediária a Interpolar</span><span class="symbol">Ex</span></label><div class="input-wrapper"><input type="text" id="est_ex" placeholder="14+10.00"></div></div>
+                            </div>
+                            <div class="info-badge" id="est_badge"></div>
+                            <div class="status-bar" id="est_status">Informe as duas estacas extremas e a estaca desejada.</div>
+                            <div class="actions"><button class="btn btn-primary" onclick="calcEstacas()">Interpolar Cota</button><button class="btn btn-secondary" onclick="clearEstacas()">Limpar</button></div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 3. TALUDES -->
+                <section class="calc-panel" id="calc-taludes">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="header-meta"><h1>Geometria de Taludes</h1><div class="formula-tag">Proporção 1:m (V:H) ⇄ i(%) = (1/m) × 100 ⇄ Ângulo θ</div></div>
+                            <span class="badge-category">Geotecnia & Terraplenagem</span>
+                        </div>
+                        <div class="diagram-stage">
+                            <svg viewBox="0 0 420 110">
+                                <polygon points="60,85 360,85 240,25" fill="var(--svg-fill)" stroke="var(--svg-line)" stroke-width="1.5" />
+                                <line x1="240" y1="25" x2="240" y2="85" stroke="var(--text-muted)" stroke-dasharray="2 2" />
+                                <text x="248" y="55" class="svg-text" id="tal_svg_h">H: -- m</text>
+                                <text x="140" y="50" class="svg-text" id="tal_svg_prop" font-weight="600">1 : m</text>
+                                <text x="150" y="98" text-anchor="middle" class="svg-text" id="tal_svg_b">B: -- m</text>
+                            </svg>
+                        </div>
+                        <div class="card-body">
+                            <div class="grid-inputs">
+                                <div class="field-group"><label class="field-label" for="tal_h"><span>Altura do Talude</span><span class="symbol">H</span></label><div class="input-wrapper"><input type="number" id="tal_h" step="any" placeholder="3.00"><span class="unit">m</span></div></div>
+                                <div class="field-group"><label class="field-label" for="tal_m"><span>Proporção Horizontal (1:m)</span><span class="symbol">m</span></label><div class="input-wrapper"><input type="number" id="tal_m" step="any" placeholder="1.50"><span class="unit">H/V</span></div></div>
+                                <div class="field-group"><label class="field-label" for="tal_b"><span>Projeção da Saia</span><span class="symbol">B = H × m</span></label><div class="input-wrapper"><input type="number" id="tal_b" step="any" placeholder="4.50"><span class="unit">m</span></div></div>
+                                <div class="field-group"><label class="field-label" for="tal_i"><span>Declividade</span><span class="symbol">i (%)</span></label><div class="input-wrapper"><input type="number" id="tal_i" step="any" placeholder="66.67"><span class="unit">%</span></div></div>
+                            </div>
+                            <div class="info-badge" id="tal_badge"></div>
+                            <div class="status-bar" id="tal_status">Informe Altura (H) e um parâmetro de inclinação (m, B ou i%). Consulte o módulo Parâmetros para valores usuais por tipo de solo.</div>
+                            <div class="actions"><button class="btn btn-primary" onclick="calcTaludes()">Dimensionar Talude</button><button class="btn btn-secondary" onclick="clearTaludes()">Limpar</button></div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 4. MANNING -->
+                <section class="calc-panel" id="calc-manning">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="header-meta"><h1>Drenagem & Sarjetas (Manning)</h1><div class="formula-tag">Q = (1/n) × A × R_h^(2/3) × I_o^(1/2)</div></div>
+                            <span class="badge-category">Hidráulica</span>
+                        </div>
+                        <div class="diagram-stage">
+                            <svg viewBox="0 0 420 110">
+                                <polygon points="80,30 180,85 340,30" fill="var(--svg-fill)" stroke="var(--svg-line)" stroke-width="1.5" />
+                                <polygon points="105,45 180,85 315,45" fill="rgba(56, 189, 248, 0.25)" stroke="var(--accent)" stroke-width="1" />
+                                <text x="210" y="65" text-anchor="middle" class="svg-text" id="man_svg_q" font-weight="600">Q = -- L/s</text>
+                                <text x="350" y="48" class="svg-text" id="man_svg_v">v = -- m/s</text>
+                            </svg>
+                        </div>
+                        <div class="card-body">
+                            <div class="grid-inputs">
+                                <div class="field-group"><label class="field-label" for="man_n"><span>Rugosidade Manning</span><span class="symbol">n</span></label>
+                                    <div class="input-wrapper">
+                                        <select id="man_n">
+                                            <option value="0.015">0.015 (Concreto liso / Sarjeta moldada)</option>
+                                            <option value="0.018">0.018 (Concreto rugoso / Asfalto)</option>
+                                            <option value="0.013">0.013 (PVC / PEAD liso)</option>
+                                            <option value="0.013">0.013 (Manilha de concreto)</option>
+                                            <option value="0.022">0.022 (Valeta em terra, limpa e regular)</option>
+                                            <option value="0.030">0.030 (Valeta em terra com vegetação rasteira)</option>
+                                            <option value="0.025">0.025 (Valeta em terra limpa)</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="field-group"><label class="field-label" for="man_io"><span>Declividade Longitudinal</span><span class="symbol">I_o</span></label><div class="input-wrapper"><input type="number" id="man_io" step="any" placeholder="0.020"><span class="unit">m/m</span></div></div>
+                                <div class="field-group"><label class="field-label" for="man_z"><span>Inclinação Transversal (1:Z)</span><span class="symbol">Z</span></label><div class="input-wrapper"><input type="number" id="man_z" step="any" placeholder="20.0" value="20.0"><span class="unit">H/V</span></div></div>
+                                <div class="field-group"><label class="field-label" for="man_y"><span>Lâmina d'água</span><span class="symbol">y_0</span></label><div class="input-wrapper"><input type="number" id="man_y" step="any" placeholder="0.080"><span class="unit">m</span></div></div>
+                            </div>
+                            <div class="info-badge" id="man_badge"></div>
+                            <div class="status-bar" id="man_status">Insira os parâmetros geométricos e hidráulicos da calha. Tabela completa de "n" no módulo Parâmetros.</div>
+                            <div class="actions"><button class="btn btn-primary" onclick="calcManning()">Calcular Capacidade</button><button class="btn btn-secondary" onclick="clearManning()">Limpar</button></div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 5. EMPOLAMENTO -->
+                <section class="calc-panel" id="calc-empolamento">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="header-meta"><h1>Empolamento & Transporte de Solos</h1><div class="formula-tag">V_solto = V_corte × (1 + E%) ⇄ Nº Viagens = V_solto / Cap_caçamba</div></div>
+                            <span class="badge-category">Terraplenagem & Frotas</span>
+                        </div>
+                        <div class="card-body">
+                            <div class="grid-inputs">
+                                <div class="field-group"><label class="field-label" for="emp_vc"><span>Volume Geométrico (Corte)</span><span class="symbol">V_c</span></label><div class="input-wrapper"><input type="number" id="emp_vc" step="any" placeholder="1200.00"><span class="unit">m³</span></div></div>
+                                <div class="field-group"><label class="field-label" for="emp_taxa"><span>Fator de Empolamento / Solo</span><span class="symbol">E%</span></label>
+                                    <div class="input-wrapper">
+                                        <select id="emp_taxa">
+                                            <option value="25">25% — Areia / Solo arenoso</option>
+                                            <option value="30" selected>30% — Terra comum / Argila média</option>
+                                            <option value="40">40% — Argila pesada / Saibro</option>
+                                            <option value="50">50% — Rocha detonada / Enrocamento</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="field-group"><label class="field-label" for="emp_cap"><span>Capacidade da Caçamba</span><span class="symbol">V_truck</span></label><div class="input-wrapper"><input type="number" id="emp_cap" step="any" value="14.00" placeholder="14.00"><span class="unit">m³</span></div></div>
+                                <div class="field-group"><label class="field-label" for="emp_fhom"><span>Fator de Homogeneização</span><span class="symbol">F_h</span></label><div class="input-wrapper"><input type="number" id="emp_fhom" step="any" value="1.20" placeholder="1.20"><span class="unit">adim</span></div></div>
+                            </div>
+                            <div class="info-badge" id="emp_badge"></div>
+                            <div class="status-bar" id="emp_status">Preencha o volume medido no corte e o tipo de solo.</div>
+                            <div class="actions"><button class="btn btn-primary" onclick="calcEmpolamento()">Dimensionar Frota</button><button class="btn btn-secondary" onclick="clearEmpolamento()">Limpar</button></div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 6. LIGANTE -->
+                <section class="calc-panel" id="calc-ligante">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="header-meta"><h1>Taxa de Ligante Asfáltico</h1><div class="formula-tag">Vol_total = Área × Taxa_projeto ⇄ Qnt_cargas = Vol / Cap_tanque</div></div>
+                            <span class="badge-category">Pavimentação Asfáltica</span>
+                        </div>
+                        <div class="card-body">
+                            <div class="grid-inputs">
+                                <div class="field-group"><label class="field-label" for="lig_comp"><span>Extensão do Trecho</span><span class="symbol">L</span></label><div class="input-wrapper"><input type="number" id="lig_comp" step="any" placeholder="1500.00"><span class="unit">m</span></div></div>
+                                <div class="field-group"><label class="field-label" for="lig_larg"><span>Largura de Aplicação</span><span class="symbol">W</span></label><div class="input-wrapper"><input type="number" id="lig_larg" step="any" placeholder="7.00"><span class="unit">m</span></div></div>
+                                <div class="field-group"><label class="field-label" for="lig_servico"><span>Tipo de Pintura / Serviço</span><span class="symbol">Taxa</span></label>
+                                    <div class="input-wrapper">
+                                        <select id="lig_servico" onchange="updateTaxaLigante()">
+                                            <option value="1.2">Imprimação Betuminosa (CM-30: 1.20 L/m²)</option>
+                                            <option value="0.5">Pintura de Ligação (RR-1C: 0.50 L/m²)</option>
+                                            <option value="1.4">Tratamento Superficial (1.40 L/m²)</option>
+                                            <option value="custom">Personalizado (Digitar abaixo)</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="field-group"><label class="field-label" for="lig_taxa"><span>Taxa de Aplicação</span><span class="symbol">T</span></label><div class="input-wrapper"><input type="number" id="lig_taxa" step="any" value="1.20" placeholder="1.20"><span class="unit">L/m²</span></div></div>
+                            </div>
+                            <div class="info-badge" id="lig_badge"></div>
+                            <div class="status-bar" id="lig_status">Informe as dimensões da pista e a taxa de projeto.</div>
+                            <div class="actions"><button class="btn btn-primary" onclick="calcLigante()">Calcular Volume de Emulsão</button><button class="btn btn-secondary" onclick="clearLigante()">Limpar</button></div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 7. SUPERLARGURA -->
+                <section class="calc-panel" id="calc-superlargura">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="header-meta"><h1>Superlargura em Curvas</h1><div class="formula-tag">S = n·(R - √(R² - L²)) + V / (10·√R)</div></div>
+                            <span class="badge-category">Projeto Geométrico de Vias</span>
+                        </div>
+                        <div class="card-body">
+                            <div class="grid-inputs">
+                                <div class="field-group"><label class="field-label" for="sup_r"><span>Raio da Curva</span><span class="symbol">R</span></label><div class="input-wrapper"><input type="number" id="sup_r" step="any" placeholder="150.00"><span class="unit">m</span></div></div>
+                                <div class="field-group"><label class="field-label" for="sup_v"><span>Velocidade de Diretriz</span><span class="symbol">V</span></label><div class="input-wrapper"><input type="number" id="sup_v" step="any" placeholder="60.0"><span class="unit">km/h</span></div></div>
+                                <div class="field-group"><label class="field-label" for="sup_n"><span>Número de Faixas</span><span class="symbol">n</span></label><div class="input-wrapper"><input type="number" id="sup_n" step="1" value="2" placeholder="2"><span class="unit">faixas</span></div></div>
+                                <div class="field-group"><label class="field-label" for="sup_l"><span>Comprimento do Veículo (Entre-eixos)</span><span class="symbol">L</span></label>
+                                    <div class="input-wrapper">
+                                        <select id="sup_l">
+                                            <option value="6.10">6.10 m — Veículo de Passeio (VP)</option>
+                                            <option value="7.30">7.30 m — Caminhão Comercial Médio (CO)</option>
+                                            <option value="12.00">12.00 m — Ônibus Urbano / Rodoviário (O)</option>
+                                            <option value="15.24" selected>15.24 m — Semirreboque / Carreta (SR)</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="info-badge" id="sup_badge"></div>
+                            <div class="status-bar" id="sup_status">Norma DNIT: Cálculo de alargamento para acomodação de veículos pesados.</div>
+                            <div class="actions"><button class="btn btn-primary" onclick="calcSuperlargura()">Calcular Alargamento (S)</button><button class="btn btn-secondary" onclick="clearSuperlargura()">Limpar</button></div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 8. BLONDEL -->
+                <section class="calc-panel" id="calc-blondel">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="header-meta"><h1>Dimensionamento de Escadas</h1><div class="formula-tag">Fórmula de Blondel: 63 cm ≤ 2e + p ≤ 64 cm</div></div>
+                            <span class="badge-category">Arquitetura & Conforto</span>
+                        </div>
+                        <div class="diagram-stage">
+                            <svg viewBox="0 0 420 110">
+                                <path d="M 60,90 L 120,90 L 120,70 L 180,70 L 180,50 L 240,50 L 240,30 L 300,30" fill="none" stroke="var(--svg-line)" stroke-width="2" />
+                                <line x1="300" y1="30" x2="300" y2="90" stroke="var(--text-muted)" stroke-dasharray="2 2" />
+                                <text x="315" y="65" class="svg-text" id="esc_svg_h">H: -- cm</text>
+                                <text x="210" y="44" text-anchor="middle" class="svg-text" id="esc_svg_p">p: -- cm</text>
+                                <text x="170" y="62" text-anchor="end" class="svg-text" id="esc_svg_e">e: -- cm</text>
+                            </svg>
+                        </div>
+                        <div class="card-body">
+                            <div class="grid-inputs">
+                                <div class="field-group"><label class="field-label" for="esc_h"><span>Desnível Total (Piso a Piso)</span><span class="symbol">H</span></label><div class="input-wrapper"><input type="number" id="esc_h" step="any" placeholder="2.80"><span class="unit">m</span></div></div>
+                                <div class="field-group"><label class="field-label" for="esc_emax"><span>Espelho Desejado (Ideal ~17.5)</span><span class="symbol">e</span></label><div class="input-wrapper"><input type="number" id="esc_emax" step="any" value="17.5" placeholder="17.5"><span class="unit">cm</span></div></div>
+                            </div>
+                            <div class="info-badge" id="esc_badge"></div>
+                            <div class="status-bar" id="esc_status">Insira o desnível vertical para calcular o número de degraus e o piso ideal.</div>
+                            <div class="actions"><button class="btn btn-primary" onclick="calcBlondel()">Calcular Escada</button><button class="btn btn-secondary" onclick="clearBlondel()">Limpar</button></div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 9. VERGALHÃO -->
+                <section class="calc-panel" id="calc-vergalhao">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="header-meta"><h1>Peso de Vergalhões</h1><div class="formula-tag">NBR 7480 — P (kg/m) = d² / 162</div></div>
+                            <span class="badge-category">Estruturas de Concreto Armado</span>
+                        </div>
+                        <div class="card-body">
+                            <div class="grid-inputs">
+                                <div class="field-group"><label class="field-label" for="verg_bitola"><span>Bitola (CA-50)</span><span class="symbol">Ø</span></label>
+                                    <div class="input-wrapper">
+                                        <select id="verg_bitola">
+                                            <option value="6.3|0.245">6.3 mm — 0.245 kg/m</option>
+                                            <option value="8.0|0.395">8.0 mm — 0.395 kg/m</option>
+                                            <option value="10.0|0.617">10.0 mm — 0.617 kg/m</option>
+                                            <option value="12.5|0.963" selected>12.5 mm — 0.963 kg/m</option>
+                                            <option value="16.0|1.578">16.0 mm — 1.578 kg/m</option>
+                                            <option value="20.0|2.466">20.0 mm — 2.466 kg/m</option>
+                                            <option value="25.0|3.853">25.0 mm — 3.853 kg/m</option>
+                                            <option value="32.0|6.313">32.0 mm — 6.313 kg/m</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="field-group"><label class="field-label" for="verg_qtd"><span>Quantidade de Barras</span><span class="symbol">Un.</span></label><div class="input-wrapper"><input type="number" id="verg_qtd" step="1" value="1" placeholder="1"></div></div>
+                                <div class="field-group"><label class="field-label" for="verg_comp"><span>Comprimento por Barra</span><span class="symbol">L</span></label><div class="input-wrapper"><input type="number" id="verg_comp" step="any" value="12.00" placeholder="12.00"><span class="unit">m</span></div></div>
+                            </div>
+                            <div class="info-badge" id="verg_badge"></div>
+                            <div class="status-bar" id="verg_status">Selecione a bitola e informe quantidade e comprimento das barras.</div>
+                            <div class="actions"><button class="btn btn-primary" onclick="calcVergalhao()">Calcular Peso Total</button><button class="btn btn-secondary" onclick="clearVergalhao()">Limpar</button></div>
+                        </div>
+                    </div>
+                </section>
+
+            </main>
+        </div>
+    </div>
+
+    <!-- ============================================================
+         VIEW: MÓDULO 2 — Parâmetros & Referências
+         ============================================================ -->
+    <div class="top-view" id="view-params">
+        <div class="topbar">
+            <button class="topbar-home" type="button" data-view="view-launcher">
+                <span class="brand-logo">ET</span>
+                <span class="topbar-home-stack"><span class="topbar-home-name">EngTools</span><span class="topbar-home-hint">← início</span></span>
+            </button>
+            <span class="topbar-sep">/</span>
+            <span class="topbar-title">Parâmetros & Referências</span>
+            <div class="topbar-actions">
+                <button class="theme-toggle-btn" type="button"><span>◐</span><span class="theme-label">Tema Escuro</span></button>
+            </div>
+        </div>
+
+        <main class="ref-page-main">
+            <div class="ref-intro">
+                <h1>Parâmetros & Referências Técnicas</h1>
+                <p>Tabelas de consulta rápida usadas nas calculadoras — rugosidade, cobrimento, taludes, empolamento, ligantes e acessibilidade. Digite para filtrar por material, código ou palavra-chave.</p>
+            </div>
+
+            <div class="ref-search-wrap">
+                <span class="ref-search-icon">⌕</span>
+                <input type="text" id="paramsSearch" placeholder="Buscar parâmetro — ex.: PVC, cobrimento, argila, RR-1C...">
+                <button class="ref-search-clear" id="paramsSearchClear" type="button">limpar ✕</button>
+            </div>
+
+            <div id="paramsScope">
+                <!-- HIDRÁULICA -->
+                <div class="ref-section">
+                    <div class="ref-section-head"><h2>Coeficiente de Rugosidade de Manning (n)</h2><span class="ref-section-cat">Hidráulica</span></div>
+                    <div class="ref-list">
+                        <div class="ref-item" data-search="manning n pvc pead liso tubo conduto fechado hidraulica"><div class="ref-item-main"><span class="ref-item-name">Tubo de PVC / PEAD liso</span><span class="ref-item-tag">Condutos fechados</span></div><span class="ref-item-value">n = 0,011</span></div>
+                        <div class="ref-item" data-search="manning n manilha tubo concreto conduto fechado hidraulica"><div class="ref-item-main"><span class="ref-item-name">Manilha / tubo de concreto</span><span class="ref-item-tag">Condutos fechados</span></div><span class="ref-item-value">n = 0,013</span></div>
+                        <div class="ref-item" data-search="manning n tubo aco corrugado conduto fechado hidraulica"><div class="ref-item-main"><span class="ref-item-name">Tubo de aço corrugado</span><span class="ref-item-tag">Condutos fechados</span></div><span class="ref-item-value">n = 0,024</span></div>
+                        <div class="ref-item" data-search="manning n sarjeta concreto moldado in loco canal revestido hidraulica"><div class="ref-item-main"><span class="ref-item-name">Sarjeta / canaleta em concreto moldado</span><span class="ref-item-tag">Canais revestidos</span></div><span class="ref-item-value">n = 0,015</span></div>
+                        <div class="ref-item" data-search="manning n canal concreto liso revestido asfalto hidraulica"><div class="ref-item-main"><span class="ref-item-name">Canal revestido em concreto liso / asfalto</span><span class="ref-item-tag">Canais revestidos</span></div><span class="ref-item-value">n = 0,013 – 0,018</span></div>
+                        <div class="ref-item" data-search="manning n canal terra limpo reto valeta hidraulica"><div class="ref-item-main"><span class="ref-item-name">Canal em terra, limpo e reto</span><span class="ref-item-tag">Canais e valetas</span></div><span class="ref-item-value">n = 0,022</span></div>
+                        <div class="ref-item" data-search="manning n canal terra vegetacao rasteira hidraulica"><div class="ref-item-main"><span class="ref-item-name">Canal em terra com vegetação rasteira</span><span class="ref-item-tag">Canais e valetas</span></div><span class="ref-item-value">n = 0,030</span></div>
+                        <div class="ref-item" data-search="manning n canal rocha irregular hidraulica"><div class="ref-item-main"><span class="ref-item-name">Canal escavado em rocha, irregular</span><span class="ref-item-tag">Canais e valetas</span></div><span class="ref-item-value">n = 0,040</span></div>
+                        <div class="ref-item" data-search="manning n rio natural limpo reto curso dagua hidraulica"><div class="ref-item-main"><span class="ref-item-name">Curso d'água natural, limpo e reto</span><span class="ref-item-tag">Cursos naturais</span></div><span class="ref-item-value">n = 0,030</span></div>
+                        <div class="ref-item" data-search="manning n rio natural meandros pedras vegetacao hidraulica"><div class="ref-item-main"><span class="ref-item-name">Curso d'água natural, com meandros e pedras</span><span class="ref-item-tag">Cursos naturais</span></div><span class="ref-item-value">n = 0,045 – 0,060</span></div>
+                    </div>
+                    <p class="ref-note">Valores usuais de referência (tabela clássica de Chow, amplamente adotada em manuais de hidráulica e drenagem viária). Para projetos específicos, confirme o coeficiente no manual de drenagem do órgão contratante.</p>
+                </div>
+
+                <!-- ESTRUTURAS: COBRIMENTO -->
+                <div class="ref-section">
+                    <div class="ref-section-head"><h2>Cobrimento Nominal de Armadura</h2><span class="ref-section-cat">NBR 6118 — Tab. 7.2</span></div>
+                    <div class="ref-table-wrap">
+                        <table class="ref-table">
+                            <thead><tr><th>Elemento</th><th>CAA I</th><th>CAA II</th><th>CAA III</th><th>CAA IV</th></tr></thead>
+                            <tbody>
+                                <tr class="ref-item" data-search="cobrimento nominal laje concreto armado nbr 6118 classe agressividade"><td>Laje (concreto armado)</td><td>20 mm</td><td>25 mm</td><td>35 mm</td><td>45 mm</td></tr>
+                                <tr class="ref-item" data-search="cobrimento nominal viga pilar concreto armado nbr 6118 classe agressividade"><td>Viga / Pilar (concreto armado)</td><td>25 mm</td><td>30 mm</td><td>40 mm</td><td>50 mm</td></tr>
+                                <tr class="ref-item" data-search="cobrimento nominal elementos contato solo fundacao concreto armado nbr 6118"><td>Em contato com o solo / fundação</td><td>30 mm</td><td>30 mm</td><td>40 mm</td><td>50 mm</td></tr>
+                                <tr class="ref-item" data-search="cobrimento nominal laje concreto protendido nbr 6118"><td>Laje (concreto protendido)</td><td>25 mm</td><td>30 mm</td><td>40 mm</td><td>50 mm</td></tr>
+                                <tr class="ref-item" data-search="cobrimento nominal viga pilar concreto protendido nbr 6118"><td>Viga / Pilar (concreto protendido)</td><td>30 mm</td><td>35 mm</td><td>45 mm</td><td>55 mm</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p class="ref-note">Classes de agressividade ambiental: I fraca (rural/submersa), II moderada (urbana), III forte (marinha/industrial), IV muito forte (respingos de maré/industrial agressiva). Valores para Δc = 10 mm; consulte a NBR 6118 para Δc = 5 mm com controle rígido de execução.</p>
+                </div>
+
+                <!-- ESTRUTURAS: VERGALHÕES -->
+                <div class="ref-section">
+                    <div class="ref-section-head"><h2>Massa Nominal de Vergalhões (CA-50)</h2><span class="ref-section-cat">NBR 7480</span></div>
+                    <div class="ref-table-wrap">
+                        <table class="ref-table">
+                            <thead><tr><th>Bitola</th><th>Massa nominal</th><th>Barra de 12 m</th></tr></thead>
+                            <tbody>
+                                <tr class="ref-item" data-search="vergalhao bitola 6.3mm ca-50 nbr 7480 peso massa"><td>6,3 mm</td><td>0,245 kg/m</td><td>2,94 kg</td></tr>
+                                <tr class="ref-item" data-search="vergalhao bitola 8mm ca-50 nbr 7480 peso massa"><td>8,0 mm</td><td>0,395 kg/m</td><td>4,74 kg</td></tr>
+                                <tr class="ref-item" data-search="vergalhao bitola 10mm ca-50 nbr 7480 peso massa"><td>10,0 mm</td><td>0,617 kg/m</td><td>7,40 kg</td></tr>
+                                <tr class="ref-item" data-search="vergalhao bitola 12.5mm ca-50 nbr 7480 peso massa"><td>12,5 mm</td><td>0,963 kg/m</td><td>11,56 kg</td></tr>
+                                <tr class="ref-item" data-search="vergalhao bitola 16mm ca-50 nbr 7480 peso massa"><td>16,0 mm</td><td>1,578 kg/m</td><td>18,94 kg</td></tr>
+                                <tr class="ref-item" data-search="vergalhao bitola 20mm ca-50 nbr 7480 peso massa"><td>20,0 mm</td><td>2,466 kg/m</td><td>29,59 kg</td></tr>
+                                <tr class="ref-item" data-search="vergalhao bitola 25mm ca-50 nbr 7480 peso massa"><td>25,0 mm</td><td>3,853 kg/m</td><td>46,24 kg</td></tr>
+                                <tr class="ref-item" data-search="vergalhao bitola 32mm ca-50 nbr 7480 peso massa"><td>32,0 mm</td><td>6,313 kg/m</td><td>75,76 kg</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p class="ref-note">Fórmula: massa (kg/m) = d² / 162, com d em milímetros. Há uma calculadora dedicada no módulo Calculadora → Estruturas → Peso de Vergalhões.</p>
+                </div>
+
+                <!-- GEOTECNIA -->
+                <div class="ref-section">
+                    <div class="ref-section-head"><h2>Inclinação Usual de Taludes por Material</h2><span class="ref-section-cat">Geotecnia & Terraplenagem</span></div>
+                    <div class="ref-list">
+                        <div class="ref-item" data-search="talude rocha sa vertical corte geotecnia inclinacao"><div class="ref-item-main"><span class="ref-item-name">Rocha sã</span><span class="ref-item-tag">Talude de corte</span></div><span class="ref-item-value">próximo de vertical*</span></div>
+                        <div class="ref-item" data-search="talude cascalho seixo 1:1 45 graus corte geotecnia inclinacao"><div class="ref-item-main"><span class="ref-item-name">Cascalho / seixo</span><span class="ref-item-tag">Talude de corte</span></div><span class="ref-item-value">1 : 1 (≈45°)</span></div>
+                        <div class="ref-item" data-search="talude argila corte geotecnia inclinacao 39 graus"><div class="ref-item-main"><span class="ref-item-name">Argila</span><span class="ref-item-tag">Talude de corte</span></div><span class="ref-item-value">≈1 : 1,25 (≈39°)</span></div>
+                        <div class="ref-item" data-search="talude areia corte geotecnia inclinacao 31 graus"><div class="ref-item-main"><span class="ref-item-name">Areia</span><span class="ref-item-tag">Talude de corte</span></div><span class="ref-item-value">≈1 : 1,7 (≈31°)</span></div>
+                        <div class="ref-item" data-search="talude terra vegetal solta corte geotecnia inclinacao"><div class="ref-item-main"><span class="ref-item-name">Terra vegetal solta</span><span class="ref-item-tag">Talude de corte</span></div><span class="ref-item-value">1 : 2 (≈26,5°)</span></div>
+                        <div class="ref-item" data-search="talude aterro compactado geotecnia inclinacao usual"><div class="ref-item-main"><span class="ref-item-name">Aterro compactado, sem estudo específico</span><span class="ref-item-tag">Talude de aterro</span></div><span class="ref-item-value">1,5:1 a 2:1 (H:V)</span></div>
+                    </div>
+                    <p class="ref-note">*Valores usuais para pré-dimensionamento de anteprojeto. Nunca substituem um estudo geotécnico e a verificação de estabilidade (ex.: NBR 11682) para o projeto executivo.</p>
+                </div>
+
+                <!-- PAVIMENTAÇÃO: EMPOLAMENTO -->
+                <div class="ref-section">
+                    <div class="ref-section-head"><h2>Fator de Empolamento por Tipo de Solo</h2><span class="ref-section-cat">Pavimentação & Solos</span></div>
+                    <div class="ref-list">
+                        <div class="ref-item" data-search="empolamento areia solo arenoso terraplenagem fator"><div class="ref-item-main"><span class="ref-item-name">Areia / solo arenoso</span><span class="ref-item-tag">Empolamento</span></div><span class="ref-item-value">≈25%</span></div>
+                        <div class="ref-item" data-search="empolamento terra comum argila media terraplenagem fator"><div class="ref-item-main"><span class="ref-item-name">Terra comum / argila média</span><span class="ref-item-tag">Empolamento</span></div><span class="ref-item-value">≈30%</span></div>
+                        <div class="ref-item" data-search="empolamento argila pesada saibro terraplenagem fator"><div class="ref-item-main"><span class="ref-item-name">Argila pesada / saibro</span><span class="ref-item-tag">Empolamento</span></div><span class="ref-item-value">≈40%</span></div>
+                        <div class="ref-item" data-search="empolamento rocha detonada enrocamento terraplenagem fator"><div class="ref-item-main"><span class="ref-item-name">Rocha detonada / enrocamento</span><span class="ref-item-tag">Empolamento</span></div><span class="ref-item-value">≈50%</span></div>
+                    </div>
+                </div>
+
+                <!-- PAVIMENTAÇÃO: LIGANTES -->
+                <div class="ref-section">
+                    <div class="ref-section-head"><h2>Taxas de Aplicação de Ligante Asfáltico</h2><span class="ref-section-cat">Pavimentação Asfáltica</span></div>
+                    <div class="ref-list">
+                        <div class="ref-item" data-search="imprimacao betuminosa cm-30 taxa aplicacao pavimentacao"><div class="ref-item-main"><span class="ref-item-name">Imprimação Betuminosa (CM-30)</span><span class="ref-item-tag">Ligante</span></div><span class="ref-item-value">1,20 L/m²</span></div>
+                        <div class="ref-item" data-search="pintura de ligacao rr-1c taxa aplicacao pavimentacao"><div class="ref-item-main"><span class="ref-item-name">Pintura de Ligação (RR-1C)</span><span class="ref-item-tag">Ligante</span></div><span class="ref-item-value">0,50 L/m²</span></div>
+                        <div class="ref-item" data-search="tratamento superficial taxa aplicacao pavimentacao ligante"><div class="ref-item-main"><span class="ref-item-name">Tratamento Superficial</span><span class="ref-item-tag">Ligante</span></div><span class="ref-item-value">1,40 L/m²</span></div>
+                    </div>
+                    <p class="ref-note">Taxas de referência de projeto — a dosagem final é definida em campo por ensaio de bandejas, conforme especificação do DNIT.</p>
+                </div>
+
+                <!-- ACESSIBILIDADE -->
+                <div class="ref-section">
+                    <div class="ref-section-head"><h2>Limites de Inclinação de Rampas</h2><span class="ref-section-cat">NBR 9050</span></div>
+                    <div class="ref-list">
+                        <div class="ref-item" data-search="rampa nbr 9050 acessibilidade ate 5% sem restricao"><div class="ref-item-main"><span class="ref-item-name">i ≤ 5,00%</span><span class="ref-item-tag">Acessibilidade</span></div><span class="ref-item-value">sem restrição de desnível por lance</span></div>
+                        <div class="ref-item" data-search="rampa nbr 9050 acessibilidade 6.25% desnivel maximo 1 metro"><div class="ref-item-main"><span class="ref-item-name">5,00% &lt; i ≤ 6,25%</span><span class="ref-item-tag">Acessibilidade</span></div><span class="ref-item-value">desnível máx. 1,00 m por lance</span></div>
+                        <div class="ref-item" data-search="rampa nbr 9050 acessibilidade 8.33% desnivel maximo 0.80 metro"><div class="ref-item-main"><span class="ref-item-name">6,25% &lt; i ≤ 8,33%</span><span class="ref-item-tag">Acessibilidade</span></div><span class="ref-item-value">desnível máx. 0,80 m por lance</span></div>
+                        <div class="ref-item" data-search="rampa nbr 9050 acessibilidade 12.5% reforma inclinacao elevada"><div class="ref-item-main"><span class="ref-item-name">8,33% &lt; i ≤ 12,5%</span><span class="ref-item-tag">Acessibilidade</span></div><span class="ref-item-value">só em reformas, quando 8,33% for impraticável</span></div>
+                        <div class="ref-item" data-search="rampa nbr 9050 acessibilidade acima 12.5% inacessivel pedestres"><div class="ref-item-main"><span class="ref-item-name">i &gt; 12,5%</span><span class="ref-item-tag">Acessibilidade</span></div><span class="ref-item-value">inacessível a pedestres</span></div>
                     </div>
                 </div>
             </div>
 
-            <nav class="nav-sections">
-                <div>
-                    <div class="nav-group-title">Geometria & Topografia</div>
-                    <ul class="nav-group-list">
-                        <li class="nav-item active" data-target="calc-rampas">
-                            <span>Rampas & Declividades</span>
-                            <span class="code-tag">NBR 9050</span>
-                        </li>
-                        <li class="nav-item" data-target="calc-estacas">
-                            <span>Interpolação de Estacas</span>
-                            <span class="code-tag">Greide</span>
-                        </li>
-                        <li class="nav-item" data-target="calc-taludes">
-                            <span>Taludes (V:H e %)</span>
-                            <span class="code-tag">Terrapl.</span>
-                        </li>
-                        <li class="nav-item" data-target="calc-superlargura">
-                            <span>Superlargura em Curvas</span>
-                            <span class="code-tag">DNIT</span>
-                        </li>
-                        <li class="nav-item" data-target="calc-blondel">
-                            <span>Escadas (Blondel)</span>
-                            <span class="code-tag">Conforto</span>
-                        </li>
-                    </ul>
-                </div>
+            <div class="ref-empty-state" id="paramsEmptyState">Nenhum parâmetro encontrado para esta busca.</div>
+        </main>
+    </div>
 
-                <div>
-                    <div class="nav-group-title">Hidráulica & Drenagem</div>
-                    <ul class="nav-group-list">
-                        <li class="nav-item" data-target="calc-manning">
-                            <span>Sarjetas & Canais</span>
-                            <span class="code-tag">Manning</span>
-                        </li>
-                    </ul>
-                </div>
-
-                <div>
-                    <div class="nav-group-title">Pavimentação & Solos</div>
-                    <ul class="nav-group-list">
-                        <li class="nav-item" data-target="calc-empolamento">
-                            <span>Empolamento & Caçambas</span>
-                            <span class="code-tag">Corte/Aterro</span>
-                        </li>
-                        <li class="nav-item" data-target="calc-ligante">
-                            <span>Taxa de Ligante Asfáltico</span>
-                            <span class="code-tag">Espargidor</span>
-                        </li>
-                    </ul>
-                </div>
-            </nav>
-
-            <div class="sidebar-footer">
-                <button class="theme-toggle-btn" id="themeToggle" type="button">
-                    <span>◐</span>
-                    <span id="themeLabel">Tema Escuro</span>
-                </button>
+    <!-- ============================================================
+         VIEW: MÓDULO 3 — Normas Técnicas
+         ============================================================ -->
+    <div class="top-view" id="view-norms">
+        <div class="topbar">
+            <button class="topbar-home" type="button" data-view="view-launcher">
+                <span class="brand-logo">ET</span>
+                <span class="topbar-home-stack"><span class="topbar-home-name">EngTools</span><span class="topbar-home-hint">← início</span></span>
+            </button>
+            <span class="topbar-sep">/</span>
+            <span class="topbar-title">Normas Técnicas</span>
+            <div class="topbar-actions">
+                <button class="theme-toggle-btn" type="button"><span>◐</span><span class="theme-label">Tema Escuro</span></button>
             </div>
-        </aside>
+        </div>
 
-        <!-- Main Workspace View -->
-        <main class="main-content">
+        <main class="ref-page-main">
+            <div class="ref-intro">
+                <h1>Índice de Normas Técnicas</h1>
+                <p>Guia de consulta rápida com o código, o título e o escopo de cada norma. Digite um código (ex.: 6118) ou um assunto (ex.: fundação, acessibilidade) para localizar o que precisa sem ler tudo. Consulte sempre o texto oficial da ABNT/órgão competente antes de aplicar valores normativos em projeto.</p>
+            </div>
 
-            <!-- 1. CALCULADORA DE RAMPAS E DECLIVIDADES -->
-            <section class="calc-panel active" id="calc-rampas">
-                <div class="card">
-                    <div class="card-header">
-                        <div class="header-meta">
-                            <h1>Rampas & Declividades</h1>
-                            <div class="formula-tag">Fórmula: i = (Δh / c) × 100</div>
-                        </div>
-                        <span class="badge-category">Topografia & Acessibilidade</span>
-                    </div>
+            <div class="ref-search-wrap">
+                <span class="ref-search-icon">⌕</span>
+                <input type="text" id="normsSearch" placeholder="Buscar norma — ex.: 6118, sondagem, incêndio, esgoto...">
+                <button class="ref-search-clear" id="normsSearchClear" type="button">limpar ✕</button>
+            </div>
 
-                    <div class="diagram-stage">
-                        <svg viewBox="0 0 420 110">
-                            <polygon points="50,75 330,75 330,25" fill="var(--svg-fill)" stroke="var(--svg-line)" stroke-width="1.5" stroke-linejoin="round" />
-                            <line x1="50" y1="92" x2="330" y2="92" stroke="var(--text-muted)" stroke-width="1" />
-                            <line x1="50" y1="87" x2="50" y2="97" stroke="var(--text-muted)" stroke-width="1" />
-                            <line x1="330" y1="87" x2="330" y2="97" stroke="var(--text-muted)" stroke-width="1" />
-                            <text x="190" y="105" text-anchor="middle" class="svg-text" id="r_svg_c">c: -- m</text>
-
-                            <line x1="345" y1="25" x2="345" y2="75" stroke="var(--text-muted)" stroke-width="1" />
-                            <line x1="340" y1="25" x2="350" y2="25" stroke="var(--text-muted)" stroke-width="1" />
-                            <line x1="340" y1="75" x2="350" y2="75" stroke="var(--text-muted)" stroke-width="1" />
-                            <text x="358" y="54" text-anchor="start" class="svg-text" id="r_svg_dh">Δh: -- m</text>
-
-                            <text x="45" y="70" text-anchor="end" class="svg-text" id="r_svg_ci" style="font-size: 9.5px;">ci</text>
-                            <text x="330" y="18" text-anchor="middle" class="svg-text" id="r_svg_cf" style="font-size: 9.5px;">cf</text>
-
-                            <rect x="155" y="32" width="75" height="18" rx="3" fill="var(--surface)" stroke="var(--border)" stroke-width="1"/>
-                            <text x="192" y="45" text-anchor="middle" class="svg-text" id="r_svg_i" font-weight="600">i: -- %</text>
-                        </svg>
-                    </div>
-
-                    <div class="card-body">
-                        <div class="grid-inputs">
-                            <div class="field-group">
-                                <label class="field-label" for="r_ci"><span>Cota Inicial</span><span class="symbol">ci</span></label>
-                                <div class="input-wrapper">
-                                    <input type="number" id="r_ci" step="any" placeholder="0.000">
-                                    <span class="unit">m</span>
-                                </div>
-                            </div>
-                            <div class="field-group">
-                                <label class="field-label" for="r_cf"><span>Cota Final</span><span class="symbol">cf</span></label>
-                                <div class="input-wrapper">
-                                    <input type="number" id="r_cf" step="any" placeholder="0.000">
-                                    <span class="unit">m</span>
-                                </div>
-                            </div>
-                            <div class="field-group">
-                                <label class="field-label" for="r_c"><span>Comprimento</span><span class="symbol">c</span></label>
-                                <div class="input-wrapper">
-                                    <input type="number" id="r_c" step="any" placeholder="0.000">
-                                    <span class="unit">m</span>
-                                </div>
-                            </div>
-                            <div class="field-group">
-                                <label class="field-label" for="r_i"><span>Inclinação</span><span class="symbol">i</span></label>
-                                <div class="input-wrapper">
-                                    <input type="number" id="r_i" step="any" placeholder="0.000">
-                                    <span class="unit">%</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="info-badge" id="r_badge"></div>
-                        <div class="status-bar" id="r_status">Preencha 3 campos para calcular o 4º.</div>
-
-                        <div class="actions">
-                            <button class="btn btn-primary" onclick="calcRampas()">Calcular</button>
-                            <button class="btn btn-secondary" onclick="clearRampas()">Limpar</button>
-                        </div>
+            <div id="normsScope">
+                <div class="ref-section">
+                    <div class="ref-section-head"><h2>Estruturas</h2><span class="ref-section-cat">Projeto Estrutural</span></div>
+                    <div class="ref-list">
+                        <div class="ref-item norm-item" data-search="nbr 6118 projeto estruturas concreto armado protendido"><div class="ref-item-top"><span class="ref-item-name">NBR 6118</span><span class="ref-item-tag">ABNT</span></div><p class="ref-item-desc">Projeto de estruturas de concreto armado e protendido: cobrimentos, durabilidade, estados-limite e detalhamento.</p></div>
+                        <div class="ref-item norm-item" data-search="nbr 7480 aco armaduras concreto armado vergalhao"><div class="ref-item-top"><span class="ref-item-name">NBR 7480</span><span class="ref-item-tag">ABNT</span></div><p class="ref-item-desc">Especificação do aço destinado a armaduras para concreto armado (bitolas, massas nominais, categorias CA-50/CA-60).</p></div>
+                        <div class="ref-item norm-item" data-search="nbr 8800 estruturas aco mistas edificios"><div class="ref-item-top"><span class="ref-item-name">NBR 8800</span><span class="ref-item-tag">ABNT</span></div><p class="ref-item-desc">Projeto de estruturas de aço e de estruturas mistas de aço e concreto para edifícios.</p></div>
+                        <div class="ref-item norm-item" data-search="nbr 6120 acoes cargas calculo estruturas edificacoes"><div class="ref-item-top"><span class="ref-item-name">NBR 6120</span><span class="ref-item-tag">ABNT</span></div><p class="ref-item-desc">Ações para o cálculo de estruturas de edificações — cargas permanentes e acidentais de referência.</p></div>
+                        <div class="ref-item norm-item" data-search="nbr 6123 forcas vento edificacoes"><div class="ref-item-top"><span class="ref-item-name">NBR 6123</span><span class="ref-item-tag">ABNT</span></div><p class="ref-item-desc">Forças devidas ao vento em edificações — determinação das cargas de vento para o projeto estrutural.</p></div>
+                        <div class="ref-item norm-item" data-search="nbr 12655 concreto cimento portland preparo controle recebimento"><div class="ref-item-top"><span class="ref-item-name">NBR 12655</span><span class="ref-item-tag">ABNT</span></div><p class="ref-item-desc">Concreto de cimento Portland — preparo, controle, recebimento e aceitação.</p></div>
+                        <div class="ref-item norm-item" data-search="nbr 14931 execucao estruturas concreto"><div class="ref-item-top"><span class="ref-item-name">NBR 14931</span><span class="ref-item-tag">ABNT</span></div><p class="ref-item-desc">Execução de estruturas de concreto — requisitos para fôrmas, escoramentos, lançamento e cura.</p></div>
                     </div>
                 </div>
-            </section>
 
-            <!-- 2. INTERPOLAÇÃO LINEAR DE ESTACAS -->
-            <section class="calc-panel" id="calc-estacas">
-                <div class="card">
-                    <div class="card-header">
-                        <div class="header-meta">
-                            <h1>Interpolação de Estacas & Greide</h1>
-                            <div class="formula-tag">Cota(X) = Cota₁ + [(Cota₂ - Cota₁) / ΔDist] × Dist₁-X</div>
-                        </div>
-                        <span class="badge-category">Topografia Viária</span>
-                    </div>
-
-                    <div class="diagram-stage">
-                        <svg viewBox="0 0 420 110">
-                            <line x1="50" y1="80" x2="370" y2="30" stroke="var(--svg-accent)" stroke-width="2" />
-                            <circle cx="50" cy="80" r="4" fill="var(--svg-accent)" />
-                            <circle cx="210" cy="55" r="4" fill="var(--calc-highlight-border)" />
-                            <circle cx="370" cy="30" r="4" fill="var(--svg-accent)" />
-                            
-                            <text x="50" y="98" text-anchor="middle" class="svg-text" id="est_svg_p1">Est. 1</text>
-                            <text x="210" y="75" text-anchor="middle" class="svg-text" id="est_svg_px" font-weight="600">Est. X (Alvo)</text>
-                            <text x="370" y="48" text-anchor="middle" class="svg-text" id="est_svg_p2">Est. 2</text>
-                        </svg>
-                    </div>
-
-                    <div class="card-body">
-                        <div class="grid-inputs">
-                            <div class="field-group">
-                                <label class="field-label" for="est_e1"><span>Estaca Inicial (N + m)</span><span class="symbol">Ex: 10+5.00</span></label>
-                                <div class="input-wrapper"><input type="text" id="est_e1" placeholder="10+0.00"></div>
-                            </div>
-                            <div class="field-group">
-                                <label class="field-label" for="est_c1"><span>Cota Inicial</span><span class="symbol">Z₁</span></label>
-                                <div class="input-wrapper"><input type="number" id="est_c1" step="any" placeholder="100.000"><span class="unit">m</span></div>
-                            </div>
-                            <div class="field-group">
-                                <label class="field-label" for="est_e2"><span>Estaca Final (N + m)</span><span class="symbol">Ex: 20+0.00</span></label>
-                                <div class="input-wrapper"><input type="text" id="est_e2" placeholder="20+0.00"></div>
-                            </div>
-                            <div class="field-group">
-                                <label class="field-label" for="est_c2"><span>Cota Final</span><span class="symbol">Z₂</span></label>
-                                <div class="input-wrapper"><input type="number" id="est_c2" step="any" placeholder="105.000"><span class="unit">m</span></div>
-                            </div>
-                            <div class="field-group" style="grid-column: span 2;">
-                                <label class="field-label" for="est_ex"><span>Estaca Intermediária a Interpolar</span><span class="symbol">Ex</span></label>
-                                <div class="input-wrapper"><input type="text" id="est_ex" placeholder="14+10.00"></div>
-                            </div>
-                        </div>
-
-                        <div class="info-badge" id="est_badge"></div>
-                        <div class="status-bar" id="est_status">Informe as duas estacas extremas e a estaca desejada.</div>
-
-                        <div class="actions">
-                            <button class="btn btn-primary" onclick="calcEstacas()">Interpolar Cota</button>
-                            <button class="btn btn-secondary" onclick="clearEstacas()">Limpar</button>
-                        </div>
+                <div class="ref-section">
+                    <div class="ref-section-head"><h2>Fundações & Geotecnia</h2><span class="ref-section-cat">Solos</span></div>
+                    <div class="ref-list">
+                        <div class="ref-item norm-item" data-search="nbr 6122 projeto execucao fundacoes"><div class="ref-item-top"><span class="ref-item-name">NBR 6122</span><span class="ref-item-tag">ABNT</span></div><p class="ref-item-desc">Projeto e execução de fundações — critérios de dimensionamento e investigação do subsolo.</p></div>
+                        <div class="ref-item norm-item" data-search="nbr 6484 solo sondagem spt simples reconhecimento"><div class="ref-item-top"><span class="ref-item-name">NBR 6484</span><span class="ref-item-tag">ABNT</span></div><p class="ref-item-desc">Sondagem de simples reconhecimento com SPT — método de execução do ensaio.</p></div>
+                        <div class="ref-item norm-item" data-search="nbr 7181 solo analise granulometrica"><div class="ref-item-top"><span class="ref-item-name">NBR 7181</span><span class="ref-item-tag">ABNT</span></div><p class="ref-item-desc">Solo — análise granulométrica, para classificação e caracterização de solos em projeto.</p></div>
+                        <div class="ref-item norm-item" data-search="nbr 11682 estabilidade taludes"><div class="ref-item-top"><span class="ref-item-name">NBR 11682</span><span class="ref-item-tag">ABNT</span></div><p class="ref-item-desc">Estabilidade de taludes — critérios para análise e verificação de segurança de taludes de corte e aterro.</p></div>
                     </div>
                 </div>
-            </section>
 
-            <!-- 3. TALUDES (V:H, % E ÂNGULO) -->
-            <section class="calc-panel" id="calc-taludes">
-                <div class="card">
-                    <div class="card-header">
-                        <div class="header-meta">
-                            <h1>Geometria de Taludes</h1>
-                            <div class="formula-tag">Proporção 1:m (V:H) ⇄ i(%) = (1/m) × 100 ⇄ Ângulo θ</div>
-                        </div>
-                        <span class="badge-category">Geotecnia & Terraplenagem</span>
-                    </div>
-
-                    <div class="diagram-stage">
-                        <svg viewBox="0 0 420 110">
-                            <polygon points="60,85 360,85 240,25" fill="var(--svg-fill)" stroke="var(--svg-line)" stroke-width="1.5" />
-                            <line x1="240" y1="25" x2="240" y2="85" stroke="var(--text-muted)" stroke-dasharray="2 2" />
-                            <text x="248" y="55" class="svg-text" id="tal_svg_h">H: -- m</text>
-                            <text x="140" y="50" class="svg-text" id="tal_svg_prop" font-weight="600">1 : m</text>
-                            <text x="150" y="98" text-anchor="middle" class="svg-text" id="tal_svg_b">B: -- m</text>
-                        </svg>
-                    </div>
-
-                    <div class="card-body">
-                        <div class="grid-inputs">
-                            <div class="field-group">
-                                <label class="field-label" for="tal_h"><span>Altura do Talude</span><span class="symbol">H</span></label>
-                                <div class="input-wrapper"><input type="number" id="tal_h" step="any" placeholder="3.00"><span class="unit">m</span></div>
-                            </div>
-                            <div class="field-group">
-                                <label class="field-label" for="tal_m"><span>Proporção Horizontal (1:m)</span><span class="symbol">m</span></label>
-                                <div class="input-wrapper"><input type="number" id="tal_m" step="any" placeholder="1.50"><span class="unit">H/V</span></div>
-                            </div>
-                            <div class="field-group">
-                                <label class="field-label" for="tal_b"><span>Projeção da Saia</span><span class="symbol">B = H × m</span></label>
-                                <div class="input-wrapper"><input type="number" id="tal_b" step="any" placeholder="4.50"><span class="unit">m</span></div>
-                            </div>
-                            <div class="field-group">
-                                <label class="field-label" for="tal_i"><span>Declividade</span><span class="symbol">i (%)</span></label>
-                                <div class="input-wrapper"><input type="number" id="tal_i" step="any" placeholder="66.67"><span class="unit">%</span></div>
-                            </div>
-                        </div>
-
-                        <div class="info-badge" id="tal_badge"></div>
-                        <div class="status-bar" id="tal_status">Informe Altura (H) e um parâmetro de inclinação (m, B ou i%).</div>
-
-                        <div class="actions">
-                            <button class="btn btn-primary" onclick="calcTaludes()">Dimensionar Talude</button>
-                            <button class="btn btn-secondary" onclick="clearTaludes()">Limpar</button>
-                        </div>
+                <div class="ref-section">
+                    <div class="ref-section-head"><h2>Instalações Prediais</h2><span class="ref-section-cat">Instalações</span></div>
+                    <div class="ref-list">
+                        <div class="ref-item norm-item" data-search="nbr 5410 instalacoes eletricas baixa tensao"><div class="ref-item-top"><span class="ref-item-name">NBR 5410</span><span class="ref-item-tag">ABNT</span></div><p class="ref-item-desc">Instalações elétricas de baixa tensão — requisitos de projeto e execução em edificações.</p></div>
+                        <div class="ref-item norm-item" data-search="nbr 5626 instalacao predial agua fria"><div class="ref-item-top"><span class="ref-item-name">NBR 5626</span><span class="ref-item-tag">ABNT</span></div><p class="ref-item-desc">Instalação predial de água fria — dimensionamento de tubulações e reservatórios.</p></div>
+                        <div class="ref-item norm-item" data-search="nbr 8160 sistemas prediais esgoto sanitario"><div class="ref-item-top"><span class="ref-item-name">NBR 8160</span><span class="ref-item-tag">ABNT</span></div><p class="ref-item-desc">Sistemas prediais de esgoto sanitário — projeto e execução.</p></div>
+                        <div class="ref-item norm-item" data-search="nbr 5419 protecao descargas atmosfericas spda para-raios"><div class="ref-item-top"><span class="ref-item-name">NBR 5419</span><span class="ref-item-tag">ABNT</span></div><p class="ref-item-desc">Proteção contra descargas atmosféricas (SPDA) — projeto e instalação de para-raios.</p></div>
                     </div>
                 </div>
-            </section>
 
-            <!-- 4. DRENAGEM & MANNING (SARJETAS / CANAIS) -->
-            <section class="calc-panel" id="calc-manning">
-                <div class="card">
-                    <div class="card-header">
-                        <div class="header-meta">
-                            <h1>Drenagem & Sarjetas (Manning)</h1>
-                            <div class="formula-tag">Q = (1/n) × A × R_h^(2/3) × I_o^(1/2)</div>
-                        </div>
-                        <span class="badge-category">Hidráulica</span>
-                    </div>
-
-                    <div class="diagram-stage">
-                        <svg viewBox="0 0 420 110">
-                            <!-- Canal Triangular / Trapezoidal -->
-                            <polygon points="80,30 180,85 340,30" fill="var(--svg-fill)" stroke="var(--svg-line)" stroke-width="1.5" />
-                            <polygon points="105,45 180,85 315,45" fill="rgba(56, 189, 248, 0.25)" stroke="var(--accent)" stroke-width="1" />
-                            <text x="210" y="65" text-anchor="middle" class="svg-text" id="man_svg_q" font-weight="600">Q = -- L/s</text>
-                            <text x="350" y="48" class="svg-text" id="man_svg_v">v = -- m/s</text>
-                        </svg>
-                    </div>
-
-                    <div class="card-body">
-                        <div class="grid-inputs">
-                            <div class="field-group">
-                                <label class="field-label" for="man_n"><span>Rugosidade Manning</span><span class="symbol">n</span></label>
-                                <div class="input-wrapper">
-                                    <select id="man_n">
-                                        <option value="0.015">0.015 (Concreto liso / Sarjeta moldada)</option>
-                                        <option value="0.018">0.018 (Concreto rugoso / Asfalto)</option>
-                                        <option value="0.013">0.013 (PVC / PEAD liso)</option>
-                                        <option value="0.025">0.025 (Valeta em terra limpa)</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="field-group">
-                                <label class="field-label" for="man_io"><span>Declividade Longitudinal</span><span class="symbol">I_o</span></label>
-                                <div class="input-wrapper"><input type="number" id="man_io" step="any" placeholder="0.020"><span class="unit">m/m</span></div>
-                            </div>
-                            <div class="field-group">
-                                <label class="field-label" for="man_z"><span>Inclinação Transversal (1:Z)</span><span class="symbol">Z</span></label>
-                                <div class="input-wrapper"><input type="number" id="man_z" step="any" placeholder="20.0" value="20.0"><span class="unit">H/V</span></div>
-                            </div>
-                            <div class="field-group">
-                                <label class="field-label" for="man_y"><span>Lâmina d'água</span><span class="symbol">y_0</span></label>
-                                <div class="input-wrapper"><input type="number" id="man_y" step="any" placeholder="0.080"><span class="unit">m</span></div>
-                            </div>
-                        </div>
-
-                        <div class="info-badge" id="man_badge"></div>
-                        <div class="status-bar" id="man_status">Insira os parâmetros geométricos e hidráulicos da calha.</div>
-
-                        <div class="actions">
-                            <button class="btn btn-primary" onclick="calcManning()">Calcular Capacidade</button>
-                            <button class="btn btn-secondary" onclick="clearManning()">Limpar</button>
-                        </div>
+                <div class="ref-section">
+                    <div class="ref-section-head"><h2>Acessibilidade & Desempenho</h2><span class="ref-section-cat">Uso e Ocupação</span></div>
+                    <div class="ref-list">
+                        <div class="ref-item norm-item" data-search="nbr 9050 acessibilidade edificacoes mobiliario espacos urbanos rampas"><div class="ref-item-top"><span class="ref-item-name">NBR 9050</span><span class="ref-item-tag">ABNT</span></div><p class="ref-item-desc">Acessibilidade a edificações, mobiliário, espaços e equipamentos urbanos — rampas, rotas acessíveis e sinalização.</p></div>
+                        <div class="ref-item norm-item" data-search="nbr 15575 edificacoes habitacionais desempenho"><div class="ref-item-top"><span class="ref-item-name">NBR 15575</span><span class="ref-item-tag">ABNT</span></div><p class="ref-item-desc">Edificações habitacionais — desempenho, com requisitos mínimos para os sistemas da construção.</p></div>
                     </div>
                 </div>
-            </section>
 
-            <!-- 5. EMPOLAMENTO & HOMOGENEIZAÇÃO DE SOLOS -->
-            <section class="calc-panel" id="calc-empolamento">
-                <div class="card">
-                    <div class="card-header">
-                        <div class="header-meta">
-                            <h1>Empolamento & Transporte de Solos</h1>
-                            <div class="formula-tag">V_solto = V_corte × (1 + E%) ⇄ Nº Viagens = V_solto / Cap_caçamba</div>
-                        </div>
-                        <span class="badge-category">Terraplenagem & Frotas</span>
-                    </div>
-
-                    <div class="card-body">
-                        <div class="grid-inputs">
-                            <div class="field-group">
-                                <label class="field-label" for="emp_vc"><span>Volume Geométrico (Corte)</span><span class="symbol">V_c</span></label>
-                                <div class="input-wrapper"><input type="number" id="emp_vc" step="any" placeholder="1200.00"><span class="unit">m³</span></div>
-                            </div>
-                            <div class="field-group">
-                                <label class="field-label" for="emp_taxa"><span>Fator de Empolamento / Solo</span><span class="symbol">E%</span></label>
-                                <div class="input-wrapper">
-                                    <select id="emp_taxa">
-                                        <option value="25">25% — Areia / Solo arenoso</option>
-                                        <option value="30" selected>30% — Terra comum / Argila média</option>
-                                        <option value="40">40% — Argila pesada / Saibro</option>
-                                        <option value="50">50% — Rocha detonada / Enrocamento</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="field-group">
-                                <label class="field-label" for="emp_cap"><span>Capacidade da Caçamba</span><span class="symbol">V_truck</span></label>
-                                <div class="input-wrapper"><input type="number" id="emp_cap" step="any" value="14.00" placeholder="14.00"><span class="unit">m³</span></div>
-                            </div>
-                            <div class="field-group">
-                                <label class="field-label" for="emp_fhom"><span>Fator de Homogeneização</span><span class="symbol">F_h</span></label>
-                                <div class="input-wrapper"><input type="number" id="emp_fhom" step="any" value="1.20" placeholder="1.20"><span class="unit">adim</span></div>
-                            </div>
-                        </div>
-
-                        <div class="info-badge" id="emp_badge"></div>
-                        <div class="status-bar" id="emp_status">Preencha o volume medido no corte e o tipo de solo.</div>
-
-                        <div class="actions">
-                            <button class="btn btn-primary" onclick="calcEmpolamento()">Dimensionar Frota</button>
-                            <button class="btn btn-secondary" onclick="clearEmpolamento()">Limpar</button>
-                        </div>
+                <div class="ref-section">
+                    <div class="ref-section-head"><h2>Segurança do Trabalho</h2><span class="ref-section-cat">Normas Regulamentadoras</span></div>
+                    <div class="ref-list">
+                        <div class="ref-item norm-item" data-search="nr-18 condicoes meio ambiente trabalho industria construcao canteiro obra"><div class="ref-item-top"><span class="ref-item-name">NR-18</span><span class="ref-item-tag">MTE</span></div><p class="ref-item-desc">Condições e meio ambiente de trabalho na indústria da construção — segurança de canteiro de obras.</p></div>
+                        <div class="ref-item norm-item" data-search="nr-35 trabalho em altura seguranca"><div class="ref-item-top"><span class="ref-item-name">NR-35</span><span class="ref-item-tag">MTE</span></div><p class="ref-item-desc">Trabalho em altura — requisitos mínimos para planejamento, organização e execução do trabalho acima de 2 m.</p></div>
                     </div>
                 </div>
-            </section>
+            </div>
 
-            <!-- 6. TAXA DE LIGANTE ASFÁLTICO (ESPARGIDOR) -->
-            <section class="calc-panel" id="calc-ligante">
-                <div class="card">
-                    <div class="card-header">
-                        <div class="header-meta">
-                            <h1>Taxa de Ligante Asfáltico</h1>
-                            <div class="formula-tag">Vol_total = Área × Taxa_projeto ⇄ Qnt_cargas = Vol / Cap_tanque</div>
-                        </div>
-                        <span class="badge-category">Pavimentação Asfáltica</span>
-                    </div>
-
-                    <div class="card-body">
-                        <div class="grid-inputs">
-                            <div class="field-group">
-                                <label class="field-label" for="lig_comp"><span>Extensão do Trecho</span><span class="symbol">L</span></label>
-                                <div class="input-wrapper"><input type="number" id="lig_comp" step="any" placeholder="1500.00"><span class="unit">m</span></div>
-                            </div>
-                            <div class="field-group">
-                                <label class="field-label" for="lig_larg"><span>Largura de Aplicação</span><span class="symbol">W</span></label>
-                                <div class="input-wrapper"><input type="number" id="lig_larg" step="any" placeholder="7.00"><span class="unit">m</span></div>
-                            </div>
-                            <div class="field-group">
-                                <label class="field-label" for="lig_servico"><span>Tipo de Pintura / Serviço</span><span class="symbol">Taxa</span></label>
-                                <div class="input-wrapper">
-                                    <select id="lig_servico" onchange="updateTaxaLigante()">
-                                        <option value="1.2">Imprimação Betuminosa (CM-30: 1.20 L/m²)</option>
-                                        <option value="0.5">Pintura de Ligação (RR-1C: 0.50 L/m²)</option>
-                                        <option value="1.4">Tratamento Superficial (1.40 L/m²)</option>
-                                        <option value="custom">Personalizado (Digitar abaixo)</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="field-group">
-                                <label class="field-label" for="lig_taxa"><span>Taxa de Aplicação</span><span class="symbol">T</span></label>
-                                <div class="input-wrapper"><input type="number" id="lig_taxa" step="any" value="1.20" placeholder="1.20"><span class="unit">L/m²</span></div>
-                            </div>
-                        </div>
-
-                        <div class="info-badge" id="lig_badge"></div>
-                        <div class="status-bar" id="lig_status">Informe as dimensões da pista e a taxa de projeto.</div>
-
-                        <div class="actions">
-                            <button class="btn btn-primary" onclick="calcLigante()">Calcular Volume de Emulsão</button>
-                            <button class="btn btn-secondary" onclick="clearLigante()">Limpar</button>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- 7. SUPERLARGURA EM CURVAS (DNIT) -->
-            <section class="calc-panel" id="calc-superlargura">
-                <div class="card">
-                    <div class="card-header">
-                        <div class="header-meta">
-                            <h1>Superlargura em Curvas</h1>
-                            <div class="formula-tag">S = n·(R - √(R² - L²)) + V / (10·√R)</div>
-                        </div>
-                        <span class="badge-category">Projeto Geométrico de Vias</span>
-                    </div>
-
-                    <div class="card-body">
-                        <div class="grid-inputs">
-                            <div class="field-group">
-                                <label class="field-label" for="sup_r"><span>Raio da Curva</span><span class="symbol">R</span></label>
-                                <div class="input-wrapper"><input type="number" id="sup_r" step="any" placeholder="150.00"><span class="unit">m</span></div>
-                            </div>
-                            <div class="field-group">
-                                <label class="field-label" for="sup_v"><span>Velocidade de Diretriz</span><span class="symbol">V</span></label>
-                                <div class="input-wrapper"><input type="number" id="sup_v" step="any" placeholder="60.0"><span class="unit">km/h</span></div>
-                            </div>
-                            <div class="field-group">
-                                <label class="field-label" for="sup_n"><span>Número de Faixas</span><span class="symbol">n</span></label>
-                                <div class="input-wrapper"><input type="number" id="sup_n" step="1" value="2" placeholder="2"><span class="unit">faixas</span></div>
-                            </div>
-                            <div class="field-group">
-                                <label class="field-label" for="sup_l"><span>Comprimento do Veículo (Entre-eixos)</span><span class="symbol">L</span></label>
-                                <div class="input-wrapper">
-                                    <select id="sup_l">
-                                        <option value="6.10">6.10 m — Veículo de Passeio (VP)</option>
-                                        <option value="7.30">7.30 m — Caminhão Comercial Médio (CO)</option>
-                                        <option value="12.00">12.00 m — Ônibus Urbano / Rodoviário (O)</option>
-                                        <option value="15.24" selected>15.24 m — Semirreboque / Carreta (SR)</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="info-badge" id="sup_badge"></div>
-                        <div class="status-bar" id="sup_status">Norma DNIT: Cálculo de alargamento para acomodação de veículos pesados.</div>
-
-                        <div class="actions">
-                            <button class="btn btn-primary" onclick="calcSuperlargura()">Calcular Alargamento (S)</button>
-                            <button class="btn btn-secondary" onclick="clearSuperlargura()">Limpar</button>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- 8. ESCADAS (FÓRMULA DE BLONDEL) -->
-            <section class="calc-panel" id="calc-blondel">
-                <div class="card">
-                    <div class="card-header">
-                        <div class="header-meta">
-                            <h1>Dimensionamento de Escadas</h1>
-                            <div class="formula-tag">Fórmula de Blondel: 63 cm ≤ 2e + p ≤ 64 cm</div>
-                        </div>
-                        <span class="badge-category">Arquitetura & Conforto</span>
-                    </div>
-
-                    <div class="diagram-stage">
-                        <svg viewBox="0 0 420 110">
-                            <!-- Degraus da Escada -->
-                            <path d="M 60,90 L 120,90 L 120,70 L 180,70 L 180,50 L 240,50 L 240,30 L 300,30" fill="none" stroke="var(--svg-line)" stroke-width="2" />
-                            <line x1="300" y1="30" x2="300" y2="90" stroke="var(--text-muted)" stroke-dasharray="2 2" />
-                            <text x="315" y="65" class="svg-text" id="esc_svg_h">H: -- cm</text>
-                            <text x="210" y="44" text-anchor="middle" class="svg-text" id="esc_svg_p">p: -- cm</text>
-                            <text x="170" y="62" text-anchor="end" class="svg-text" id="esc_svg_e">e: -- cm</text>
-                        </svg>
-                    </div>
-
-                    <div class="card-body">
-                        <div class="grid-inputs">
-                            <div class="field-group">
-                                <label class="field-label" for="esc_h"><span>Desnível Total (Piso a Piso)</span><span class="symbol">H</span></label>
-                                <div class="input-wrapper"><input type="number" id="esc_h" step="any" placeholder="2.80"><span class="unit">m</span></div>
-                            </div>
-                            <div class="field-group">
-                                <label class="field-label" for="esc_emax"><span>Espelho Desejado (Ideal ~17.5)</span><span class="symbol">e</span></label>
-                                <div class="input-wrapper"><input type="number" id="esc_emax" step="any" value="17.5" placeholder="17.5"><span class="unit">cm</span></div>
-                            </div>
-                        </div>
-
-                        <div class="info-badge" id="esc_badge"></div>
-                        <div class="status-bar" id="esc_status">Insira o desnível vertical para calcular o número de degraus e o piso ideal.</div>
-
-                        <div class="actions">
-                            <button class="btn btn-primary" onclick="calcBlondel()">Calcular Escada</button>
-                            <button class="btn btn-secondary" onclick="clearBlondel()">Limpar</button>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
+            <div class="ref-empty-state" id="normsEmptyState">Nenhuma norma encontrada para esta busca.</div>
         </main>
     </div>
 
     <script>
         // ==========================================
-        // 1. ROUTING & UI STATE MANAGEMENT
+        // 0. VIEW SWITCHING
+        // ==========================================
+        function showView(id) {
+            document.querySelectorAll('.top-view').forEach(v => v.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            window.scrollTo(0, 0);
+            if (id === 'view-launcher') requestAnimationFrame(updateHeroFade);
+        }
+
+        document.querySelectorAll('[data-view]').forEach(el => {
+            el.addEventListener('click', () => showView(el.getAttribute('data-view')));
+        });
+
+        document.getElementById('welcomeOpenApp').addEventListener('click', () => showView('view-calc-app'));
+
+        document.querySelectorAll('[data-open-calc]').forEach(el => {
+            el.addEventListener('click', () => {
+                const targetId = el.getAttribute('data-open-calc');
+                document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+                document.querySelectorAll('.calc-panel').forEach(p => p.classList.remove('active'));
+                const navItem = document.querySelector(`.nav-item[data-target="${targetId}"]`);
+                const panel = document.getElementById(targetId);
+                if (navItem) navItem.classList.add('active');
+                if (panel) panel.classList.add('active');
+                showView('view-calc-app');
+            });
+        });
+
+        // ==========================================
+        // 0.1 HERO SCROLL FADE (Launcher)
+        // ==========================================
+        const heroMark = document.getElementById('heroMark');
+        function updateHeroFade() {
+            if (!document.getElementById('view-launcher').classList.contains('active')) return;
+            const vh = window.innerHeight || 800;
+            const p = Math.min(Math.max(window.scrollY / (vh * 0.85), 0), 1);
+            heroMark.style.opacity = String(1 - p);
+            heroMark.style.transform = `translateY(${p * -50}px) scale(${1 - p * 0.08})`;
+        }
+        window.addEventListener('scroll', updateHeroFade, { passive: true });
+        updateHeroFade();
+
+        // ==========================================
+        // 1. THEME
+        // ==========================================
+        function updateThemeLabels(theme) {
+            document.querySelectorAll('.theme-label').forEach(el => {
+                el.textContent = theme === 'dark' ? 'Tema Escuro' : 'Tema Claro';
+            });
+        }
+        function toggleTheme() {
+            const current = document.documentElement.getAttribute('data-theme') || 'dark';
+            const target = current === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', target);
+            localStorage.setItem('engtools_theme', target);
+            updateThemeLabels(target);
+        }
+        document.querySelectorAll('.theme-toggle-btn').forEach(btn => btn.addEventListener('click', toggleTheme));
+        (function initTheme() {
+            const saved = localStorage.getItem('engtools_theme') || 'dark';
+            document.documentElement.setAttribute('data-theme', saved);
+            updateThemeLabels(saved);
+        })();
+
+        // ==========================================
+        // 2. CALCULATOR NAV & MOBILE DRAWER
         // ==========================================
         const navItems = document.querySelectorAll('.nav-item');
         const calcPanels = document.querySelectorAll('.calc-panel');
         const sidebar = document.getElementById('sidebar');
         const sidebarOverlay = document.getElementById('sidebarOverlay');
         const mobileMenuBtn = document.getElementById('mobileMenuBtn');
-        const themeToggle = document.getElementById('themeToggle');
-        const themeLabel = document.getElementById('themeLabel');
 
-        // Navigation Switcher
         navItems.forEach(item => {
             item.addEventListener('click', () => {
                 const targetId = item.getAttribute('data-target');
-                
                 navItems.forEach(n => n.classList.remove('active'));
                 calcPanels.forEach(p => p.classList.remove('active'));
-
                 item.classList.add('active');
                 const activePanel = document.getElementById(targetId);
                 if (activePanel) activePanel.classList.add('active');
-
-                // Close Mobile Drawer if open
                 sidebar.classList.remove('open');
                 sidebarOverlay.classList.remove('open');
             });
         });
 
-        // Mobile drawer handlers
         mobileMenuBtn.addEventListener('click', () => {
             sidebar.classList.toggle('open');
             sidebarOverlay.classList.toggle('open');
         });
-
         sidebarOverlay.addEventListener('click', () => {
             sidebar.classList.remove('open');
             sidebarOverlay.classList.remove('open');
         });
 
-        // Theme Switcher (Dark Default)
-        const initTheme = () => {
-            const savedTheme = localStorage.getItem('engtools_theme') || 'dark';
-            document.documentElement.setAttribute('data-theme', savedTheme);
-            updateThemeLabel(savedTheme);
-        };
-
-        const updateThemeLabel = (theme) => {
-            if (themeLabel) {
-                themeLabel.textContent = theme === 'dark' ? 'Tema Escuro' : 'Tema Claro';
-            }
-        };
-
-        themeToggle.addEventListener('click', () => {
-            const current = document.documentElement.getAttribute('data-theme') || 'dark';
-            const target = current === 'dark' ? 'light' : 'dark';
-            document.documentElement.setAttribute('data-theme', target);
-            localStorage.setItem('engtools_theme', target);
-            updateThemeLabel(target);
-        });
-
-        initTheme();
-
-        // Keyboard Shortcut: Enter triggers the active calculator
         document.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') {
+            if (e.key === 'Enter' && document.getElementById('view-calc-app').classList.contains('active')) {
                 const activePanel = document.querySelector('.calc-panel.active');
                 if (!activePanel) return;
                 const calcBtn = activePanel.querySelector('.btn-primary');
@@ -1198,15 +1337,12 @@
             }
         });
 
-        // Helper to reset calculated marks on edit
         document.querySelectorAll('input').forEach(inp => {
-            inp.addEventListener('input', () => {
-                inp.classList.remove('is-calculated');
-            });
+            inp.addEventListener('input', () => inp.classList.remove('is-calculated'));
         });
 
         // ==========================================
-        // 2. CALC: RAMPAS & DECLIVIDADES
+        // 3. CALC: RAMPAS & DECLIVIDADES
         // ==========================================
         const r_ci = document.getElementById('r_ci');
         const r_cf = document.getElementById('r_cf');
@@ -1222,168 +1358,98 @@
 
         function calcRampas() {
             [r_ci, r_cf, r_c, r_i].forEach(el => el.classList.remove('is-calculated'));
-
             const ci = r_ci.value !== '' ? parseFloat(r_ci.value) : NaN;
             const cf = r_cf.value !== '' ? parseFloat(r_cf.value) : NaN;
             const c = r_c.value !== '' ? parseFloat(r_c.value) : NaN;
             const i = r_i.value !== '' ? parseFloat(r_i.value) : NaN;
-
             const vals = { ci, cf, c, i };
             const filled = Object.entries(vals).filter(([_, v]) => !isNaN(v));
-
             if (filled.length !== 3) {
                 r_status.className = 'status-bar error';
                 r_status.textContent = 'Erro: Preencha exatamente 3 campos para calcular o 4º.';
                 return;
             }
-
-            let resultKey = '';
-            let calcVal = 0;
-
             if (isNaN(cf)) {
-                calcVal = ci + ((i / 100) * c);
-                resultKey = 'cf';
-                r_cf.value = calcVal.toFixed(3);
-                r_cf.classList.add('is-calculated');
-                vals.cf = calcVal;
+                const calcVal = ci + ((i / 100) * c);
+                r_cf.value = calcVal.toFixed(3); r_cf.classList.add('is-calculated'); vals.cf = calcVal;
             } else if (isNaN(ci)) {
-                calcVal = cf - ((i / 100) * c);
-                resultKey = 'ci';
-                r_ci.value = calcVal.toFixed(3);
-                r_ci.classList.add('is-calculated');
-                vals.ci = calcVal;
+                const calcVal = cf - ((i / 100) * c);
+                r_ci.value = calcVal.toFixed(3); r_ci.classList.add('is-calculated'); vals.ci = calcVal;
             } else if (isNaN(c)) {
-                if (i === 0) {
-                    r_status.className = 'status-bar error';
-                    r_status.textContent = 'Erro: Inclinação zero inviabiliza o cálculo de comprimento.';
-                    return;
-                }
-                calcVal = (cf - ci) / (i / 100);
-                resultKey = 'c';
-                r_c.value = calcVal.toFixed(3);
-                r_c.classList.add('is-calculated');
-                vals.c = calcVal;
+                if (i === 0) { r_status.className = 'status-bar error'; r_status.textContent = 'Erro: Inclinação zero inviabiliza o cálculo de comprimento.'; return; }
+                const calcVal = (cf - ci) / (i / 100);
+                r_c.value = calcVal.toFixed(3); r_c.classList.add('is-calculated'); vals.c = calcVal;
             } else if (isNaN(i)) {
-                if (c === 0) {
-                    r_status.className = 'status-bar error';
-                    r_status.textContent = 'Erro: Comprimento não pode ser zero.';
-                    return;
-                }
-                calcVal = ((cf - ci) / c) * 100;
-                resultKey = 'i';
-                r_i.value = calcVal.toFixed(3);
-                r_i.classList.add('is-calculated');
-                vals.i = calcVal;
+                if (c === 0) { r_status.className = 'status-bar error'; r_status.textContent = 'Erro: Comprimento não pode ser zero.'; return; }
+                const calcVal = ((cf - ci) / c) * 100;
+                r_i.value = calcVal.toFixed(3); r_i.classList.add('is-calculated'); vals.i = calcVal;
             }
-
             const deltaH = vals.cf - vals.ci;
             r_svg_c.textContent = `c: ${vals.c.toFixed(2)} m`;
             r_svg_dh.textContent = `Δh: ${deltaH.toFixed(2)} m`;
             r_svg_i.textContent = `i: ${vals.i.toFixed(2)} %`;
             r_svg_ci.textContent = `${vals.ci.toFixed(2)}m`;
             r_svg_cf.textContent = `${vals.cf.toFixed(2)}m`;
-
-            // NBR 9050 Compliance
             const absI = Math.abs(vals.i);
             r_badge.className = 'info-badge active';
-            if (absI <= 5.00) {
-                r_badge.className += ' ok';
-                r_badge.innerHTML = `<strong>NBR 9050:</strong> i = ${absI.toFixed(2)}% (Acessível sem restrição de desnível por lance).`;
-            } else if (absI <= 6.25) {
-                r_badge.className += ' ok';
-                r_badge.innerHTML = `<strong>NBR 9050:</strong> i = ${absI.toFixed(2)}% (Permitido desnível máximo de 1,00 m por lance).`;
-            } else if (absI <= 8.333) {
-                r_badge.className += ' ok';
-                r_badge.innerHTML = `<strong>NBR 9050:</strong> i = ${absI.toFixed(2)}% (Permitido desnível máximo de 0,80 m por lance).`;
-            } else if (absI <= 12.5) {
-                r_badge.className += ' warning';
-                r_badge.innerHTML = `<strong>Atenção:</strong> Declividade elevada (${absI.toFixed(2)}%). Admitida apenas em reformas onde 8,33% for impraticável.`;
-            } else {
-                r_badge.className += ' danger';
-                r_badge.innerHTML = `<strong>Inacessível:</strong> i = ${absI.toFixed(2)}% ultrapassa os limites da NBR 9050 para pedestres.`;
-            }
-
+            if (absI <= 5.00) { r_badge.className += ' ok'; r_badge.innerHTML = `<strong>NBR 9050:</strong> i = ${absI.toFixed(2)}% (Acessível sem restrição de desnível por lance).`; }
+            else if (absI <= 6.25) { r_badge.className += ' ok'; r_badge.innerHTML = `<strong>NBR 9050:</strong> i = ${absI.toFixed(2)}% (Permitido desnível máximo de 1,00 m por lance).`; }
+            else if (absI <= 8.333) { r_badge.className += ' ok'; r_badge.innerHTML = `<strong>NBR 9050:</strong> i = ${absI.toFixed(2)}% (Permitido desnível máximo de 0,80 m por lance).`; }
+            else if (absI <= 12.5) { r_badge.className += ' warning'; r_badge.innerHTML = `<strong>Atenção:</strong> Declividade elevada (${absI.toFixed(2)}%). Admitida apenas em reformas onde 8,33% for impraticável.`; }
+            else { r_badge.className += ' danger'; r_badge.innerHTML = `<strong>Inacessível:</strong> i = ${absI.toFixed(2)}% ultrapassa os limites da NBR 9050 para pedestres.`; }
             r_status.className = 'status-bar';
             r_status.textContent = 'Cálculo executado com sucesso.';
         }
 
         function clearRampas() {
-            [r_ci, r_cf, r_c, r_i].forEach(el => {
-                el.value = '';
-                el.classList.remove('is-calculated');
-            });
-            r_badge.className = 'info-badge';
-            r_status.className = 'status-bar';
+            [r_ci, r_cf, r_c, r_i].forEach(el => { el.value = ''; el.classList.remove('is-calculated'); });
+            r_badge.className = 'info-badge'; r_status.className = 'status-bar';
             r_status.textContent = 'Preencha 3 campos para calcular o 4º.';
-            r_svg_c.textContent = 'c: -- m';
-            r_svg_dh.textContent = 'Δh: -- m';
-            r_svg_i.textContent = 'i: -- %';
-            r_svg_ci.textContent = 'ci';
-            r_svg_cf.textContent = 'cf';
+            r_svg_c.textContent = 'c: -- m'; r_svg_dh.textContent = 'Δh: -- m'; r_svg_i.textContent = 'i: -- %';
+            r_svg_ci.textContent = 'ci'; r_svg_cf.textContent = 'cf';
         }
 
         // ==========================================
-        // 3. CALC: INTERPOLAÇÃO DE ESTACAS
+        // 4. CALC: INTERPOLAÇÃO DE ESTACAS
         // ==========================================
         function parseEstaca(str) {
             if (!str) return NaN;
             const cleaned = str.replace(/\s+/g, '');
             if (cleaned.includes('+')) {
                 const parts = cleaned.split('+');
-                const n = parseFloat(parts[0]);
-                const m = parseFloat(parts[1] || '0');
+                const n = parseFloat(parts[0]); const m = parseFloat(parts[1] || '0');
                 if (isNaN(n) || isNaN(m)) return NaN;
                 return (n * 20) + m;
             }
             const val = parseFloat(cleaned);
             return isNaN(val) ? NaN : val;
         }
-
         function formatEstaca(distMetros) {
             const n = Math.floor(distMetros / 20);
             const m = (distMetros % 20).toFixed(2);
             return `Est. ${n} + ${m}m`;
         }
-
         function calcEstacas() {
             const e1 = parseEstaca(document.getElementById('est_e1').value);
             const c1 = parseFloat(document.getElementById('est_c1').value);
             const e2 = parseEstaca(document.getElementById('est_e2').value);
             const c2 = parseFloat(document.getElementById('est_c2').value);
             const ex = parseEstaca(document.getElementById('est_ex').value);
-
-            const badge = document.getElementById('est_badge');
-            const status = document.getElementById('est_status');
-
+            const badge = document.getElementById('est_badge'); const status = document.getElementById('est_status');
             if (isNaN(e1) || isNaN(c1) || isNaN(e2) || isNaN(c2) || isNaN(ex)) {
-                status.className = 'status-bar error';
-                status.textContent = 'Erro: Preencha todas as estacas e cotas corretamente.';
-                return;
+                status.className = 'status-bar error'; status.textContent = 'Erro: Preencha todas as estacas e cotas corretamente.'; return;
             }
-
-            if (e1 === e2) {
-                status.className = 'status-bar error';
-                status.textContent = 'Erro: As estacas 1 e 2 devem ser diferentes.';
-                return;
-            }
-
-            const deltaDist = e2 - e1;
-            const deltaCota = c2 - c1;
+            if (e1 === e2) { status.className = 'status-bar error'; status.textContent = 'Erro: As estacas 1 e 2 devem ser diferentes.'; return; }
+            const deltaDist = e2 - e1; const deltaCota = c2 - c1;
             const declividadeTrecho = (deltaCota / deltaDist) * 100;
             const cotaX = c1 + ((ex - e1) / deltaDist) * deltaCota;
-
             badge.className = 'info-badge active ok';
-            badge.innerHTML = `<strong>Cota Calculada na ${formatEstaca(ex)}:</strong> ${cotaX.toFixed(3)} m<br>
-                               <span style="font-size: 11px; opacity: 0.9;">Declividade do trecho: ${declividadeTrecho.toFixed(3)}% | Distância parcial: ${(ex - e1).toFixed(2)} m</span>`;
-
+            badge.innerHTML = `<strong>Cota Calculada na ${formatEstaca(ex)}:</strong> ${cotaX.toFixed(3)} m<br><span style="font-size: 11px; opacity: 0.9;">Declividade do trecho: ${declividadeTrecho.toFixed(3)}% | Distância parcial: ${(ex - e1).toFixed(2)} m</span>`;
             document.getElementById('est_svg_p1').textContent = `${formatEstaca(e1)} (${c1.toFixed(2)}m)`;
             document.getElementById('est_svg_p2').textContent = `${formatEstaca(e2)} (${c2.toFixed(2)}m)`;
             document.getElementById('est_svg_px').textContent = `Alvo: ${cotaX.toFixed(3)} m`;
-
-            status.className = 'status-bar';
-            status.textContent = 'Interpolação linear de greide concluída.';
+            status.className = 'status-bar'; status.textContent = 'Interpolação linear de greide concluída.';
         }
-
         function clearEstacas() {
             ['est_e1', 'est_c1', 'est_e2', 'est_c2', 'est_ex'].forEach(id => document.getElementById(id).value = '');
             document.getElementById('est_badge').className = 'info-badge';
@@ -1395,145 +1461,90 @@
         }
 
         // ==========================================
-        // 4. CALC: TALUDES
+        // 5. CALC: TALUDES
         // ==========================================
         function calcTaludes() {
             const h = parseFloat(document.getElementById('tal_h').value);
             let m = parseFloat(document.getElementById('tal_m').value);
             let b = parseFloat(document.getElementById('tal_b').value);
             let i = parseFloat(document.getElementById('tal_i').value);
-
-            const badge = document.getElementById('tal_badge');
-            const status = document.getElementById('tal_status');
-
-            if (isNaN(h) || h <= 0) {
-                status.className = 'status-bar error';
-                status.textContent = 'Erro: A altura do talude (H) deve ser maior que zero.';
-                return;
-            }
-
-            if (!isNaN(m) && m > 0) {
-                b = h * m;
-                i = (1 / m) * 100;
-            } else if (!isNaN(b) && b > 0) {
-                m = b / h;
-                i = (1 / m) * 100;
-            } else if (!isNaN(i) && i > 0) {
-                m = 100 / i;
-                b = h * m;
-            } else {
-                status.className = 'status-bar error';
-                status.textContent = 'Erro: Informe ao menos um parâmetro (m, B ou i%).';
-                return;
-            }
-
+            const badge = document.getElementById('tal_badge'); const status = document.getElementById('tal_status');
+            if (isNaN(h) || h <= 0) { status.className = 'status-bar error'; status.textContent = 'Erro: A altura do talude (H) deve ser maior que zero.'; return; }
+            if (!isNaN(m) && m > 0) { b = h * m; i = (1 / m) * 100; }
+            else if (!isNaN(b) && b > 0) { m = b / h; i = (1 / m) * 100; }
+            else if (!isNaN(i) && i > 0) { m = 100 / i; b = h * m; }
+            else { status.className = 'status-bar error'; status.textContent = 'Erro: Informe ao menos um parâmetro (m, B ou i%).'; return; }
             document.getElementById('tal_m').value = m.toFixed(2);
             document.getElementById('tal_b').value = b.toFixed(2);
             document.getElementById('tal_i').value = i.toFixed(2);
-
             const angulo = Math.atan(1 / m) * (180 / Math.PI);
             const compRampa = Math.sqrt((h * h) + (b * b));
-
             badge.className = 'info-badge active ok';
-            badge.innerHTML = `<strong>Talude 1:${m.toFixed(2)} (V:H)</strong> | Inclinação: <strong>${i.toFixed(1)}%</strong> (${angulo.toFixed(1)}°)<br>
-                               <span style="font-size: 11px; opacity: 0.9;">Comprimento da rampa do talude: ${compRampa.toFixed(2)} m | Projeção horizontal: ${b.toFixed(2)} m</span>`;
-
+            badge.innerHTML = `<strong>Talude 1:${m.toFixed(2)} (V:H)</strong> | Inclinação: <strong>${i.toFixed(1)}%</strong> (${angulo.toFixed(1)}°)<br><span style="font-size: 11px; opacity: 0.9;">Comprimento da rampa do talude: ${compRampa.toFixed(2)} m | Projeção horizontal: ${b.toFixed(2)} m</span>`;
             document.getElementById('tal_svg_h').textContent = `H: ${h.toFixed(2)}m`;
             document.getElementById('tal_svg_b').textContent = `B: ${b.toFixed(2)}m`;
             document.getElementById('tal_svg_prop').textContent = `1 : ${m.toFixed(2)}`;
-
-            status.className = 'status-bar';
-            status.textContent = 'Geometria do talude dimensionada.';
+            status.className = 'status-bar'; status.textContent = 'Geometria do talude dimensionada.';
         }
-
         function clearTaludes() {
             ['tal_h', 'tal_m', 'tal_b', 'tal_i'].forEach(id => document.getElementById(id).value = '');
             document.getElementById('tal_badge').className = 'info-badge';
             document.getElementById('tal_status').className = 'status-bar';
-            document.getElementById('tal_status').textContent = 'Informe Altura (H) e um parâmetro de inclinação (m, B ou i%).';
+            document.getElementById('tal_status').textContent = 'Informe Altura (H) e um parâmetro de inclinação (m, B ou i%). Consulte o módulo Parâmetros para valores usuais por tipo de solo.';
         }
 
         // ==========================================
-        // 5. CALC: DRENAGEM (MANNING)
+        // 6. CALC: DRENAGEM (MANNING)
         // ==========================================
         function calcManning() {
             const n = parseFloat(document.getElementById('man_n').value);
             const io = parseFloat(document.getElementById('man_io').value);
             const z = parseFloat(document.getElementById('man_z').value);
             const y0 = parseFloat(document.getElementById('man_y').value);
-
-            const badge = document.getElementById('man_badge');
-            const status = document.getElementById('man_status');
-
+            const badge = document.getElementById('man_badge'); const status = document.getElementById('man_status');
             if (isNaN(io) || io <= 0 || isNaN(z) || z <= 0 || isNaN(y0) || y0 <= 0) {
-                status.className = 'status-bar error';
-                status.textContent = 'Erro: Informe valores positivos para declividade, inclinação transversal e lâmina d’água.';
-                return;
+                status.className = 'status-bar error'; status.textContent = 'Erro: Informe valores positivos para declividade, inclinação transversal e lâmina d’água.'; return;
             }
-
-            // Calha triangular assimétrica de sarjeta urbana / rodoviária
-            const area = 0.5 * (z * y0) * y0; 
+            const area = 0.5 * (z * y0) * y0;
             const perimetro = y0 + Math.sqrt(y0 * y0 + Math.pow(z * y0, 2));
             const rh = area / perimetro;
-
-            // Manning: v = (1/n) * Rh^(2/3) * Io^(1/2)
             const veloc = (1 / n) * Math.pow(rh, 2/3) * Math.sqrt(io);
-            const vazaoM3s = veloc * area;
-            const vazaoLs = vazaoM3s * 1000;
+            const vazaoM3s = veloc * area; const vazaoLs = vazaoM3s * 1000;
             const larguraEspelho = z * y0;
-
             badge.className = 'info-badge active ok';
-            badge.innerHTML = `<strong>Vazão Máxima (Q):</strong> ${vazaoLs.toFixed(2)} L/s (${vazaoM3s.toFixed(4)} m³/s)<br>
-                               <strong>Velocidade de Escoamento (v):</strong> ${veloc.toFixed(2)} m/s<br>
-                               <span style="font-size: 11px; opacity: 0.9;">Largura do espelho d'água (T): ${larguraEspelho.toFixed(2)} m | Raio Hidráulico: ${(rh * 100).toFixed(2)} cm</span>`;
-
+            badge.innerHTML = `<strong>Vazão Máxima (Q):</strong> ${vazaoLs.toFixed(2)} L/s (${vazaoM3s.toFixed(4)} m³/s)<br><strong>Velocidade de Escoamento (v):</strong> ${veloc.toFixed(2)} m/s<br><span style="font-size: 11px; opacity: 0.9;">Largura do espelho d'água (T): ${larguraEspelho.toFixed(2)} m | Raio Hidráulico: ${(rh * 100).toFixed(2)} cm</span>`;
             document.getElementById('man_svg_q').textContent = `Q = ${vazaoLs.toFixed(1)} L/s`;
             document.getElementById('man_svg_v').textContent = `v = ${veloc.toFixed(2)} m/s`;
-
-            status.className = 'status-bar';
-            status.textContent = 'Capacidade de drenagem calculada.';
+            status.className = 'status-bar'; status.textContent = 'Capacidade de drenagem calculada.';
         }
-
         function clearManning() {
             ['man_io', 'man_y'].forEach(id => document.getElementById(id).value = '');
             document.getElementById('man_badge').className = 'info-badge';
             document.getElementById('man_status').className = 'status-bar';
-            document.getElementById('man_status').textContent = 'Insira os parâmetros geométricos e hidráulicos da calha.';
+            document.getElementById('man_status').textContent = 'Insira os parâmetros geométricos e hidráulicos da calha. Tabela completa de "n" no módulo Parâmetros.';
             document.getElementById('man_svg_q').textContent = 'Q = -- L/s';
             document.getElementById('man_svg_v').textContent = 'v = -- m/s';
         }
 
         // ==========================================
-        // 6. CALC: EMPOLAMENTO & CAÇAMBAS
+        // 7. CALC: EMPOLAMENTO & CAÇAMBAS
         // ==========================================
         function calcEmpolamento() {
             const vc = parseFloat(document.getElementById('emp_vc').value);
             const taxa = parseFloat(document.getElementById('emp_taxa').value);
             const cap = parseFloat(document.getElementById('emp_cap').value);
             const fhom = parseFloat(document.getElementById('emp_fhom').value) || 1.20;
-
-            const badge = document.getElementById('emp_badge');
-            const status = document.getElementById('emp_status');
-
+            const badge = document.getElementById('emp_badge'); const status = document.getElementById('emp_status');
             if (isNaN(vc) || vc <= 0 || isNaN(cap) || cap <= 0) {
-                status.className = 'status-bar error';
-                status.textContent = 'Erro: Informe o volume de corte e a capacidade do caminhão.';
-                return;
+                status.className = 'status-bar error'; status.textContent = 'Erro: Informe o volume de corte e a capacidade do caminhão.'; return;
             }
-
             const volumeSolto = vc * (1 + (taxa / 100));
             const numViagens = Math.ceil(volumeSolto / cap);
             const volumeAterroCompactado = vc / fhom;
-
             badge.className = 'info-badge active ok';
-            badge.innerHTML = `<strong>Volume de Transporte (Solto):</strong> ${volumeSolto.toFixed(2)} m³<br>
-                               <strong>Total de Viagens (Caçamba ${cap.toFixed(0)}m³):</strong> ${numViagens} viagens<br>
-                               <span style="font-size: 11px; opacity: 0.9;">Rendimento em Aterro Compactado (Fh=${fhom.toFixed(2)}): ≈ ${volumeAterroCompactado.toFixed(2)} m³</span>`;
-
-            status.className = 'status-bar';
-            status.textContent = 'Dimensionamento de terraplenagem concluído.';
+            badge.innerHTML = `<strong>Volume de Transporte (Solto):</strong> ${volumeSolto.toFixed(2)} m³<br><strong>Total de Viagens (Caçamba ${cap.toFixed(0)}m³):</strong> ${numViagens} viagens<br><span style="font-size: 11px; opacity: 0.9;">Rendimento em Aterro Compactado (Fh=${fhom.toFixed(2)}): ≈ ${volumeAterroCompactado.toFixed(2)} m³</span>`;
+            status.className = 'status-bar'; status.textContent = 'Dimensionamento de terraplenagem concluído.';
         }
-
         function clearEmpolamento() {
             document.getElementById('emp_vc').value = '';
             document.getElementById('emp_badge').className = 'info-badge';
@@ -1542,44 +1553,27 @@
         }
 
         // ==========================================
-        // 7. CALC: TAXA DE LIGANTE ASFÁLTICO
+        // 8. CALC: TAXA DE LIGANTE ASFÁLTICO
         // ==========================================
         function updateTaxaLigante() {
             const serv = document.getElementById('lig_servico').value;
             const taxaInput = document.getElementById('lig_taxa');
-            if (serv !== 'custom') {
-                taxaInput.value = serv;
-            }
+            if (serv !== 'custom') taxaInput.value = serv;
         }
-
         function calcLigante() {
             const comp = parseFloat(document.getElementById('lig_comp').value);
             const larg = parseFloat(document.getElementById('lig_larg').value);
             const taxa = parseFloat(document.getElementById('lig_taxa').value);
-
-            const badge = document.getElementById('lig_badge');
-            const status = document.getElementById('lig_status');
-
+            const badge = document.getElementById('lig_badge'); const status = document.getElementById('lig_status');
             if (isNaN(comp) || comp <= 0 || isNaN(larg) || larg <= 0 || isNaN(taxa) || taxa <= 0) {
-                status.className = 'status-bar error';
-                status.textContent = 'Erro: Informe dimensões e taxa válidas.';
-                return;
+                status.className = 'status-bar error'; status.textContent = 'Erro: Informe dimensões e taxa válidas.'; return;
             }
-
-            const areaM2 = comp * larg;
-            const volumeLitros = areaM2 * taxa;
-            const volumeM3 = volumeLitros / 1000;
+            const areaM2 = comp * larg; const volumeLitros = areaM2 * taxa; const volumeM3 = volumeLitros / 1000;
             const caminhoes6000L = (volumeLitros / 6000).toFixed(1);
-
             badge.className = 'info-badge active ok';
-            badge.innerHTML = `<strong>Área Total de Aplicação:</strong> ${areaM2.toLocaleString('pt-BR')} m²<br>
-                               <strong>Volume de Ligante Necessário:</strong> ${volumeLitros.toLocaleString('pt-BR', {minimumFractionDigits: 1})} L (${volumeM3.toFixed(2)} m³)<br>
-                               <span style="font-size: 11px; opacity: 0.9;">Equivalente a ≈ ${caminhoes6000L} tanques de caminhão espargidor (6.000 L)</span>`;
-
-            status.className = 'status-bar';
-            status.textContent = 'Volume de emulsão asfáltica dimensionado.';
+            badge.innerHTML = `<strong>Área Total de Aplicação:</strong> ${areaM2.toLocaleString('pt-BR')} m²<br><strong>Volume de Ligante Necessário:</strong> ${volumeLitros.toLocaleString('pt-BR', {minimumFractionDigits: 1})} L (${volumeM3.toFixed(2)} m³)<br><span style="font-size: 11px; opacity: 0.9;">Equivalente a ≈ ${caminhoes6000L} tanques de caminhão espargidor (6.000 L)</span>`;
+            status.className = 'status-bar'; status.textContent = 'Volume de emulsão asfáltica dimensionado.';
         }
-
         function clearLigante() {
             ['lig_comp', 'lig_larg'].forEach(id => document.getElementById(id).value = '');
             document.getElementById('lig_badge').className = 'info-badge';
@@ -1588,42 +1582,25 @@
         }
 
         // ==========================================
-        // 8. CALC: SUPERLARGURA (DNIT)
+        // 9. CALC: SUPERLARGURA (DNIT)
         // ==========================================
         function calcSuperlargura() {
             const r = parseFloat(document.getElementById('sup_r').value);
             const v = parseFloat(document.getElementById('sup_v').value);
             const n = parseFloat(document.getElementById('sup_n').value) || 2;
             const l = parseFloat(document.getElementById('sup_l').value);
-
-            const badge = document.getElementById('sup_badge');
-            const status = document.getElementById('sup_status');
-
+            const badge = document.getElementById('sup_badge'); const status = document.getElementById('sup_status');
             if (isNaN(r) || r <= 0 || isNaN(v) || v <= 0 || isNaN(l) || l <= 0) {
-                status.className = 'status-bar error';
-                status.textContent = 'Erro: Preencha raio, velocidade e veículo de projeto.';
-                return;
+                status.className = 'status-bar error'; status.textContent = 'Erro: Preencha raio, velocidade e veículo de projeto.'; return;
             }
-
-            if (r <= l) {
-                status.className = 'status-bar error';
-                status.textContent = 'Erro: O raio da curva deve ser estritamente maior que o entre-eixos do veículo.';
-                return;
-            }
-
-            // DNIT: S = n * [R - sqrt(R² - L²)] + V / (10 * sqrt(R))
+            if (r <= l) { status.className = 'status-bar error'; status.textContent = 'Erro: O raio da curva deve ser estritamente maior que o entre-eixos do veículo.'; return; }
             const parcelaMecanica = n * (r - Math.sqrt((r * r) - (l * l)));
             const parcelaPsicologica = v / (10 * Math.sqrt(r));
             const superlargura = parcelaMecanica + parcelaPsicologica;
-
             badge.className = 'info-badge active ok';
-            badge.innerHTML = `<strong>Superlargura Total Recomendada (S):</strong> ${superlargura.toFixed(2)} m<br>
-                               <span style="font-size: 11px; opacity: 0.9;">Parcela mecânica: ${parcelaMecanica.toFixed(2)} m | Parcela dinâmica (velocidade): ${parcelaPsicologica.toFixed(2)} m</span>`;
-
-            status.className = 'status-bar';
-            status.textContent = 'Alargamento de curva calculado de acordo com as normas viárias.';
+            badge.innerHTML = `<strong>Superlargura Total Recomendada (S):</strong> ${superlargura.toFixed(2)} m<br><span style="font-size: 11px; opacity: 0.9;">Parcela mecânica: ${parcelaMecanica.toFixed(2)} m | Parcela dinâmica (velocidade): ${parcelaPsicologica.toFixed(2)} m</span>`;
+            status.className = 'status-bar'; status.textContent = 'Alargamento de curva calculado de acordo com as normas viárias.';
         }
-
         function clearSuperlargura() {
             ['sup_r', 'sup_v'].forEach(id => document.getElementById(id).value = '');
             document.getElementById('sup_badge').className = 'info-badge';
@@ -1632,46 +1609,28 @@
         }
 
         // ==========================================
-        // 9. CALC: ESCADAS (BLONDEL)
+        // 10. CALC: ESCADAS (BLONDEL)
         // ==========================================
         function calcBlondel() {
             const h = parseFloat(document.getElementById('esc_h').value);
             const eIdeal = parseFloat(document.getElementById('esc_emax').value) || 17.5;
-
-            const badge = document.getElementById('esc_badge');
-            const status = document.getElementById('esc_status');
-
-            if (isNaN(h) || h <= 0) {
-                status.className = 'status-bar error';
-                status.textContent = 'Erro: Informe o desnível vertical em metros.';
-                return;
-            }
-
+            const badge = document.getElementById('esc_badge'); const status = document.getElementById('esc_status');
+            if (isNaN(h) || h <= 0) { status.className = 'status-bar error'; status.textContent = 'Erro: Informe o desnível vertical em metros.'; return; }
             const hCm = h * 100;
             const numEspelhos = Math.round(hCm / eIdeal);
             const espelhoReal = hCm / numEspelhos;
             const numPisos = numEspelhos - 1;
-
-            // Blondel: 2e + p = 63.5 cm -> p = 63.5 - 2e
             const pisoIdeal = 63.5 - (2 * espelhoReal);
             const blondelCheck = (2 * espelhoReal) + pisoIdeal;
             const compTotalEscada = (numPisos * pisoIdeal) / 100;
-
             const isOk = espelhoReal >= 16 && espelhoReal <= 18.5 && pisoIdeal >= 27;
-
             badge.className = `info-badge active ${isOk ? 'ok' : 'warning'}`;
-            badge.innerHTML = `<strong>${numEspelhos} Espelhos de ${espelhoReal.toFixed(2)} cm</strong> e <strong>${numPisos} Pisos de ${pisoIdeal.toFixed(2)} cm</strong><br>
-                               Fórmula de Blondel: 2(${espelhoReal.toFixed(1)}) + ${pisoIdeal.toFixed(1)} = <strong>${blondelCheck.toFixed(1)} cm</strong> (Ideal: 63 a 64 cm)<br>
-                               <span style="font-size: 11px; opacity: 0.9;">Comprimento horizontal em planta: ${compTotalEscada.toFixed(2)} m</span>`;
-
+            badge.innerHTML = `<strong>${numEspelhos} Espelhos de ${espelhoReal.toFixed(2)} cm</strong> e <strong>${numPisos} Pisos de ${pisoIdeal.toFixed(2)} cm</strong><br>Fórmula de Blondel: 2(${espelhoReal.toFixed(1)}) + ${pisoIdeal.toFixed(1)} = <strong>${blondelCheck.toFixed(1)} cm</strong> (Ideal: 63 a 64 cm)<br><span style="font-size: 11px; opacity: 0.9;">Comprimento horizontal em planta: ${compTotalEscada.toFixed(2)} m</span>`;
             document.getElementById('esc_svg_h').textContent = `H: ${h.toFixed(2)}m`;
             document.getElementById('esc_svg_p').textContent = `p: ${pisoIdeal.toFixed(1)}cm`;
             document.getElementById('esc_svg_e').textContent = `e: ${espelhoReal.toFixed(1)}cm`;
-
-            status.className = 'status-bar';
-            status.textContent = 'Escada dimensionada com base no conforto ergonômico.';
+            status.className = 'status-bar'; status.textContent = 'Escada dimensionada com base no conforto ergonômico.';
         }
-
         function clearBlondel() {
             document.getElementById('esc_h').value = '';
             document.getElementById('esc_badge').className = 'info-badge';
@@ -1681,6 +1640,63 @@
             document.getElementById('esc_svg_p').textContent = 'p: -- cm';
             document.getElementById('esc_svg_e').textContent = 'e: -- cm';
         }
+
+        // ==========================================
+        // 11. CALC: PESO DE VERGALHÕES (NBR 7480)
+        // ==========================================
+        function calcVergalhao() {
+            const sel = document.getElementById('verg_bitola').value.split('|');
+            const bitola = parseFloat(sel[0]); const massaUnit = parseFloat(sel[1]);
+            const qtd = parseFloat(document.getElementById('verg_qtd').value);
+            const comp = parseFloat(document.getElementById('verg_comp').value);
+            const badge = document.getElementById('verg_badge'); const status = document.getElementById('verg_status');
+            if (isNaN(qtd) || qtd <= 0 || isNaN(comp) || comp <= 0) {
+                status.className = 'status-bar error'; status.textContent = 'Erro: Informe quantidade e comprimento válidos.'; return;
+            }
+            const compTotal = qtd * comp;
+            const pesoTotal = compTotal * massaUnit;
+            badge.className = 'info-badge active ok';
+            badge.innerHTML = `<strong>Peso Total:</strong> ${pesoTotal.toFixed(2)} kg<br><span style="font-size: 11px; opacity: 0.9;">Bitola Ø${bitola.toFixed(1)}mm (${massaUnit.toFixed(3)} kg/m) | Comprimento total: ${compTotal.toFixed(2)} m</span>`;
+            status.className = 'status-bar'; status.textContent = 'Peso calculado conforme NBR 7480.';
+        }
+        function clearVergalhao() {
+            document.getElementById('verg_qtd').value = '1';
+            document.getElementById('verg_comp').value = '12.00';
+            document.getElementById('verg_badge').className = 'info-badge';
+            document.getElementById('verg_status').className = 'status-bar';
+            document.getElementById('verg_status').textContent = 'Selecione a bitola e informe quantidade e comprimento das barras.';
+        }
+
+        // ==========================================
+        // 12. REFERENCE SEARCH (Módulos Parâmetros & Normas)
+        // ==========================================
+        function setupRefSearch(inputId, clearBtnId, scopeId, emptyId) {
+            const input = document.getElementById(inputId);
+            const clearBtn = document.getElementById(clearBtnId);
+            const scope = document.getElementById(scopeId);
+            const emptyState = document.getElementById(emptyId);
+            function applyFilter() {
+                const q = input.value.trim().toLowerCase();
+                clearBtn.classList.toggle('show', q.length > 0);
+                let anySectionVisible = false;
+                scope.querySelectorAll('.ref-section').forEach(section => {
+                    let sectionMatch = false;
+                    section.querySelectorAll('.ref-item').forEach(item => {
+                        const hay = (item.dataset.search || '').toLowerCase();
+                        const match = q === '' || hay.includes(q);
+                        item.style.display = match ? '' : 'none';
+                        if (match) sectionMatch = true;
+                    });
+                    section.style.display = sectionMatch ? '' : 'none';
+                    if (sectionMatch) anySectionVisible = true;
+                });
+                emptyState.style.display = anySectionVisible ? 'none' : 'block';
+            }
+            input.addEventListener('input', applyFilter);
+            clearBtn.addEventListener('click', () => { input.value = ''; applyFilter(); input.focus(); });
+        }
+        setupRefSearch('paramsSearch', 'paramsSearchClear', 'paramsScope', 'paramsEmptyState');
+        setupRefSearch('normsSearch', 'normsSearchClear', 'normsScope', 'normsEmptyState');
     </script>
 </body>
 </html>
