@@ -1,0 +1,6 @@
+{
+  "name": "engtools-pwa",
+  "private": true,
+  "type": "module",
+  "description": "Marca este diretório como ESM para o Node conseguir checar a sintaxe dos módulos em js/. Não afeta o navegador."
+}

@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EngTools — Cálculos, Parâmetros e Normas para Engenharia Civil</title>
+    <meta name="description" content="Calculadoras técnicas, parâmetros normativos e índice de normas para o dia a dia da engenharia civil. Funciona offline.">
+    <meta name="theme-color" content="#0b0f17">
+    <link rel="manifest" href="manifest.webmanifest">
+    <link rel="icon" href="icons/icon-192.png">
+    <link rel="apple-touch-icon" href="icons/icon-192.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+    <!-- ============================================================
+         VIEW: HOME / LAUNCHER
+         ============================================================ -->
+    <div class="top-view active" id="view-launcher">
+        <div class="hero-stage" id="heroStage">
+            <div class="hero-theme-float">
+                <button class="theme-toggle-btn" type="button"><span>◐</span><span class="theme-label">Tema Escuro</span></button>
+            </div>
+            <div class="hero-mark" id="heroMark">
+                <div class="hero-mark-logo">ET</div>
+                <h1>ENG<span>TOOLS</span></h1>
+                <p>Cálculos técnicos, parâmetros normativos e referências rápidas para o dia a dia da engenharia civil. Instale no dispositivo e use mesmo sem internet.</p>
+            </div>
+            <div class="hero-scroll-cue"><span>role para explorar</span><span class="chevron"></span></div>
+        </div>
+
+        <div class="modules-section">
+            <div class="modules-inner">
+                <div class="modules-heading">Ferramentas disponíveis</div>
+                <p class="modules-subheading">Escolha um módulo para abrir nesta sessão.</p>
+
+                <div class="module-grid">
+                    <button type="button" class="module-card" data-view="view-calc-welcome" aria-label="Abrir módulo Calculadora">
+                        <span class="module-card-stage">
+                            <svg viewBox="0 0 300 118" preserveAspectRatio="xMidYMid meet">
+                                <line x1="20" y1="18" x2="20" y2="98" stroke="var(--svg-line)" stroke-width="1"/>
+                                <line x1="20" y1="98" x2="280" y2="98" stroke="var(--svg-line)" stroke-width="1"/>
+                                <path d="M 20,98 L 200,98 L 200,36" fill="none" stroke="var(--svg-line)" stroke-width="1.5" stroke-dasharray="3 3"/>
+                                <path d="M 20,98 L 200,36" fill="none" stroke="var(--svg-accent)" stroke-width="2.5"/>
+                                <rect x="128" y="52" width="76" height="20" rx="3" fill="var(--surface)" stroke="var(--border)"/>
+                                <text x="166" y="66" text-anchor="middle" class="svg-text" font-size="10.5">i = Δh/c × 100</text>
+                            </svg>
+                        </span>
+                        <span class="module-card-body">
+                            <h2>Calculadora de Engenharia</h2>
+                            <p>Rampas, taludes, estacas, drenagem, pavimentação, estruturas e quantitativos — cálculos técnicos com apoio normativo.</p>
+                            <span class="module-card-footer">
+                                <span class="module-card-tag">9 instrumentos</span>
+                                <span class="module-card-arrow">abrir →</span>
+                            </span>
+                        </span>
+                    </button>
+
+                    <button type="button" class="module-card" data-view="view-params" aria-label="Abrir módulo Parâmetros e Referências">
+                        <span class="module-card-stage">
+                            <svg viewBox="0 0 300 118" preserveAspectRatio="xMidYMid meet">
+                                <rect x="30" y="24" width="240" height="20" rx="2" fill="var(--surface-hover)" stroke="var(--border)"/>
+                                <rect x="30" y="48" width="240" height="16" rx="2" fill="var(--svg-fill)" stroke="var(--border)"/>
+                                <rect x="30" y="68" width="240" height="16" rx="2" fill="var(--svg-fill)" stroke="var(--border)"/>
+                                <rect x="30" y="88" width="240" height="16" rx="2" fill="var(--svg-fill)" stroke="var(--border)"/>
+                                <text x="42" y="38" class="svg-text" font-size="10">n · E% · cobrimento · taxa</text>
+                            </svg>
+                        </span>
+                        <span class="module-card-body">
+                            <h2>Parâmetros & Referências</h2>
+                            <p>Tabelas normativas de rugosidade, cobrimento, taludes, ligantes e mais — consulta rápida em obra.</p>
+                            <span class="module-card-footer">
+                                <span class="module-card-tag">Busca rápida</span>
+                                <span class="module-card-arrow">abrir →</span>
+                            </span>
+                        </span>
+                    </button>
+
+                    <button type="button" class="module-card" data-view="view-norms" aria-label="Abrir módulo Normas Técnicas">
+                        <span class="module-card-stage">
+                            <svg viewBox="0 0 300 118" preserveAspectRatio="xMidYMid meet">
+                                <rect x="70" y="20" width="90" height="78" rx="2" fill="var(--svg-fill)" stroke="var(--svg-line)" stroke-width="1.2"/>
+                                <rect x="90" y="20" width="90" height="78" rx="2" fill="var(--surface)" stroke="var(--svg-accent)" stroke-width="1.4"/>
+                                <line x1="102" y1="38" x2="162" y2="38" stroke="var(--text-muted)" stroke-width="1"/>
+                                <line x1="102" y1="50" x2="162" y2="50" stroke="var(--text-muted)" stroke-width="1"/>
+                                <line x1="102" y1="62" x2="150" y2="62" stroke="var(--text-muted)" stroke-width="1"/>
+                                <text x="132" y="86" text-anchor="middle" class="svg-text" font-size="9.5">NBR · NR · DNIT</text>
+                            </svg>
+                        </span>
+                        <span class="module-card-body">
+                            <h2>Normas Técnicas</h2>
+                            <p>Índice de normas ABNT e regulamentações da construção civil, com busca por assunto ou código.</p>
+                            <span class="module-card-footer">
+                                <span class="module-card-tag">Consulta rápida</span>
+                                <span class="module-card-arrow">abrir →</span>
+                            </span>
+                        </span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================================
+         VIEW: MÓDULO 1 — Recepção da Calculadora
+         ============================================================ -->
+    <div class="top-view" id="view-calc-welcome">
+        <div class="topbar">
+            <button class="topbar-home" type="button" data-view="view-launcher">
+                <span class="brand-logo">ET</span>
+                <span class="topbar-home-stack"><span class="topbar-home-name">EngTools</span><span class="topbar-home-hint">← início</span></span>
+            </button>
+            <span class="topbar-sep">/</span>
+            <span class="topbar-title">Calculadora de Engenharia</span>
+            <div class="topbar-actions">
+                <button class="theme-toggle-btn" type="button"><span>◐</span><span class="theme-label">Tema Escuro</span></button>
+            </div>
+        </div>
+
+        <main class="welcome-main">
+            <div class="welcome-eyebrow">Módulo 01</div>
+            <h1>Instrumentos de cálculo para o dia a dia da obra</h1>
+            <p class="lead">Nove calculadoras técnicas cobrindo geometria e topografia, hidráulica de drenagem, pavimentação, estruturas e quantitativos — com referência normativa direta no resultado.</p>
+
+            <div class="welcome-stats">
+                <span class="welcome-stat"><strong>9</strong> calculadoras</span>
+                <span class="welcome-stat"><strong>4</strong> frentes técnicas</span>
+                <span class="welcome-stat">Verificação normativa automática</span>
+            </div>
+
+            <div id="welcomeFavorites" class="welcome-favorites" hidden>
+                <h2 class="welcome-subhead">★ Favoritos</h2>
+                <div class="welcome-favorites-row" id="welcomeFavoritesRow"></div>
+            </div>
+
+            <div id="welcomeRecent" class="welcome-favorites" hidden>
+                <h2 class="welcome-subhead">Usados recentemente</h2>
+                <div class="welcome-favorites-row" id="welcomeRecentRow"></div>
+            </div>
+
+            <div class="welcome-shortcuts">
+                <button type="button" class="shortcut-card" data-open-calc="calc-rampas">
+                    <span class="shortcut-icon">△</span>
+                    <h3>Geometria & Topografia</h3>
+                    <p>Rampas, taludes, estacas e superlargura em curvas.</p>
+                </button>
+                <button type="button" class="shortcut-card" data-open-calc="calc-manning">
+                    <span class="shortcut-icon">≈</span>
+                    <h3>Hidráulica & Drenagem</h3>
+                    <p>Capacidade de sarjetas e canais pelo método de Manning.</p>
+                </button>
+                <button type="button" class="shortcut-card" data-open-calc="calc-quantitativos">
+                    <span class="shortcut-icon">▤</span>
+                    <h3>Quantitativos & Orçamento</h3>
+                    <p>Tabela de quantitativos com exportação para CSV/Excel.</p>
+                </button>
+            </div>
+
+            <div class="welcome-cta-row">
+                <button class="btn btn-primary" type="button" id="welcomeOpenApp">Abrir todas as calculadoras →</button>
+                <span class="welcome-cta-hint">ou escolha uma frente acima</span>
+            </div>
+        </main>
+    </div>
+
+    <!-- ============================================================
+         VIEW: MÓDULO 1 — Dashboard de calculadoras
+         ============================================================ -->
+    <div class="top-view" id="view-calc-app">
+        <div class="topbar">
+            <button class="topbar-home" type="button" data-view="view-launcher">
+                <span class="brand-logo">ET</span>
+                <span class="topbar-home-stack"><span class="topbar-home-name">EngTools</span><span class="topbar-home-hint">← início</span></span>
+            </button>
+            <span class="topbar-sep">/</span>
+            <span class="topbar-title">Calculadora de Engenharia</span>
+            <div class="topbar-actions">
+                <button class="hamburger-btn topbar-hamburger" id="mobileMenuBtn" type="button" aria-label="Abrir menu">☰</button>
+                <button class="theme-toggle-btn" type="button"><span>◐</span><span class="theme-label">Tema Escuro</span></button>
+            </div>
+        </div>
+
+        <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+        <div class="app-shell">
+            <aside class="sidebar" id="sidebar">
+                <nav class="nav-sections" id="navSections"></nav>
+            </aside>
+
+            <main class="main-content">
+
+                <!-- 1. RAMPAS -->
+                <section class="calc-panel active" id="calc-rampas">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="header-meta"><h1>Rampas & Declividades</h1><div class="formula-tag">Fórmula: i = (Δh / c) × 100</div></div>
+                            <span class="badge-category">Topografia & Acessibilidade</span>
+                        </div>
+                        <div class="diagram-stage">
+                            <svg viewBox="0 0 420 110">
+                                <polygon points="50,75 330,75 330,25" fill="var(--svg-fill)" stroke="var(--svg-line)" stroke-width="1.5" stroke-linejoin="round" />
+                                <line x1="50" y1="92" x2="330" y2="92" stroke="var(--text-muted)" stroke-width="1" />
+                                <line x1="50" y1="87" x2="50" y2="97" stroke="var(--text-muted)" stroke-width="1" />
+                                <line x1="330" y1="87" x2="330" y2="97" stroke="var(--text-muted)" stroke-width="1" />
+                                <text x="190" y="105" text-anchor="middle" class="svg-text" id="r_svg_c">c: -- m</text>
+                                <line x1="345" y1="25" x2="345" y2="75" stroke="var(--text-muted)" stroke-width="1" />
+                                <line x1="340" y1="25" x2="350" y2="25" stroke="var(--text-muted)" stroke-width="1" />
+                                <line x1="340" y1="75" x2="350" y2="75" stroke="var(--text-muted)" stroke-width="1" />
+                                <text x="358" y="54" text-anchor="start" class="svg-text" id="r_svg_dh">Δh: -- m</text>
+                                <text x="45" y="70" text-anchor="end" class="svg-text" id="r_svg_ci" style="font-size: 9.5px;">ci</text>
+                                <text x="330" y="18" text-anchor="middle" class="svg-text" id="r_svg_cf" style="font-size: 9.5px;">cf</text>
+                                <rect x="155" y="32" width="75" height="18" rx="3" fill="var(--surface)" stroke="var(--border)" stroke-width="1"/>
+                                <text x="192" y="45" text-anchor="middle" class="svg-text" id="r_svg_i" font-weight="600">i: -- %</text>
+                            </svg>
+                        </div>
+                        <div class="card-body">
+                            <div class="grid-inputs">
+                                <div class="field-group"><label class="field-label" for="r_ci"><span>Cota Inicial</span><span class="symbol">ci</span></label><div class="input-wrapper"><input type="number" id="r_ci" step="any" placeholder="0.000"><span class="unit">m</span></div></div>
+                                <div class="field-group"><label class="field-label" for="r_cf"><span>Cota Final</span><span class="symbol">cf</span></label><div class="input-wrapper"><input type="number" id="r_cf" step="any" placeholder="0.000"><span class="unit">m</span></div></div>
+                                <div class="field-group"><label class="field-label" for="r_c"><span>Comprimento</span><span class="symbol">c</span></label><div class="input-wrapper"><input type="number" id="r_c" step="any" placeholder="0.000"><span class="unit">m</span></div></div>
+                                <div class="field-group"><label class="field-label" for="r_i"><span>Inclinação</span><span class="symbol">i</span></label><div class="input-wrapper"><input type="number" id="r_i" step="any" placeholder="0.000"><span class="unit">%</span></div></div>
+                            </div>
+                            <div class="info-badge" id="r_badge"></div>
+                            <div class="status-bar" id="r_status">Preencha 3 campos para calcular o 4º.</div>
+                            <div class="actions"><button class="btn btn-primary" data-action="calc" data-calc="rampas">Calcular</button><button class="btn btn-secondary" data-action="clear" data-calc="rampas">Limpar</button></div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 2. ESTACAS -->
+                <section class="calc-panel" id="calc-estacas">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="header-meta"><h1>Interpolação de Estacas & Greide</h1><div class="formula-tag">Cota(X) = Cota₁ + [(Cota₂ - Cota₁) / ΔDist] × Dist₁-X</div></div>
+                            <span class="badge-category">Topografia Viária</span>
+                        </div>
+                        <div class="diagram-stage">
+                            <svg viewBox="0 0 420 110">
+                                <line x1="50" y1="80" x2="370" y2="30" stroke="var(--svg-accent)" stroke-width="2" />
+                                <circle cx="50" cy="80" r="4" fill="var(--svg-accent)" />
+                                <circle cx="210" cy="55" r="4" fill="var(--calc-highlight-border)" />
+                                <circle cx="370" cy="30" r="4" fill="var(--svg-accent)" />
+                                <text x="50" y="98" text-anchor="middle" class="svg-text" id="est_svg_p1">Est. 1</text>
+                                <text x="210" y="75" text-anchor="middle" class="svg-text" id="est_svg_px" font-weight="600">Est. X (Alvo)</text>
+                                <text x="370" y="48" text-anchor="middle" class="svg-text" id="est_svg_p2">Est. 2</text>
+                            </svg>
+                        </div>
+                        <div class="card-body">
+                            <div class="grid-inputs">
+                                <div class="field-group"><label class="field-label" for="est_e1"><span>Estaca Inicial (N + m)</span><span class="symbol">Ex: 10+5.00</span></label><div class="input-wrapper"><input type="text" id="est_e1" placeholder="10+0.00"></div></div>
+                                <div class="field-group"><label class="field-label" for="est_c1"><span>Cota Inicial</span><span class="symbol">Z₁</span></label><div class="input-wrapper"><input type="number" id="est_c1" step="any" placeholder="100.000"><span class="unit">m</span></div></div>
+                                <div class="field-group"><label class="field-label" for="est_e2"><span>Estaca Final (N + m)</span><span class="symbol">Ex: 20+0.00</span></label><div class="input-wrapper"><input type="text" id="est_e2" placeholder="20+0.00"></div></div>
+                                <div class="field-group"><label class="field-label" for="est_c2"><span>Cota Final</span><span class="symbol">Z₂</span></label><div class="input-wrapper"><input type="number" id="est_c2" step="any" placeholder="105.000"><span class="unit">m</span></div></div>
+                                <div class="field-group" style="grid-column: span 2;"><label class="field-label" for="est_ex"><span>Estaca Intermediária a Interpolar</span><span class="symbol">Ex</span></label><div class="input-wrapper"><input type="text" id="est_ex" placeholder="14+10.00"></div></div>
+                            </div>
+                            <div class="info-badge" id="est_badge"></div>
+                            <div class="status-bar" id="est_status">Informe as duas estacas extremas e a estaca desejada.</div>
+                            <div class="actions"><button class="btn btn-primary" data-action="calc" data-calc="estacas">Interpolar Cota</button><button class="btn btn-secondary" data-action="clear" data-calc="estacas">Limpar</button></div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 3. TALUDES -->
+                <section class="calc-panel" id="calc-taludes">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="header-meta"><h1>Geometria de Taludes</h1><div class="formula-tag">Proporção 1:m (V:H) ⇄ i(%) = (1/m) × 100 ⇄ Ângulo θ</div></div>
+                            <span class="badge-category">Geotecnia & Terraplenagem</span>
+                        </div>
+                        <div class="diagram-stage">
+                            <svg viewBox="0 0 420 110">
+                                <polygon points="60,85 360,85 240,25" fill="var(--svg-fill)" stroke="var(--svg-line)" stroke-width="1.5" />
+                                <line x1="240" y1="25" x2="240" y2="85" stroke="var(--text-muted)" stroke-dasharray="2 2" />
+                                <text x="248" y="55" class="svg-text" id="tal_svg_h">H: -- m</text>
+                                <text x="140" y="50" class="svg-text" id="tal_svg_prop" font-weight="600">1 : m</text>
+                                <text x="150" y="98" text-anchor="middle" class="svg-text" id="tal_svg_b">B: -- m</text>
+                            </svg>
+                        </div>
+                        <div class="card-body">
+                            <div class="grid-inputs">
+                                <div class="field-group"><label class="field-label" for="tal_h"><span>Altura do Talude</span><span class="symbol">H</span></label><div class="input-wrapper"><input type="number" id="tal_h" step="any" placeholder="3.00"><span class="unit">m</span></div></div>
+                                <div class="field-group"><label class="field-label" for="tal_m"><span>Proporção Horizontal (1:m)</span><span class="symbol">m</span></label><div class="input-wrapper"><input type="number" id="tal_m" step="any" placeholder="1.50"><span class="unit">H/V</span></div></div>
+                                <div class="field-group"><label class="field-label" for="tal_b"><span>Projeção da Saia</span><span class="symbol">B = H × m</span></label><div class="input-wrapper"><input type="number" id="tal_b" step="any" placeholder="4.50"><span class="unit">m</span></div></div>
+                                <div class="field-group"><label class="field-label" for="tal_i"><span>Declividade</span><span class="symbol">i (%)</span></label><div class="input-wrapper"><input type="number" id="tal_i" step="any" placeholder="66.67"><span class="unit">%</span></div></div>
+                            </div>
+                            <div class="info-badge" id="tal_badge"></div>
+                            <div class="status-bar" id="tal_status">Informe Altura (H) e um parâmetro de inclinação (m, B ou i%). Consulte o módulo Parâmetros para valores usuais por tipo de solo.</div>
+                            <div class="actions"><button class="btn btn-primary" data-action="calc" data-calc="taludes">Dimensionar Talude</button><button class="btn btn-secondary" data-action="clear" data-calc="taludes">Limpar</button></div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 4. MANNING -->
+                <section class="calc-panel" id="calc-manning">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="header-meta"><h1>Drenagem & Sarjetas (Manning)</h1><div class="formula-tag">Q = (1/n) × A × R_h^(2/3) × I_o^(1/2)</div></div>
+                            <span class="badge-category">Hidráulica</span>
+                        </div>
+                        <div class="diagram-stage">
+                            <svg viewBox="0 0 420 110">
+                                <polygon points="80,30 180,85 340,30" fill="var(--svg-fill)" stroke="var(--svg-line)" stroke-width="1.5" />
+                                <polygon points="105,45 180,85 315,45" fill="rgba(56, 189, 248, 0.25)" stroke="var(--accent)" stroke-width="1" />
+                                <text x="210" y="65" text-anchor="middle" class="svg-text" id="man_svg_q" font-weight="600">Q = -- L/s</text>
+                                <text x="350" y="48" class="svg-text" id="man_svg_v">v = -- m/s</text>
+                            </svg>
+                        </div>
+                        <div class="card-body">
+                            <div class="grid-inputs">
+                                <div class="field-group"><label class="field-label" for="man_n"><span>Rugosidade Manning</span><span class="symbol">n</span></label>
+                                    <div class="input-wrapper">
+                                        <select id="man_n">
+                                            <option value="0.015">0.015 (Concreto liso / Sarjeta moldada)</option>
+                                            <option value="0.018">0.018 (Concreto rugoso / Asfalto)</option>
+                                            <option value="0.013">0.013 (PVC / PEAD liso)</option>
+                                            <option value="0.013">0.013 (Manilha de concreto)</option>
+                                            <option value="0.024">0.024 (Tubo de aço corrugado)</option>
+                                            <option value="0.022">0.022 (Valeta em terra, limpa e regular)</option>
+                                            <option value="0.030">0.030 (Valeta em terra com vegetação rasteira)</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="field-group"><label class="field-label" for="man_io"><span>Declividade Longitudinal</span><span class="symbol">I_o</span></label><div class="input-wrapper"><input type="number" id="man_io" step="any" placeholder="0.020"><span class="unit">m/m</span></div></div>
+                                <div class="field-group"><label class="field-label" for="man_z"><span>Inclinação Transversal (1:Z)</span><span class="symbol">Z</span></label><div class="input-wrapper"><input type="number" id="man_z" step="any" placeholder="20.0" value="20.0"><span class="unit">H/V</span></div></div>
+                                <div class="field-group"><label class="field-label" for="man_y"><span>Lâmina d'água</span><span class="symbol">y_0</span></label><div class="input-wrapper"><input type="number" id="man_y" step="any" placeholder="0.080"><span class="unit">m</span></div></div>
+                            </div>
+                            <div class="info-badge" id="man_badge"></div>
+                            <div class="status-bar" id="man_status">Insira os parâmetros geométricos e hidráulicos da calha. Tabela completa de "n" no módulo Parâmetros.</div>
+                            <div class="actions"><button class="btn btn-primary" data-action="calc" data-calc="manning">Calcular Capacidade</button><button class="btn btn-secondary" data-action="clear" data-calc="manning">Limpar</button></div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 5. EMPOLAMENTO -->
+                <section class="calc-panel" id="calc-empolamento">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="header-meta"><h1>Empolamento & Transporte de Solos</h1><div class="formula-tag">V_solto = V_corte × (1 + E%) ⇄ Nº Viagens = V_solto / Cap_caçamba</div></div>
+                            <span class="badge-category">Terraplenagem & Frotas</span>
+                        </div>
+                        <div class="card-body">
+                            <div class="grid-inputs">
+                                <div class="field-group"><label class="field-label" for="emp_vc"><span>Volume Geométrico (Corte)</span><span class="symbol">V_c</span></label><div class="input-wrapper"><input type="number" id="emp_vc" step="any" placeholder="1200.00"><span class="unit">m³</span></div></div>
+                                <div class="field-group"><label class="field-label" for="emp_taxa"><span>Fator de Empolamento / Solo</span><span class="symbol">E%</span></label>
+                                    <div class="input-wrapper">
+                                        <select id="emp_taxa">
+                                            <option value="25">25% — Areia / Solo arenoso</option>
+                                            <option value="30" selected>30% — Terra comum / Argila média</option>
+                                            <option value="40">40% — Argila pesada / Saibro</option>
+                                            <option value="50">50% — Rocha detonada / Enrocamento</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="field-group"><label class="field-label" for="emp_cap"><span>Capacidade da Caçamba</span><span class="symbol">V_truck</span></label><div class="input-wrapper"><input type="number" id="emp_cap" step="any" value="14.00" placeholder="14.00"><span class="unit">m³</span></div></div>
+                                <div class="field-group"><label class="field-label" for="emp_fhom"><span>Fator de Homogeneização</span><span class="symbol">F_h</span></label><div class="input-wrapper"><input type="number" id="emp_fhom" step="any" value="1.20" placeholder="1.20"><span class="unit">adim</span></div></div>
+                            </div>
+                            <div class="info-badge" id="emp_badge"></div>
+                            <div class="status-bar" id="emp_status">Preencha o volume medido no corte e o tipo de solo.</div>
+                            <div class="actions"><button class="btn btn-primary" data-action="calc" data-calc="empolamento">Dimensionar Frota</button><button class="btn btn-secondary" data-action="clear" data-calc="empolamento">Limpar</button></div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 6. LIGANTE -->
+                <section class="calc-panel" id="calc-ligante">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="header-meta"><h1>Taxa de Ligante Asfáltico</h1><div class="formula-tag">Vol_total = Área × Taxa_projeto ⇄ Qnt_cargas = Vol / Cap_tanque</div></div>
+                            <span class="badge-category">Pavimentação Asfáltica</span>
+                        </div>
+                        <div class="card-body">
+                            <div class="grid-inputs">
+                                <div class="field-group"><label class="field-label" for="lig_comp"><span>Extensão do Trecho</span><span class="symbol">L</span></label><div class="input-wrapper"><input type="number" id="lig_comp" step="any" placeholder="1500.00"><span class="unit">m</span></div></div>
+                                <div class="field-group"><label class="field-label" for="lig_larg"><span>Largura de Aplicação</span><span class="symbol">W</span></label><div class="input-wrapper"><input type="number" id="lig_larg" step="any" placeholder="7.00"><span class="unit">m</span></div></div>
+                                <div class="field-group"><label class="field-label" for="lig_servico"><span>Tipo de Pintura / Serviço</span><span class="symbol">Taxa</span></label>
+                                    <div class="input-wrapper">
+                                        <select id="lig_servico">
+                                            <option value="1.2">Imprimação Betuminosa (CM-30: 1.20 L/m²)</option>
+                                            <option value="0.5">Pintura de Ligação (RR-1C: 0.50 L/m²)</option>
+                                            <option value="1.4">Tratamento Superficial (1.40 L/m²)</option>
+                                            <option value="custom">Personalizado (Digitar abaixo)</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="field-group"><label class="field-label" for="lig_taxa"><span>Taxa de Aplicação</span><span class="symbol">T</span></label><div class="input-wrapper"><input type="number" id="lig_taxa" step="any" value="1.20" placeholder="1.20"><span class="unit">L/m²</span></div></div>
+                            </div>
+                            <div class="info-badge" id="lig_badge"></div>
+                            <div class="status-bar" id="lig_status">Informe as dimensões da pista e a taxa de projeto.</div>
+                            <div class="actions"><button class="btn btn-primary" data-action="calc" data-calc="ligante">Calcular Volume de Emulsão</button><button class="btn btn-secondary" data-action="clear" data-calc="ligante">Limpar</button></div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 7. SUPERLARGURA -->
+                <section class="calc-panel" id="calc-superlargura">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="header-meta"><h1>Superlargura em Curvas</h1><div class="formula-tag">S = n·(R - √(R² - L²)) + V / (10·√R)</div></div>
+                            <span class="badge-category">Projeto Geométrico de Vias</span>
+                        </div>
+                        <div class="card-body">
+                            <div class="grid-inputs">
+                                <div class="field-group"><label class="field-label" for="sup_r"><span>Raio da Curva</span><span class="symbol">R</span></label><div class="input-wrapper"><input type="number" id="sup_r" step="any" placeholder="150.00"><span class="unit">m</span></div></div>
+                                <div class="field-group"><label class="field-label" for="sup_v"><span>Velocidade de Diretriz</span><span class="symbol">V</span></label><div class="input-wrapper"><input type="number" id="sup_v" step="any" placeholder="60.0"><span class="unit">km/h</span></div></div>
+                                <div class="field-group"><label class="field-label" for="sup_n"><span>Número de Faixas</span><span class="symbol">n</span></label><div class="input-wrapper"><input type="number" id="sup_n" step="1" value="2" placeholder="2"><span class="unit">faixas</span></div></div>
+                                <div class="field-group"><label class="field-label" for="sup_l"><span>Comprimento do Veículo (Entre-eixos)</span><span class="symbol">L</span></label>
+                                    <div class="input-wrapper">
+                                        <select id="sup_l">
+                                            <option value="6.10">6.10 m — Veículo de Passeio (VP)</option>
+                                            <option value="7.30">7.30 m — Caminhão Comercial Médio (CO)</option>
+                                            <option value="12.00">12.00 m — Ônibus Urbano / Rodoviário (O)</option>
+                                            <option value="15.24" selected>15.24 m — Semirreboque / Carreta (SR)</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="info-badge" id="sup_badge"></div>
+                            <div class="status-bar" id="sup_status">Norma DNIT: Cálculo de alargamento para acomodação de veículos pesados.</div>
+                            <div class="actions"><button class="btn btn-primary" data-action="calc" data-calc="superlargura">Calcular Alargamento (S)</button><button class="btn btn-secondary" data-action="clear" data-calc="superlargura">Limpar</button></div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 8. BLONDEL -->
+                <section class="calc-panel" id="calc-blondel">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="header-meta"><h1>Dimensionamento de Escadas</h1><div class="formula-tag">Fórmula de Blondel: 63 cm ≤ 2e + p ≤ 64 cm</div></div>
+                            <span class="badge-category">Arquitetura & Conforto</span>
+                        </div>
+                        <div class="diagram-stage">
+                            <svg viewBox="0 0 420 110">
+                                <path d="M 60,90 L 120,90 L 120,70 L 180,70 L 180,50 L 240,50 L 240,30 L 300,30" fill="none" stroke="var(--svg-line)" stroke-width="2" />
+                                <line x1="300" y1="30" x2="300" y2="90" stroke="var(--text-muted)" stroke-dasharray="2 2" />
+                                <text x="315" y="65" class="svg-text" id="esc_svg_h">H: -- cm</text>
+                                <text x="210" y="44" text-anchor="middle" class="svg-text" id="esc_svg_p">p: -- cm</text>
+                                <text x="170" y="62" text-anchor="end" class="svg-text" id="esc_svg_e">e: -- cm</text>
+                            </svg>
+                        </div>
+                        <div class="card-body">
+                            <div class="grid-inputs">
+                                <div class="field-group"><label class="field-label" for="esc_h"><span>Desnível Total (Piso a Piso)</span><span class="symbol">H</span></label><div class="input-wrapper"><input type="number" id="esc_h" step="any" placeholder="2.80"><span class="unit">m</span></div></div>
+                                <div class="field-group"><label class="field-label" for="esc_emax"><span>Espelho Desejado (Ideal ~17.5)</span><span class="symbol">e</span></label><div class="input-wrapper"><input type="number" id="esc_emax" step="any" value="17.5" placeholder="17.5"><span class="unit">cm</span></div></div>
+                            </div>
+                            <div class="info-badge" id="esc_badge"></div>
+                            <div class="status-bar" id="esc_status">Insira o desnível vertical para calcular o número de degraus e o piso ideal.</div>
+                            <div class="actions"><button class="btn btn-primary" data-action="calc" data-calc="blondel">Calcular Escada</button><button class="btn btn-secondary" data-action="clear" data-calc="blondel">Limpar</button></div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 9. VERGALHÃO -->
+                <section class="calc-panel" id="calc-vergalhao">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="header-meta"><h1>Peso de Vergalhões</h1><div class="formula-tag">NBR 7480 — massa tabelada por bitola</div></div>
+                            <span class="badge-category">Estruturas de Concreto Armado</span>
+                        </div>
+                        <div class="card-body">
+                            <div class="grid-inputs">
+                                <div class="field-group"><label class="field-label" for="verg_bitola"><span>Bitola (CA-50)</span><span class="symbol">Ø</span></label>
+                                    <div class="input-wrapper">
+                                        <select id="verg_bitola"></select>
+                                    </div>
+                                </div>
+                                <div class="field-group"><label class="field-label" for="verg_qtd"><span>Quantidade de Barras</span><span class="symbol">Un.</span></label><div class="input-wrapper"><input type="number" id="verg_qtd" step="1" value="1" placeholder="1"></div></div>
+                                <div class="field-group"><label class="field-label" for="verg_comp"><span>Comprimento por Barra</span><span class="symbol">L</span></label><div class="input-wrapper"><input type="number" id="verg_comp" step="any" value="12.00" placeholder="12.00"><span class="unit">m</span></div></div>
+                            </div>
+                            <div class="info-badge" id="verg_badge"></div>
+                            <div class="status-bar" id="verg_status">Selecione a bitola e informe quantidade e comprimento das barras.</div>
+                            <div class="actions"><button class="btn btn-primary" data-action="calc" data-calc="vergalhao">Calcular Peso Total</button><button class="btn btn-secondary" data-action="clear" data-calc="vergalhao">Limpar</button></div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 10. QUANTITATIVOS -->
+                <section class="calc-panel" id="calc-quantitativos">
+                    <div class="card qty-card">
+                        <div class="card-header">
+                            <div class="header-meta"><h1>Tabela de Quantitativos</h1><div class="formula-tag">Quantidade × Preço Unitário = Subtotal</div></div>
+                            <span class="badge-category">Orçamento & Planejamento</span>
+                        </div>
+                        <div class="card-body">
+                            <p class="qty-intro">Monte um quantitativo como faria numa planilha — adicione linhas, escolha o tipo de medida e exporte para CSV/Excel quando terminar. Os dados ficam salvos neste dispositivo.</p>
+                            <div class="qty-table-wrap">
+                                <table class="qty-table">
+                                    <thead><tr><th>Descrição</th><th>Tipo</th><th>Dim. 1</th><th>Dim. 2</th><th>Dim. 3</th><th>Quantidade</th><th>Preço unit.</th><th>Subtotal</th><th></th></tr></thead>
+                                    <tbody id="qtyTableBody"></tbody>
+                                </table>
+                            </div>
+                            <div class="qty-actions">
+                                <button class="btn btn-secondary" id="qtyAddRow" type="button">+ Adicionar linha</button>
+                                <button class="btn btn-secondary" id="qtyImportCsv" type="button">Importar CSV</button>
+                                <input type="file" id="qtyFileInput" accept=".csv" hidden>
+                                <button class="btn btn-secondary" id="qtyExportCsv" type="button">Exportar CSV</button>
+                                <button class="btn btn-secondary" id="qtyClearAll" type="button">Limpar tudo</button>
+                            </div>
+                            <div class="qty-total">Total geral: <strong id="qtyGrandTotal">R$ 0,00</strong></div>
+                        </div>
+                    </div>
+                </section>
+
+            </main>
+        </div>
+    </div>
+
+    <!-- ============================================================
+         VIEW: MÓDULO 2 — Parâmetros & Referências
+         ============================================================ -->
+    <div class="top-view" id="view-params">
+        <div class="topbar">
+            <button class="topbar-home" type="button" data-view="view-launcher">
+                <span class="brand-logo">ET</span>
+                <span class="topbar-home-stack"><span class="topbar-home-name">EngTools</span><span class="topbar-home-hint">← início</span></span>
+            </button>
+            <span class="topbar-sep">/</span>
+            <span class="topbar-title">Parâmetros & Referências</span>
+            <div class="topbar-actions">
+                <button class="theme-toggle-btn" type="button"><span>◐</span><span class="theme-label">Tema Escuro</span></button>
+            </div>
+        </div>
+
+        <main class="ref-page-main">
+            <div class="ref-intro">
+                <h1>Parâmetros & Referências Técnicas</h1>
+                <p>Tabelas de consulta rápida usadas nas calculadoras — rugosidade, cobrimento, taludes, empolamento, ligantes e acessibilidade. Digite para filtrar por material, código ou palavra-chave.</p>
+            </div>
+
+            <div class="ref-search-wrap">
+                <span class="ref-search-icon">⌕</span>
+                <input type="text" id="paramsSearch" placeholder="Buscar parâmetro — ex.: PVC, cobrimento, argila, RR-1C...">
+                <button class="ref-search-clear" id="paramsSearchClear" type="button">limpar ✕</button>
+            </div>
+
+            <div id="paramsScope"></div>
+            <div class="ref-empty-state" id="paramsEmptyState">Nenhum parâmetro encontrado para esta busca.</div>
+        </main>
+    </div>
+
+    <!-- ============================================================
+         VIEW: MÓDULO 3 — Normas Técnicas
+         ============================================================ -->
+    <div class="top-view" id="view-norms">
+        <div class="topbar">
+            <button class="topbar-home" type="button" data-view="view-launcher">
+                <span class="brand-logo">ET</span>
+                <span class="topbar-home-stack"><span class="topbar-home-name">EngTools</span><span class="topbar-home-hint">← início</span></span>
+            </button>
+            <span class="topbar-sep">/</span>
+            <span class="topbar-title">Normas Técnicas</span>
+            <div class="topbar-actions">
+                <button class="theme-toggle-btn" type="button"><span>◐</span><span class="theme-label">Tema Escuro</span></button>
+            </div>
+        </div>
+
+        <main class="ref-page-main">
+            <div class="ref-intro">
+                <h1>Índice de Normas Técnicas</h1>
+                <p>Guia de consulta rápida com o código, o título e o escopo de cada norma. Digite um código (ex.: 6118) ou um assunto (ex.: fundação, acessibilidade) para localizar o que precisa. Consulte sempre o texto oficial da ABNT/órgão competente antes de aplicar valores normativos em projeto.</p>
+            </div>
+
+            <div class="ref-search-wrap">
+                <span class="ref-search-icon">⌕</span>
+                <input type="text" id="normsSearch" placeholder="Buscar norma — ex.: 6118, sondagem, incêndio, esgoto...">
+                <button class="ref-search-clear" id="normsSearchClear" type="button">limpar ✕</button>
+            </div>
+
+            <div id="normsScope"></div>
+            <div class="ref-empty-state" id="normsEmptyState">Nenhuma norma encontrada para esta busca.</div>
+        </main>
+    </div>
+
+    <script type="module" src="js/app.js"></script>
+</body>
+</html>
